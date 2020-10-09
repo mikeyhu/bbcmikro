@@ -7,6 +7,7 @@ import net.chompsoftware.k6502.hardware.Instruction.LoaDAcc_I
 import net.chompsoftware.k6502.hardware.Instruction.LoaDX_I
 import net.chompsoftware.k6502.hardware.Instruction.LoaDY_I
 import net.chompsoftware.k6502.hardware.Instruction.SToreAcc_Z
+import net.chompsoftware.k6502.hardware.Instruction.CLearDecimal
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -152,6 +153,20 @@ class CpuTest {
                     programCounter = 0x02
             )
             memory.readUInt(0x05) shouldBe 0x11u
+        }
+    }
+
+    @Nested
+    inner class CLearDecimal {
+        @Test
+        fun `Should reset decimal flag`() {
+            val memory = Memory(setupMemory(CLearDecimal))
+            val state = CpuState(isDecimalFlag = true)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x01,
+                    isDecimalFlag = false
+            )
         }
     }
 

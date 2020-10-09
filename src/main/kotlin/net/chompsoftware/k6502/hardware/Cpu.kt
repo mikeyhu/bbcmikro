@@ -9,7 +9,8 @@ data class CpuState(
         val yRegister: UInt = 0x0u,
         val isBreakCommandFlag: Boolean = false,
         val isNegativeFlag: Boolean = false,
-        val isZeroFlag: Boolean = false
+        val isZeroFlag: Boolean = false,
+        val isDecimalFlag: Boolean = false
 ) {
     fun copyWithA(value: UInt, programCounter: Int) = this.copy(
             programCounter = programCounter,
@@ -68,6 +69,12 @@ class Cpu() {
                 memory[location] = state.aRegister.toUByte()
                 state.incrementCounterBy(2)
             }
+            Instruction.CLearDecimal -> {
+                state.copy(
+                        programCounter = state.programCounter+1,
+                        isDecimalFlag = false
+                )
+            }
             else -> throw Error("Undefined instruction ${instruction.toString(16)} at PC ${state.programCounter.toString(16)}")
         }
     }
@@ -87,6 +94,8 @@ object Instruction {
     const val LoaDY_I: UByte = 0xa0u
 
     const val SToreAcc_Z: UByte = 0x85u
+
+    const val CLearDecimal: UByte = 0xd8u
 
 
 }
