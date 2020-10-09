@@ -7,6 +7,7 @@ data class CpuState(
         val aRegister: UInt = 0x0u,
         val xRegister: UInt = 0x0u,
         val yRegister: UInt = 0x0u,
+        val stackPointer: Int = 0xff,
         val isBreakCommandFlag: Boolean = false,
         val isNegativeFlag: Boolean = false,
         val isZeroFlag: Boolean = false,
@@ -69,10 +70,26 @@ class Cpu() {
                 memory[location] = state.aRegister.toUByte()
                 state.incrementCounterBy(2)
             }
+            Instruction.SToreAcc_Ab -> {
+                val location = memory.readUInt16(state.programCounter + 1)
+                memory[location] = state.aRegister.toUByte()
+                state.incrementCounterBy(3)
+            }
             Instruction.CLearDecimal -> {
                 state.copy(
                         programCounter = state.programCounter+1,
                         isDecimalFlag = false
+                )
+            }
+            Instruction.TransferXtoStack -> {
+                state.copy(
+                        programCounter = state.programCounter+1,
+                        stackPointer = state.xRegister.toInt()
+                )
+            }
+            Instruction.JuMP_Ab -> {
+                state.copy(
+                        programCounter = memory.readInt16(state.programCounter + 1)
                 )
             }
             else -> throw Error("Undefined instruction ${instruction.toString(16)} at PC ${state.programCounter.toString(16)}")
@@ -94,8 +111,11 @@ object Instruction {
     const val LoaDY_I: UByte = 0xa0u
 
     const val SToreAcc_Z: UByte = 0x85u
+    const val SToreAcc_Ab: UByte = 0x8du
 
     const val CLearDecimal: UByte = 0xd8u
 
+    const val TransferXtoStack: UByte = 0x9au
 
+    const val JuMP_Ab: UByte = 0x4cu
 }

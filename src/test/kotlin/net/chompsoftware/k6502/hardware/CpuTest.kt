@@ -3,11 +3,14 @@ package net.chompsoftware.k6502.hardware
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import net.chompsoftware.k6502.hardware.Instruction.BReaK
+import net.chompsoftware.k6502.hardware.Instruction.CLearDecimal
+import net.chompsoftware.k6502.hardware.Instruction.JuMP_Ab
 import net.chompsoftware.k6502.hardware.Instruction.LoaDAcc_I
 import net.chompsoftware.k6502.hardware.Instruction.LoaDX_I
 import net.chompsoftware.k6502.hardware.Instruction.LoaDY_I
+import net.chompsoftware.k6502.hardware.Instruction.SToreAcc_Ab
 import net.chompsoftware.k6502.hardware.Instruction.SToreAcc_Z
-import net.chompsoftware.k6502.hardware.Instruction.CLearDecimal
+import net.chompsoftware.k6502.hardware.Instruction.TransferXtoStack
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -145,7 +148,7 @@ class CpuTest {
     @Nested
     inner class SToreAcc {
         @Test
-        fun `Should store accumulator in memory`() {
+        fun `Should store accumulator in memory using Zero Page addressing`() {
             val memory = Memory(setupMemory(SToreAcc_Z, 0x05u))
             val state = CpuState(aRegister = 0x11u)
             val cpu = Cpu()
@@ -153,6 +156,17 @@ class CpuTest {
                     programCounter = 0x02
             )
             memory.readUInt(0x05) shouldBe 0x11u
+        }
+
+        @Test
+        fun `Should store accumulator in memory using Absolute addressing`() {
+            val memory = Memory(setupMemory(SToreAcc_Ab, 0x05u, 0x01u))
+            val state = CpuState(aRegister = 0x11u)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x03
+            )
+            memory.readUInt(0x105) shouldBe 0x11u
         }
     }
 
@@ -166,6 +180,39 @@ class CpuTest {
             cpu.run(state, memory) shouldBe state.copy(
                     programCounter = 0x01,
                     isDecimalFlag = false
+            )
+        }
+    }
+
+    @Nested
+    inner class TransferXtoStack {
+        @Test
+        fun `Should set stackPointer from xRegister`() {
+            val memory = Memory(setupMemory(TransferXtoStack))
+            val state = CpuState(
+                    xRegister = 0x11u,
+                    stackPointer = 0x00
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x01,
+                    stackPointer = 0x11
+            )
+        }
+    }
+
+    @Nested
+    inner class JuMP {
+        @Test
+        fun `Should set programCounter using Absolute addressing`() {
+            val memory = Memory(setupMemory(JuMP_Ab, 0x34u, 0x12u))
+            val state = CpuState(
+                    xRegister = 0x11u,
+                    stackPointer = 0x00
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x1234
             )
         }
     }
