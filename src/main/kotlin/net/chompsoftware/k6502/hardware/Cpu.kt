@@ -68,7 +68,7 @@ class Cpu() {
                 memory[location] = state.aRegister.toUByte()
                 state.incrementCounterBy(2)
             }
-            else -> throw Error("Undefined instruction $instruction")
+            else -> throw Error("Undefined instruction ${instruction.toString(16)} at PC ${state.programCounter.toString(16)}")
         }
     }
 }
