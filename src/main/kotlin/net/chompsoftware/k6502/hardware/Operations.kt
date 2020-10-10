@@ -90,4 +90,12 @@ internal object Operations {
                 stackPointer = state.xRegister.toInt()
         )
     }
+
+    val transferAccumulatorToX = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        state.copyWithX(state.aRegister, programCounter = state.programCounter + instruction.ad.size)
+    }
+
+    val transferYtoAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        state.copyWithA(state.yRegister, programCounter = state.programCounter + instruction.ad.size)
+    }
 }

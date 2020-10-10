@@ -73,6 +73,8 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
     cmp_i(0xc9u, Address.i, Operations.compareAccumulator),
     dex(0xcau, Address.none, Operations.decrementx),
     dey(0x88u, Address.none, Operations.decrementy),
+    tax(0xaau, Address.none, Operations.transferAccumulatorToX),
+    tya(0x98u, Address.none, Operations.transferYtoAccumulator),
     txs(0x9au, Address.none, Operations.transferXToStack),
     jmp_ab(0x4cu, Address.ab, Operations.jump),
     lda_i(0xa9u, Address.i, Operations.loadAccumulator),

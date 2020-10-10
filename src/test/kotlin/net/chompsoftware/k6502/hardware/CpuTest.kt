@@ -205,6 +205,38 @@ class CpuTest {
     }
 
     @Nested
+    inner class TransferYtoAccumulator {
+        @Test
+        fun `Should set Accumulator from yRegister`() {
+            val memory = Memory(setupMemory(tya.u))
+            val state = CpuState(
+                    yRegister = 0x11u
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x01,
+                    aRegister = 0x11u
+            )
+        }
+    }
+
+    @Nested
+    inner class TransferAccumulatorToX {
+        @Test
+        fun `Should set X from accumulator`() {
+            val memory = Memory(setupMemory(tax.u))
+            val state = CpuState(
+                    aRegister = 0x11u
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x01,
+                    xRegister = 0x11u
+            )
+        }
+    }
+
+    @Nested
     inner class Jump {
         @Test
         fun `Should set programCounter using Absolute addressing`() {
