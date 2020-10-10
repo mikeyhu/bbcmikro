@@ -34,12 +34,26 @@ internal object Operations {
         state.copy(isBreakCommandFlag = true, programCounter = memory.readInt16(state.breakLocation))
     }
 
+    val compareAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        val compareTo = memory.readUsing(instruction.ad, state)
+        state.copy(
+                programCounter = state.programCounter + instruction.ad.size,
+                isZeroFlag = state.aRegister == compareTo,
+                isCarryFlag = state.aRegister >= compareTo,
+                isNegativeFlag = state.aRegister < compareTo
+        )
+    }
+
     val decrementx = { _: InstructionSet, state: CpuState, memory: Memory ->
         state.copyWithX(state.xRegister-1u, programCounter = state.programCounter + 1)
     }
 
+    val decrementy = { _: InstructionSet, state: CpuState, memory: Memory ->
+        state.copyWithY(state.yRegister-1u, programCounter = state.programCounter + 1)
+    }
+
     val storeAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        val location = memory.readUsing(instruction.ad, state)
+        val location = memory.positionUsing(instruction.ad, state)
         memory[location] = state.aRegister.toUByte()
         state.incrementCounterBy(instruction.ad.size)
     }
@@ -60,7 +74,7 @@ internal object Operations {
     }
 
     val jump = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        state.copy(programCounter = memory.readUsing(instruction.ad, state).toInt())
+        state.copy(programCounter = memory.positionUsing(instruction.ad, state).toInt())
     }
 
     val clearDecimal = { instruction: InstructionSet, state: CpuState, memory: Memory ->

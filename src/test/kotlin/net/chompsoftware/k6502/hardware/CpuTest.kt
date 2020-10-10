@@ -59,6 +59,17 @@ class CpuTest {
                     isZeroFlag = true
             )
         }
+
+        @Test
+        fun `Should handle LoaDAcc instruction and set accumulator using Absolute addressing`() {
+            val memory = Memory(setupMemory(lda_ab.u, 0x04u, 0x00u, 0x00u, 0x11u))
+            val state = CpuState()
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x03,
+                    aRegister = 0x11u
+            )
+        }
     }
 
     @Nested
@@ -288,6 +299,43 @@ class CpuTest {
             cpu.run(state, memory) shouldBe state.copy(
                     programCounter = 0x01,
                     xRegister = 0x4u
+            )
+        }
+    }
+
+    @Nested
+    inner class DecrementY {
+        @Test
+        fun `Should decrement Y`() {
+            val memory = Memory(setupMemory(dey.u))
+            val state = CpuState(
+                    yRegister = 0x5u
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x01,
+                    yRegister = 0x4u
+            )
+        }
+    }
+
+    @Nested
+    inner class CompareAccummulator {
+        @Test
+        fun `Should compare Accumulator with immediate when equals`() {
+            val memory = Memory(setupMemory(cmp_i.u, 0x01u))
+            val state = CpuState(
+                    aRegister = 0x01u,
+                    isZeroFlag = false,
+                    isCarryFlag = false,
+                    isNegativeFlag = true
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x02,
+                    isZeroFlag = true,
+                    isCarryFlag = true,
+                    isNegativeFlag = false
             )
         }
     }

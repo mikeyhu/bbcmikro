@@ -11,7 +11,8 @@ data class CpuState(
         val isBreakCommandFlag: Boolean = false,
         val isNegativeFlag: Boolean = false,
         val isZeroFlag: Boolean = false,
-        val isDecimalFlag: Boolean = false
+        val isDecimalFlag: Boolean = false,
+        val isCarryFlag: Boolean = false
 ) {
     fun copyWithA(value: UInt, programCounter: Int) = this.copy(
             programCounter = programCounter,
@@ -69,10 +70,13 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
     beq(0xf0u, Address.i, Operations.branchOnEqual),
     brk(0x00u, Address.none, Operations.brk),
     cld(0xd8u, Address.none, Operations.clearDecimal),
+    cmp_i(0xc9u, Address.i, Operations.compareAccumulator),
     dex(0xcau, Address.none, Operations.decrementx),
+    dey(0x88u, Address.none, Operations.decrementy),
     txs(0x9au, Address.none, Operations.transferXToStack),
     jmp_ab(0x4cu, Address.ab, Operations.jump),
     lda_i(0xa9u, Address.i, Operations.loadAccumulator),
+    lda_ab(0xadu, Address.ab, Operations.loadAccumulator),
     ldx_i(0xa2u, Address.i, Operations.loadx),
     ldx_ab(0xaeu, Address.ab, Operations.loadx),
     ldx_aby(0xbeu, Address.aby, Operations.loadx),

@@ -27,11 +27,20 @@ class Memory(val store: UByteArray) {
     fun readUInt(position: Int) = readUByte(position).toUInt()
     fun readInt(position: Int) = readUByte(position).toInt()
 
-    fun readUsing(address: Address, state: CpuState): UInt {
+    fun positionUsing(address: Address, state: CpuState): UInt {
         return when (address) {
             Address.i -> readUInt(state.programCounter + 1)
             Address.z -> readUInt(readInt(state.programCounter + 1))
             Address.ab -> readUInt16(state.programCounter + 1)
+            else -> throw Error("Address mode not implemented")
+        }
+    }
+
+    fun readUsing(address: Address, state: CpuState): UInt {
+        return when (address) {
+            Address.i -> readUInt(state.programCounter + 1)
+            Address.z -> readUInt(readInt(state.programCounter + 1))
+            Address.ab -> readUInt(readUInt16(state.programCounter + 1).toInt())
             else -> throw Error("Address mode not implemented")
         }
     }
