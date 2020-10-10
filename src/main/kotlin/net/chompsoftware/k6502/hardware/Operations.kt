@@ -5,6 +5,19 @@ internal typealias Operation = (instruction: InstructionSet, state: CpuState, me
 
 @ExperimentalUnsignedTypes
 internal object Operations {
+    val branchOnNotEqual = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        if(state.isZeroFlag) {
+            state.incrementCounterBy(instruction.ad.size)
+        } else {
+            val location = memory.readUsing(instruction.ad, state)
+            val newLocation = if (location > 0x80u) {
+                instruction.ad.size - 0xff + location.toInt()
+            } else {
+                instruction.ad.size + location.toInt()
+            }
+            state.copy(programCounter = state.programCounter + newLocation)
+        }
+    }
     val brk = { _: InstructionSet, state: CpuState, memory: Memory ->
         state.copy(isBreakCommandFlag = true, programCounter = memory.readInt16(state.breakLocation))
     }

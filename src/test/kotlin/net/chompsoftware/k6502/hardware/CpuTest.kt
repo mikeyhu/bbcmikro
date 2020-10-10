@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 class CpuTest {
 
     @Nested
-    inner class BReaK {
+    inner class Brk {
         @Test
         fun `Should handle BReaK instruction and set program counter`() {
             val memory = Memory(setupMemory(brk.u, 0x01u, 0x02u))
@@ -24,7 +24,7 @@ class CpuTest {
     }
 
     @Nested
-    inner class LoaDAccumulator {
+    inner class LoadAccumulator {
         @Test
         fun `Should handle LoaDAcc instruction and set accumulator`() {
             val memory = Memory(setupMemory(lda_i.u, 0x08u))
@@ -62,7 +62,7 @@ class CpuTest {
     }
 
     @Nested
-    inner class LoaDX {
+    inner class LoadX {
         @Test
         fun `Should handle LoaDX instruction and set accumulator`() {
             val memory = Memory(setupMemory(ldx_i.u, 0x08u))
@@ -100,7 +100,7 @@ class CpuTest {
     }
 
     @Nested
-    inner class LoaDY {
+    inner class LoadY {
         @Test
         fun `Should handle LoaDY instruction and set accumulator`() {
             val memory = Memory(setupMemory(ldy_i.u, 0x08u))
@@ -138,7 +138,7 @@ class CpuTest {
     }
 
     @Nested
-    inner class SToreAcc {
+    inner class StoreAccumulator {
         @Test
         fun `Should store accumulator in memory using Zero Page addressing`() {
             val memory = Memory(setupMemory(sta_z.u, 0x02u, 0x05u))
@@ -163,7 +163,7 @@ class CpuTest {
     }
 
     @Nested
-    inner class CLearDecimal {
+    inner class ClearDecimal {
         @Test
         fun `Should reset decimal flag`() {
             val memory = Memory(setupMemory(cld.u))
@@ -194,7 +194,7 @@ class CpuTest {
     }
 
     @Nested
-    inner class JuMP {
+    inner class Jump {
         @Test
         fun `Should set programCounter using Absolute addressing`() {
             val memory = Memory(setupMemory(jmp_ab.u, 0x34u, 0x12u))
@@ -208,6 +208,47 @@ class CpuTest {
             )
         }
     }
+
+    @Nested
+    inner class BranchOnNotEqual {
+        @Test
+        fun `Should branch if zeroFlag is false`() {
+            val memory = Memory(setupMemory(bne.u, 0x02u))
+            val state = CpuState(
+                    isZeroFlag = false
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x04
+            )
+        }
+
+        @Test
+        fun `Should branch backwards if zeroFlag is false and location greater than 0x80`() {
+            val memory = Memory(setupMemory(0x0u, bne.u, 0xfcu))
+            val state = CpuState(
+                    programCounter = 1,
+                    isZeroFlag = false
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x00
+            )
+        }
+
+        @Test
+        fun `Should not branch if zeroFlag is true`() {
+            val memory = Memory(setupMemory(bne.u, 0x02u))
+            val state = CpuState(
+                    isZeroFlag = true
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x02
+            )
+        }
+    }
+
 
     fun setupMemory(vararg bytes: UByte): UByteArray {
         val array = UByteArray(0x8000)
