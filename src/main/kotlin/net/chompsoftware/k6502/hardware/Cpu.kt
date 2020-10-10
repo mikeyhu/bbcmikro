@@ -66,8 +66,10 @@ enum class Address(val size: Int) {
 @ExperimentalUnsignedTypes
 enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
     bne(0xd0u, Address.i, Operations.branchOnNotEqual),
+    beq(0xf0u, Address.i, Operations.branchOnEqual),
     brk(0x00u, Address.none, Operations.brk),
     cld(0xd8u, Address.none, Operations.clearDecimal),
+    dex(0xcau, Address.none, Operations.decrementx),
     txs(0x9au, Address.none, Operations.transferXToStack),
     jmp_ab(0x4cu, Address.ab, Operations.jump),
     lda_i(0xa9u, Address.i, Operations.loadAccumulator),

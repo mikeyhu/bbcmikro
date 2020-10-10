@@ -249,6 +249,48 @@ class CpuTest {
         }
     }
 
+    @Nested
+    inner class BranchOnEqual {
+        @Test
+        fun `Should branch if zeroFlag is true`() {
+            val memory = Memory(setupMemory(beq.u, 0x02u))
+            val state = CpuState(
+                    isZeroFlag = true
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x04
+            )
+        }
+
+        @Test
+        fun `Should not branch if zeroFlag is false`() {
+            val memory = Memory(setupMemory(beq.u, 0x02u))
+            val state = CpuState(
+                    isZeroFlag = false
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x02
+            )
+        }
+    }
+
+    @Nested
+    inner class DecrementX {
+        @Test
+        fun `Should decrement X`() {
+            val memory = Memory(setupMemory(dex.u))
+            val state = CpuState(
+                    xRegister = 0x5u
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x01,
+                    xRegister = 0x4u
+            )
+        }
+    }
 
     fun setupMemory(vararg bytes: UByte): UByteArray {
         val array = UByteArray(0x8000)

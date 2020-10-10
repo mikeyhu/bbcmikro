@@ -5,21 +5,30 @@ internal typealias Operation = (instruction: InstructionSet, state: CpuState, me
 
 @ExperimentalUnsignedTypes
 internal object Operations {
-    val branchOnNotEqual = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        if(state.isZeroFlag) {
-            state.incrementCounterBy(instruction.ad.size)
-        } else {
+
+    private val branchIfTrue = { check: Boolean, instruction: InstructionSet, state: CpuState, memory: Memory ->
+        if(check) {
             val location = memory.readUsing(instruction.ad, state)
-            val newLocation = if (location > 0x80u) {
-                instruction.ad.size - 0xff + location.toInt()
-            } else {
-                instruction.ad.size + location.toInt()
-            }
-            state.copy(programCounter = state.programCounter + newLocation)
-        }
+            val newLocation = if (location > 0x80u) -0xff + location.toInt() else location.toInt()
+            state.copy(programCounter = state.programCounter + instruction.ad.size + newLocation)
+
+        } else state.incrementCounterBy(instruction.ad.size)
     }
+
+    val branchOnNotEqual = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        branchIfTrue(!state.isZeroFlag, instruction, state, memory)
+    }
+
+    val branchOnEqual = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        branchIfTrue(state.isZeroFlag, instruction, state, memory)
+    }
+
     val brk = { _: InstructionSet, state: CpuState, memory: Memory ->
         state.copy(isBreakCommandFlag = true, programCounter = memory.readInt16(state.breakLocation))
+    }
+
+    val decrementx = { _: InstructionSet, state: CpuState, memory: Memory ->
+        state.copyWithX(state.xRegister-1u, programCounter = state.programCounter + 1)
     }
 
     val storeAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
