@@ -3,9 +3,9 @@ package functional
 import net.chompsoftware.k6502.hardware.Cpu
 import net.chompsoftware.k6502.hardware.CpuState
 import net.chompsoftware.k6502.hardware.Memory
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable
+import org.junit.jupiter.api.fail
 import java.io.File
 
 @ExperimentalUnsignedTypes
@@ -23,7 +23,12 @@ class SuiteTest {
         do {
             val counter = state.programCounter
             state = cpu.run(state, memory)
-        } while (!state.isBreakCommandFlag || counter == state.programCounter)
+            if(counter == state.programCounter) {
+                println(state)
+                fail("hit trap at ${counter.toString(16)}")
+            }
+        } while (!state.isBreakCommandFlag && counter != state.programCounter)
+
     }
 
     fun readFileToByteArray(fileName: String) = File(fileName).inputStream().readBytes().asUByteArray()

@@ -1,18 +1,25 @@
 package net.chompsoftware.k6502.hardware
 
+const val LOG_OPERATIONS:Boolean = true
+
 @ExperimentalUnsignedTypes
 internal typealias Operation = (instruction: InstructionSet, state: CpuState, memory: Memory) -> CpuState
 
 @ExperimentalUnsignedTypes
 internal object Operations {
+    fun log(s:String) {
+        if(LOG_OPERATIONS) println(s)
+    }
 
     private val branchIfTrue = { check: Boolean, instruction: InstructionSet, state: CpuState, memory: Memory ->
-        if(check) {
+        val newState = if(check) {
             val location = memory.readUsing(instruction.ad, state)
-            val newLocation = if (location > 0x80u) -0xff + location.toInt() else location.toInt()
+            val newLocation = if (location >= 0x80u) -0x100 + location.toInt() else location.toInt()
             state.copy(programCounter = state.programCounter + instruction.ad.size + newLocation)
 
         } else state.incrementCounterBy(instruction.ad.size)
+        log("Branch ${check} from ${state.programCounter.toString(16)} to ${newState.programCounter.toString(16)}")
+        newState
     }
 
     val branchOnNotEqual = { instruction: InstructionSet, state: CpuState, memory: Memory ->

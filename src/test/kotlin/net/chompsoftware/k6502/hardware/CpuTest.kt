@@ -225,7 +225,7 @@ class CpuTest {
 
         @Test
         fun `Should branch backwards if zeroFlag is false and location greater than 0x80`() {
-            val memory = Memory(setupMemory(0x0u, bne.u, 0xfcu))
+            val memory = Memory(setupMemory(0x0u, bne.u, 0xfdu))
             val state = CpuState(
                     programCounter = 1,
                     isZeroFlag = false
