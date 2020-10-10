@@ -1,14 +1,14 @@
 package net.chompsoftware.k6502.hardware
 
-const val LOG_OPERATIONS:Boolean = true
+const val LOG_OPERATIONS: Boolean = true
 
 @ExperimentalUnsignedTypes
 internal typealias Operation = (instruction: InstructionSet, state: CpuState, memory: Memory) -> CpuState
 
 @ExperimentalUnsignedTypes
 internal object Operations {
-    fun log(s:String) {
-        if(LOG_OPERATIONS) println(s)
+    fun log(s: String) {
+        if (LOG_OPERATIONS) println(s)
     }
 
     val addWithCarry = { instruction: InstructionSet, state: CpuState, memory: Memory ->
@@ -17,13 +17,13 @@ internal object Operations {
 
         state.copy(
                 programCounter = state.programCounter + instruction.ad.size,
-                aRegister = if(sum > 0xffu) sum - 0x100u else sum,
+                aRegister = if (sum > 0xffu) sum - 0x100u else sum,
                 isCarryFlag = sum > 0xffu
         )
     }
 
     private val branchIfTrue = { check: Boolean, instruction: InstructionSet, state: CpuState, memory: Memory ->
-        val newState = if(check) {
+        val newState = if (check) {
             val location = memory.readUsing(instruction.ad, state)
             val newLocation = if (location >= 0x80u) -0x100 + location.toInt() else location.toInt()
             state.copy(programCounter = state.programCounter + instruction.ad.size + newLocation)
@@ -60,11 +60,11 @@ internal object Operations {
     }
 
     val decrementx = { _: InstructionSet, state: CpuState, memory: Memory ->
-        state.copyWithX(state.xRegister-1u, programCounter = state.programCounter + 1)
+        state.copyWithX(state.xRegister - 1u, programCounter = state.programCounter + 1)
     }
 
     val decrementy = { _: InstructionSet, state: CpuState, memory: Memory ->
-        state.copyWithY(state.yRegister-1u, programCounter = state.programCounter + 1)
+        state.copyWithY(state.yRegister - 1u, programCounter = state.programCounter + 1)
     }
 
     val storeAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
