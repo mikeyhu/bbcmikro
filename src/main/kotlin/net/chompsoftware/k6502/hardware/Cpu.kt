@@ -39,83 +39,50 @@ data class CpuState(
 
     private fun tweakNegative(value: UInt) = value.shr(7) != 0u
     private fun tweakZero(value: UInt) = value == 0u
-
 }
 
 @ExperimentalUnsignedTypes
-class Cpu() {
+class Cpu {
     fun run(state: CpuState, memory: Memory): CpuState {
 
-        val instruction = memory[state.programCounter]
+        val instructionByte = memory[state.programCounter]
+        val instruction = InstructionSet.from(instructionByte)
 
         return when (instruction) {
-            Instruction.BReaK -> {
-                state.copy(isBreakCommandFlag = true, programCounter = memory.readInt16(state.breakLocation))
-            }
-            Instruction.LoaDAcc_I -> {
-                val register = memory.readUInt(state.programCounter + 1)
-                state.copyWithA(register, state.programCounter + 2)
-            }
-            Instruction.LoaDX_I -> {
-                val register = memory.readUInt(state.programCounter + 1)
-                state.copyWithX(register, state.programCounter + 2)
-
-            }
-            Instruction.LoaDY_I -> {
-                val register = memory.readUInt(state.programCounter + 1)
-                state.copyWithY(register, state.programCounter + 2)
-            }
-            Instruction.SToreAcc_Z -> {
-                val location = memory.readUInt(state.programCounter + 1)
-                memory[location] = state.aRegister.toUByte()
-                state.incrementCounterBy(2)
-            }
-            Instruction.SToreAcc_Ab -> {
-                val location = memory.readUInt16(state.programCounter + 1)
-                memory[location] = state.aRegister.toUByte()
-                state.incrementCounterBy(3)
-            }
-            Instruction.CLearDecimal -> {
-                state.copy(
-                        programCounter = state.programCounter+1,
-                        isDecimalFlag = false
-                )
-            }
-            Instruction.TransferXtoStack -> {
-                state.copy(
-                        programCounter = state.programCounter+1,
-                        stackPointer = state.xRegister.toInt()
-                )
-            }
-            Instruction.JuMP_Ab -> {
-                state.copy(
-                        programCounter = memory.readInt16(state.programCounter + 1)
-                )
-            }
-            else -> throw Error("Undefined instruction ${instruction.toString(16)} at PC ${state.programCounter.toString(16)}")
+            null -> throw Error("Undefined instruction ${instructionByte.toString(16)} at PC ${state.programCounter.toString(16)}")
+            else -> instruction.run(state, memory)
         }
     }
 }
 
+enum class Address(val size: Int) {
+    none(1),
+    i(2),
+    ab(3),
+    aby(10000),
+    z(2)
+}
+
 @ExperimentalUnsignedTypes
-object Instruction {
-    const val BReaK: UByte = 0x00u
-    const val LoaDAcc_I: UByte = 0xa9u
+enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
+    brk(0x00u, Address.none, Operations.brk),
+    cld(0xd8u, Address.none, Operations.clearDecimal),
+    txs(0x9au, Address.none, Operations.transferXToStack),
+    jmp_ab(0x4cu, Address.ab, Operations.jump),
+    lda_i(0xa9u, Address.i, Operations.loadAccumulator),
+    ldx_i(0xa2u, Address.i, Operations.loadx),
+    ldx_ab(0xaeu, Address.ab, Operations.loadx),
+    ldx_aby(0xbeu, Address.aby, Operations.loadx),
+    ldx_z(0xa6u, Address.z, Operations.loadx),
+    ldy_i(0xa0u, Address.i, Operations.loady),
+    sta_z(0x85u, Address.z, Operations.storeAccumulator),
+    sta_ab(0x8du, Address.ab, Operations.storeAccumulator);
 
-    const val LoaDX_I: UByte = 0xa2u
-    const val LoaDX_Ab: UByte = 0xaeu
-    const val LoaDX_AbY: UByte = 0xbeu
-    const val LoaDX_Z: UByte = 0xa6u
-    const val LoaDX_ZY: UByte = 0xb6u
+    fun run(state: CpuState, memory: Memory) = op(this, state, memory)
 
-    const val LoaDY_I: UByte = 0xa0u
+    companion object {
+        private val instructions = values().associateBy { it.u }
 
-    const val SToreAcc_Z: UByte = 0x85u
-    const val SToreAcc_Ab: UByte = 0x8du
-
-    const val CLearDecimal: UByte = 0xd8u
-
-    const val TransferXtoStack: UByte = 0x9au
-
-    const val JuMP_Ab: UByte = 0x4cu
+        fun from(u: UByte) = instructions.get(u)
+    }
 }
