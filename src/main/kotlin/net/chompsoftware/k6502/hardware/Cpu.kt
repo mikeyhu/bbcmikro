@@ -66,9 +66,12 @@ enum class Address(val size: Int) {
 
 @ExperimentalUnsignedTypes
 enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
+    adc_i(0x69u, Address.i, Operations.addWithCarry),
     bne(0xd0u, Address.i, Operations.branchOnNotEqual),
     beq(0xf0u, Address.i, Operations.branchOnEqual),
+    bpl(0x10u, Address.i, Operations.branchOnPlus),
     brk(0x00u, Address.none, Operations.brk),
+    clc(0x18u, Address.none, Operations.clearCarry),
     cld(0xd8u, Address.none, Operations.clearDecimal),
     cmp_i(0xc9u, Address.i, Operations.compareAccumulator),
     dex(0xcau, Address.none, Operations.decrementx),
@@ -85,7 +88,8 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
     ldx_z(0xa6u, Address.z, Operations.loadx),
     ldy_i(0xa0u, Address.i, Operations.loady),
     sta_z(0x85u, Address.z, Operations.storeAccumulator),
-    sta_ab(0x8du, Address.ab, Operations.storeAccumulator);
+    sta_ab(0x8du, Address.ab, Operations.storeAccumulator),
+    nop(0xeau, Address.none, Operations.noOperation);
 
     fun run(state: CpuState, memory: Memory) = op(this, state, memory)
 

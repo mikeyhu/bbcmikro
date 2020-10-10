@@ -11,6 +11,17 @@ internal object Operations {
         if(LOG_OPERATIONS) println(s)
     }
 
+    val addWithCarry = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        val amount = memory.readUsing(instruction.ad, state)
+        val sum = state.aRegister + amount
+
+        state.copy(
+                programCounter = state.programCounter + instruction.ad.size,
+                aRegister = if(sum > 0xffu) sum - 0x100u else sum,
+                isCarryFlag = sum > 0xffu
+        )
+    }
+
     private val branchIfTrue = { check: Boolean, instruction: InstructionSet, state: CpuState, memory: Memory ->
         val newState = if(check) {
             val location = memory.readUsing(instruction.ad, state)
@@ -28,6 +39,10 @@ internal object Operations {
 
     val branchOnEqual = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         branchIfTrue(state.isZeroFlag, instruction, state, memory)
+    }
+
+    val branchOnPlus = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        branchIfTrue(!state.isNegativeFlag, instruction, state, memory)
     }
 
     val brk = { _: InstructionSet, state: CpuState, memory: Memory ->
@@ -77,6 +92,13 @@ internal object Operations {
         state.copy(programCounter = memory.positionUsing(instruction.ad, state).toInt())
     }
 
+    val clearCarry = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        state.copy(
+                programCounter = state.programCounter + instruction.ad.size,
+                isCarryFlag = false
+        )
+    }
+
     val clearDecimal = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         state.copy(
                 programCounter = state.programCounter + instruction.ad.size,
@@ -97,5 +119,9 @@ internal object Operations {
 
     val transferYtoAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         state.copyWithA(state.yRegister, programCounter = state.programCounter + instruction.ad.size)
+    }
+
+    val noOperation = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        state.incrementCounterBy(1)
     }
 }

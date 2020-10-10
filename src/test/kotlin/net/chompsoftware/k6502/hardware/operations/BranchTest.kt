@@ -74,4 +74,30 @@ class BranchTest {
         }
     }
 
+    @Nested
+    inner class BranchOnPlus {
+        @Test
+        fun `Should branch if negativeFlag is false`() {
+            val memory = Memory(setupMemory(InstructionSet.bpl.u, 0x02u))
+            val state = CpuState(
+                    isNegativeFlag = false
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x04
+            )
+        }
+
+        @Test
+        fun `Should not branch if negativeFlag is true`() {
+            val memory = Memory(setupMemory(InstructionSet.bpl.u, 0x02u))
+            val state = CpuState(
+                    isNegativeFlag = true
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x02
+            )
+        }
+    }
 }

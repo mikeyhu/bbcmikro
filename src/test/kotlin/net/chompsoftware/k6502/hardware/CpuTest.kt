@@ -49,6 +49,47 @@ class CpuTest {
     }
 
     @Nested
+    inner class AddWithCarry {
+        @Test
+        fun `Should add value to accumulator`() {
+            val memory = Memory(setupMemory(adc_i.u, 0x1u))
+            val state = CpuState(aRegister = 0x0fu)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x02,
+                    aRegister = 0x10u,
+                    isCarryFlag = false
+            )
+        }
+
+        @Test
+        fun `Should add value to accumulator with carry`() {
+            val memory = Memory(setupMemory(adc_i.u, 0xc4u))
+            val state = CpuState(aRegister = 0xc0u)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x02,
+                    aRegister = 0x84u,
+                    isCarryFlag = true
+            )
+        }
+    }
+
+    @Nested
+    inner class ClearCarry {
+        @Test
+        fun `Should reset carry flag`() {
+            val memory = Memory(setupMemory(clc.u))
+            val state = CpuState(isCarryFlag = true)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x01,
+                    isCarryFlag = false
+            )
+        }
+    }
+
+    @Nested
     inner class ClearDecimal {
         @Test
         fun `Should reset decimal flag`() {
@@ -58,6 +99,19 @@ class CpuTest {
             cpu.run(state, memory) shouldBe state.copy(
                     programCounter = 0x01,
                     isDecimalFlag = false
+            )
+        }
+    }
+
+    @Nested
+    inner class NoOperation {
+        @Test
+        fun `Should just update programCounter`() {
+            val memory = Memory(setupMemory(nop.u))
+            val state = CpuState()
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x01
             )
         }
     }
@@ -138,5 +192,3 @@ fun setupMemory(vararg bytes: UByte): UByteArray {
     bytes.copyInto(array, 0, 0, bytes.size)
     return array
 }
-
-
