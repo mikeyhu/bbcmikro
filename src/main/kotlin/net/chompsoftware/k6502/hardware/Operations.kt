@@ -11,7 +11,7 @@ internal object Operations {
         if (LOG_OPERATIONS) println(s)
     }
 
-    val NotImplementedOperation = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val notImplementedOperation = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         throw Error("Not Implemented Operation ${instruction.name}:${instruction.u.toString(16)} at ${state.programCounter.toString(16)}")
     }
 
