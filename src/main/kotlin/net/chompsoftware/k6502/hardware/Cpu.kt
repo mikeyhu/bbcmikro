@@ -67,6 +67,9 @@ enum class Address(val size: Int) {
 @ExperimentalUnsignedTypes
 enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
     adc_i(0x69u, Address.i, Operations.addWithCarry),
+    bcc(0x90u, Address.i, Operations.branchOnCarryClear),
+    bcs(0xb0u, Address.i, Operations.branchOnCarrySet),
+    bmi(0x30u, Address.i, Operations.branchOnMinus),
     bne(0xd0u, Address.i, Operations.branchOnNotEqual),
     beq(0xf0u, Address.i, Operations.branchOnEqual),
     bpl(0x10u, Address.i, Operations.branchOnPlus),
@@ -74,8 +77,10 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
     clc(0x18u, Address.none, Operations.clearCarry),
     cld(0xd8u, Address.none, Operations.clearDecimal),
     cmp_i(0xc9u, Address.i, Operations.compareAccumulator),
+    cpy_i(0xc0u, Address.i, Operations.compareY),
     dex(0xcau, Address.none, Operations.decrementx),
     dey(0x88u, Address.none, Operations.decrementy),
+    eor_i(0x49u, Address.i, Operations.exclusiveOr),
     tax(0xaau, Address.none, Operations.transferAccumulatorToX),
     tya(0x98u, Address.none, Operations.transferYtoAccumulator),
     txs(0x9au, Address.none, Operations.transferXToStack),
@@ -96,6 +101,6 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
     companion object {
         private val instructions = values().associateBy { it.u }
 
-        fun from(u: UByte) = instructions.get(u)
+        fun from(u: UByte) = instructions[u]
     }
 }

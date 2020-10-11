@@ -100,4 +100,85 @@ class BranchTest {
             )
         }
     }
+
+    @Nested
+    inner class BranchOnCarryClear {
+        @Test
+        fun `Should branch if carryFlag is false`() {
+            val memory = Memory(setupMemory(InstructionSet.bcc.u, 0x02u))
+            val state = CpuState(
+                    isCarryFlag = false
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x04
+            )
+        }
+
+        @Test
+        fun `Should not branch if carryFlag is true`() {
+            val memory = Memory(setupMemory(InstructionSet.bcc.u, 0x02u))
+            val state = CpuState(
+                    isCarryFlag = true
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x02
+            )
+        }
+    }
+
+    @Nested
+    inner class BranchOnCarrySet {
+        @Test
+        fun `Should branch if carryFlag is true`() {
+            val memory = Memory(setupMemory(InstructionSet.bcs.u, 0x02u))
+            val state = CpuState(
+                    isCarryFlag = true
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x04
+            )
+        }
+
+        @Test
+        fun `Should not branch if carryFlag is false`() {
+            val memory = Memory(setupMemory(InstructionSet.bcs.u, 0x02u))
+            val state = CpuState(
+                    isCarryFlag = false
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x02
+            )
+        }
+    }
+
+    @Nested
+    inner class BranchOnMinus {
+        @Test
+        fun `Should branch if negativeFlag is true`() {
+            val memory = Memory(setupMemory(InstructionSet.bmi.u, 0x02u))
+            val state = CpuState(
+                    isNegativeFlag = true
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x04
+            )
+        }
+
+        @Test
+        fun `Should not branch if negativeFlag is false`() {
+            val memory = Memory(setupMemory(InstructionSet.bmi.u, 0x02u))
+            val state = CpuState(
+                    isNegativeFlag = false
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x02
+            )
+        }
+    }
 }

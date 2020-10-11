@@ -49,6 +49,21 @@ class CpuTest {
     }
 
     @Nested
+    inner class ExclusiveOr {
+        @Test
+        fun `Should OR the accumulator with the immediate value`() {
+            val memory = Memory(setupMemory(eor_i.u, 0xffu))
+            val state = CpuState(aRegister = 0x0fu)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x02,
+                    aRegister = 0xf0u,
+                    isNegativeFlag = true
+            )
+        }
+    }
+
+    @Nested
     inner class AddWithCarry {
         @Test
         fun `Should add value to accumulator`() {
@@ -171,6 +186,27 @@ class CpuTest {
             val memory = Memory(setupMemory(cmp_i.u, 0x01u))
             val state = CpuState(
                     aRegister = 0x01u,
+                    isZeroFlag = false,
+                    isCarryFlag = false,
+                    isNegativeFlag = true
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x02,
+                    isZeroFlag = true,
+                    isCarryFlag = true,
+                    isNegativeFlag = false
+            )
+        }
+    }
+
+    @Nested
+    inner class CompareY {
+        @Test
+        fun `Should compare YRegister with immediate when equals`() {
+            val memory = Memory(setupMemory(cpy_i.u, 0x01u))
+            val state = CpuState(
+                    yRegister = 0x01u,
                     isZeroFlag = false,
                     isCarryFlag = false,
                     isNegativeFlag = true

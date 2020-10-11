@@ -11,6 +11,11 @@ internal object Operations {
         if (LOG_OPERATIONS) println(s)
     }
 
+    val NotImplementedOperation = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        throw Error("Not Implemented Operation ${instruction.name}:${instruction.u.toString(16)} at ${state.programCounter.toString(16)}")
+    }
+
+
     val addWithCarry = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         val amount = memory.readUsing(instruction.ad, state)
         val sum = state.aRegister + amount
@@ -31,6 +36,18 @@ internal object Operations {
         } else state.incrementCounterBy(instruction.ad.size)
         log("Branch ${check} from ${state.programCounter.toString(16)} to ${newState.programCounter.toString(16)}")
         newState
+    }
+
+    val branchOnCarryClear = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        branchIfTrue(!state.isCarryFlag, instruction, state, memory)
+    }
+
+    val branchOnCarrySet = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        branchIfTrue(state.isCarryFlag, instruction, state, memory)
+    }
+
+    val branchOnMinus = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        branchIfTrue(state.isNegativeFlag, instruction, state, memory)
     }
 
     val branchOnNotEqual = { instruction: InstructionSet, state: CpuState, memory: Memory ->
@@ -59,12 +76,26 @@ internal object Operations {
         )
     }
 
-    val decrementx = { _: InstructionSet, state: CpuState, memory: Memory ->
+    val compareY = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        val compareTo = memory.readUsing(instruction.ad, state)
+        state.copy(
+                programCounter = state.programCounter + instruction.ad.size,
+                isZeroFlag = state.yRegister == compareTo,
+                isCarryFlag = state.yRegister >= compareTo,
+                isNegativeFlag = state.yRegister < compareTo
+        )
+    }
+
+    val decrementx = { _: InstructionSet, state: CpuState, _: Memory ->
         state.copyWithX(state.xRegister - 1u, programCounter = state.programCounter + 1)
     }
 
-    val decrementy = { _: InstructionSet, state: CpuState, memory: Memory ->
+    val decrementy = { _: InstructionSet, state: CpuState, _: Memory ->
         state.copyWithY(state.yRegister - 1u, programCounter = state.programCounter + 1)
+    }
+
+    val exclusiveOr = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        state.copyWithA(state.aRegister.xor(memory.readUsing(instruction.ad, state)), state.programCounter + instruction.ad.size)
     }
 
     val storeAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
@@ -92,36 +123,36 @@ internal object Operations {
         state.copy(programCounter = memory.positionUsing(instruction.ad, state).toInt())
     }
 
-    val clearCarry = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val clearCarry = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copy(
                 programCounter = state.programCounter + instruction.ad.size,
                 isCarryFlag = false
         )
     }
 
-    val clearDecimal = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val clearDecimal = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copy(
                 programCounter = state.programCounter + instruction.ad.size,
                 isDecimalFlag = false
         )
     }
 
-    val transferXToStack = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val transferXToStack = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copy(
                 programCounter = state.programCounter + instruction.ad.size,
                 stackPointer = state.xRegister.toInt()
         )
     }
 
-    val transferAccumulatorToX = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val transferAccumulatorToX = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copyWithX(state.aRegister, programCounter = state.programCounter + instruction.ad.size)
     }
 
-    val transferYtoAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val transferYtoAccumulator = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copyWithA(state.yRegister, programCounter = state.programCounter + instruction.ad.size)
     }
 
-    val noOperation = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val noOperation = { _: InstructionSet, state: CpuState, _: Memory ->
         state.incrementCounterBy(1)
     }
 }
