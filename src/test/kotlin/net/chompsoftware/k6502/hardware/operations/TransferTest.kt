@@ -55,4 +55,20 @@ class TransferTest {
             )
         }
     }
+
+    @Nested
+    inner class TransferAccumulatorToY {
+        @Test
+        fun `Should set Y from accumulator`() {
+            val memory = Memory(setupMemory(InstructionSet.tay.u))
+            val state = CpuState(
+                    aRegister = 0x11u
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x01,
+                    yRegister = 0x11u
+            )
+        }
+    }
 }

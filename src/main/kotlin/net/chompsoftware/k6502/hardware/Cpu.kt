@@ -100,9 +100,9 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
     cmp_ixir(0xc1u, Address.ixir, Operations.compareAccumulator),
     cmp_irix(0xd1u, Address.irix, Operations.compareAccumulator),
 
-    cpx_i(0xe0u, Address.i, Operations.notImplementedOperation),
-    cpx_ab(0xecu, Address.ab, Operations.notImplementedOperation),
-    cpx_z(0xe4u, Address.z, Operations.notImplementedOperation),
+    cpx_i(0xe0u, Address.i, Operations.compareX),
+    cpx_ab(0xecu, Address.ab, Operations.compareX),
+    cpx_z(0xe4u, Address.z, Operations.compareX),
 
     cpy_i(0xc0u, Address.i, Operations.compareY),
     cpy_ab(0xccu, Address.ab, Operations.compareY),
@@ -153,6 +153,7 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
     sta_ixir(0x81u, Address.ixir, Operations.storeAccumulator),
     sta_irix(0x91u, Address.irix, Operations.storeAccumulator),
 
+    tay(0xa8u, Address.none, Operations.transferAccumulatorToY),
     tax(0xaau, Address.none, Operations.transferAccumulatorToX),
     tya(0x98u, Address.none, Operations.transferYtoAccumulator),
     txs(0x9au, Address.none, Operations.transferXToStack);

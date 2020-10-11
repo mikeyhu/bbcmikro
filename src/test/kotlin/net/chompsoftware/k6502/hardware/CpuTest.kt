@@ -201,6 +201,27 @@ class CpuTest {
     }
 
     @Nested
+    inner class CompareX {
+        @Test
+        fun `Should compare XRegister with immediate when equals`() {
+            val memory = Memory(setupMemory(cpx_i.u, 0x01u))
+            val state = CpuState(
+                    xRegister = 0x01u,
+                    isZeroFlag = false,
+                    isCarryFlag = false,
+                    isNegativeFlag = true
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x02,
+                    isZeroFlag = true,
+                    isCarryFlag = true,
+                    isNegativeFlag = false
+            )
+        }
+    }
+
+    @Nested
     inner class CompareY {
         @Test
         fun `Should compare YRegister with immediate when equals`() {

@@ -76,6 +76,16 @@ internal object Operations {
         )
     }
 
+    val compareX = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        val compareTo = memory.readUsing(instruction.ad, state)
+        state.copy(
+                programCounter = state.programCounter + instruction.ad.size,
+                isZeroFlag = state.xRegister == compareTo,
+                isCarryFlag = state.xRegister >= compareTo,
+                isNegativeFlag = state.xRegister < compareTo
+        )
+    }
+
     val compareY = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         val compareTo = memory.readUsing(instruction.ad, state)
         state.copy(
@@ -146,6 +156,10 @@ internal object Operations {
 
     val transferAccumulatorToX = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copyWithX(state.aRegister, programCounter = state.programCounter + instruction.ad.size)
+    }
+
+    val transferAccumulatorToY = { instruction: InstructionSet, state: CpuState, _: Memory ->
+        state.copyWithY(state.aRegister, programCounter = state.programCounter + instruction.ad.size)
     }
 
     val transferYtoAccumulator = { instruction: InstructionSet, state: CpuState, _: Memory ->
