@@ -25,4 +25,23 @@ class StackTest {
             memory.readUInt(0x1ff) shouldBe 0x11u
         }
     }
+
+    @Nested
+    inner class PullAccumulator {
+        @Test
+        fun `Should read the accumulator value from the stack`() {
+            val memory = Memory(setupMemory(InstructionSet.pla.u))
+            memory.set(0x1ff, 0x22u)
+            val state = CpuState(
+                    aRegister = 0x11u,
+                    stackPointer = 0xfe
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x01,
+                    stackPointer = 0xff,
+                    aRegister = 0x22u
+            )
+        }
+    }
 }

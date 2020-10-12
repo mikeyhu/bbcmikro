@@ -156,6 +156,14 @@ internal object Operations {
         )
     }
 
+    val pullAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        state.copy(
+                programCounter = state.programCounter + instruction.ad.size,
+                stackPointer = state.stackPointer + 1,
+                aRegister = memory.readUInt(STACK_START + state.stackPointer + 1)
+        )
+    }
+
     val transferXToStack = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copy(
                 programCounter = state.programCounter + instruction.ad.size,

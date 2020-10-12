@@ -146,6 +146,7 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
     nop(0xeau, Address.none, Operations.noOperation),
 
     pha(0x48u, Address.none, Operations.pushAccumulator),
+    pla(0x68u, Address.none, Operations.pullAccumulator),
 
     sta_ab(0x8du, Address.ab, Operations.storeAccumulator),
     sta_abx(0x9du, Address.abx, Operations.storeAccumulator),
