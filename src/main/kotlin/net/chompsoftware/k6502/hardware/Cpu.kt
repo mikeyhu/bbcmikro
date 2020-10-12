@@ -145,6 +145,8 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
 
     nop(0xeau, Address.none, Operations.noOperation),
 
+    pha(0x48u, Address.none, Operations.pushAccumulator),
+
     sta_ab(0x8du, Address.ab, Operations.storeAccumulator),
     sta_abx(0x9du, Address.abx, Operations.storeAccumulator),
     sta_aby(0x99u, Address.aby, Operations.storeAccumulator),
@@ -156,7 +158,9 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
     tay(0xa8u, Address.none, Operations.transferAccumulatorToY),
     tax(0xaau, Address.none, Operations.transferAccumulatorToX),
     tya(0x98u, Address.none, Operations.transferYtoAccumulator),
-    txs(0x9au, Address.none, Operations.transferXToStack);
+    txa(0x8au, Address.none, Operations.transferXtoAccumulator),
+    txs(0x9au, Address.none, Operations.transferXToStack),
+    tsx(0xbau, Address.none, Operations.transferStackToX);
 
     fun run(state: CpuState, memory: Memory) = op(this, state, memory)
 

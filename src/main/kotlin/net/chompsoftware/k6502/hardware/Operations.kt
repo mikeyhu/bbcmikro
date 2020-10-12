@@ -1,6 +1,7 @@
 package net.chompsoftware.k6502.hardware
 
 const val LOG_OPERATIONS: Boolean = true
+const val STACK_START = 0x100
 
 @ExperimentalUnsignedTypes
 internal typealias Operation = (instruction: InstructionSet, state: CpuState, memory: Memory) -> CpuState
@@ -147,11 +148,23 @@ internal object Operations {
         )
     }
 
+    val pushAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        memory[STACK_START + state.stackPointer] = state.aRegister.toUByte()
+        state.copy(
+                programCounter = state.programCounter + instruction.ad.size,
+                stackPointer = state.stackPointer-1
+        )
+    }
+
     val transferXToStack = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copy(
                 programCounter = state.programCounter + instruction.ad.size,
                 stackPointer = state.xRegister.toInt()
         )
+    }
+
+    val transferStackToX = { instruction: InstructionSet, state: CpuState, _: Memory ->
+        state.copyWithX(state.stackPointer.toUInt(), state.programCounter + instruction.ad.size)
     }
 
     val transferAccumulatorToX = { instruction: InstructionSet, state: CpuState, _: Memory ->
@@ -164,6 +177,10 @@ internal object Operations {
 
     val transferYtoAccumulator = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copyWithA(state.yRegister, programCounter = state.programCounter + instruction.ad.size)
+    }
+
+    val transferXtoAccumulator = { instruction: InstructionSet, state: CpuState, _: Memory ->
+        state.copyWithA(state.xRegister, programCounter = state.programCounter + instruction.ad.size)
     }
 
     val noOperation = { _: InstructionSet, state: CpuState, _: Memory ->
