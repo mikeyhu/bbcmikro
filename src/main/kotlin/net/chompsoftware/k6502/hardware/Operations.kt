@@ -63,6 +63,14 @@ internal object Operations {
         branchIfTrue(!state.isNegativeFlag, instruction, state, memory)
     }
 
+    val branchOnOverflowClear = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        branchIfTrue(!state.isOverflowFlag, instruction, state, memory)
+    }
+
+    val branchOnOverflowSet = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        branchIfTrue(state.isOverflowFlag, instruction, state, memory)
+    }
+
     val brk = { _: InstructionSet, state: CpuState, memory: Memory ->
         state.copy(isBreakCommandFlag = true, programCounter = memory.readInt16(state.breakLocation))
     }

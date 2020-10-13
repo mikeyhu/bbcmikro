@@ -181,4 +181,58 @@ class BranchTest {
             )
         }
     }
+
+    @Nested
+    inner class BranchOnOverflowClear {
+        @Test
+        fun `Should branch if overflowFlag is false`() {
+            val memory = Memory(setupMemory(InstructionSet.bvc.u, 0x02u))
+            val state = CpuState(
+                    isOverflowFlag = false
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x04
+            )
+        }
+
+        @Test
+        fun `Should not branch if overflowFlag is true`() {
+            val memory = Memory(setupMemory(InstructionSet.bvc.u, 0x02u))
+            val state = CpuState(
+                    isOverflowFlag = true
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x02
+            )
+        }
+    }
+
+    @Nested
+    inner class BranchOnOverflowSet {
+        @Test
+        fun `Should branch if overflowFlag is true`() {
+            val memory = Memory(setupMemory(InstructionSet.bvs.u, 0x02u))
+            val state = CpuState(
+                    isOverflowFlag = true
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x04
+            )
+        }
+
+        @Test
+        fun `Should not branch if overflowFlag is false`() {
+            val memory = Memory(setupMemory(InstructionSet.bvs.u, 0x02u))
+            val state = CpuState(
+                    isOverflowFlag = false
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x02
+            )
+        }
+    }
 }

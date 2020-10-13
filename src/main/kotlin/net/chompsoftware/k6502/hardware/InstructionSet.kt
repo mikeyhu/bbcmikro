@@ -17,6 +17,8 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
     bmi(0x30u, Address.i, Operations.branchOnMinus),
     bne(0xd0u, Address.i, Operations.branchOnNotEqual),
     bpl(0x10u, Address.i, Operations.branchOnPlus),
+    bvc(0x50u, Address.i, Operations.branchOnOverflowClear),
+    bvs(0x70u, Address.i, Operations.branchOnOverflowSet),
 
     brk(0x00u, Address.none, Operations.brk),
 
