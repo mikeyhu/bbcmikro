@@ -44,4 +44,28 @@ class StackTest {
             )
         }
     }
+
+    @Nested
+    inner class PullProcessorStatus {
+        @Test
+        fun `Should read the flags from the stack`() {
+            val memory = Memory(setupMemory(InstructionSet.plp.u))
+            memory.set(0x1ff, 0xffu)
+            val state = CpuState(
+                    stackPointer = 0xfe
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x01,
+                    stackPointer = 0xff,
+                    isNegativeFlag = true,
+                    isCarryFlag = true,
+                    isZeroFlag = true,
+                    isDecimalFlag = true,
+                    isBreakCommandFlag = true,
+                    isOverflowFlag = true,
+                    isInterruptDisabledFlag = true
+            )
+        }
+    }
 }

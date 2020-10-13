@@ -164,6 +164,14 @@ internal object Operations {
         )
     }
 
+    val pullProcessorStatus = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        state.setFlagsUsingUByte(
+                memory.readUInt(STACK_START + state.stackPointer + 1),
+                state.programCounter + instruction.ad.size,
+                state.stackPointer + 1
+        )
+    }
+
     val transferXToStack = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copy(
                 programCounter = state.programCounter + instruction.ad.size,
