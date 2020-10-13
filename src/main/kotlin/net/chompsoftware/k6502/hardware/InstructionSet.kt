@@ -81,6 +81,7 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
 
     pha(0x48u, Address.none, Operations.pushAccumulator),
     pla(0x68u, Address.none, Operations.pullAccumulator),
+    php(0x08u, Address.none, Operations.pushProcessorStatus),
     plp(0x28u, Address.none, Operations.pullProcessorStatus),
 
     sta_ab(0x8du, Address.ab, Operations.storeAccumulator),

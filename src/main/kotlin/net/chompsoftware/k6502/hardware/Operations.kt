@@ -165,10 +165,18 @@ internal object Operations {
     }
 
     val pullAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        state.copyWithA(
+                memory.readUInt(STACK_START + state.stackPointer + 1),
+                state.programCounter + instruction.ad.size,
+                state.stackPointer + 1
+        )
+    }
+
+    val pushProcessorStatus = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        memory[STACK_START + state.stackPointer] = state.readFlagsAsUbyte()
         state.copy(
                 programCounter = state.programCounter + instruction.ad.size,
-                stackPointer = state.stackPointer + 1,
-                aRegister = memory.readUInt(STACK_START + state.stackPointer + 1)
+                stackPointer = state.stackPointer-1
         )
     }
 

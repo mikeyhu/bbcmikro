@@ -35,6 +35,14 @@ data class CpuState(
             isZeroFlag = tweakZero(value)
     )
 
+    fun copyWithA(value: UInt, programCounter: Int, stackPointer: Int) = this.copy(
+            programCounter = programCounter,
+            aRegister = value,
+            isNegativeFlag = tweakNegative(value),
+            isZeroFlag = tweakZero(value),
+            stackPointer = stackPointer
+    )
+
     fun copyWithX(value: UInt, programCounter: Int) = this.copy(
             programCounter = programCounter,
             xRegister = value,
@@ -61,6 +69,17 @@ data class CpuState(
             isOverflowFlag = byte.and(CpuSettings.OVERFLOW_BYTE_POSITION) == CpuSettings.OVERFLOW_BYTE_POSITION,
             isNegativeFlag = byte.and(CpuSettings.NEGATIVE_BYTE_POSITION) == CpuSettings.NEGATIVE_BYTE_POSITION
     )
+
+    fun readFlagsAsUbyte():UByte {
+        return (0x20u +
+                (if(isCarryFlag) CpuSettings.CARRY_BYTE_POSITION else 0u) +
+                (if(isZeroFlag) CpuSettings.ZERO_BYTE_POSITION else 0u) +
+                (if(isInterruptDisabledFlag) CpuSettings.INTERRUPT_BYTE_POSITION else 0u) +
+                (if(isDecimalFlag) CpuSettings.DECIMAL_BYTE_POSITION else 0u) +
+                CpuSettings.BREAK_BYTE_POSITION  +
+                (if(isOverflowFlag) CpuSettings.OVERFLOW_BYTE_POSITION else 0u) +
+                (if(isNegativeFlag) CpuSettings.NEGATIVE_BYTE_POSITION else 0u)).toUByte()
+    }
 
     fun incrementCounterBy(value: Int) = this.copy(programCounter = programCounter + value)
 

@@ -46,6 +46,30 @@ class StackTest {
     }
 
     @Nested
+    inner class PushProcessorStatus {
+        @Test
+        fun `Should write the flags from to stack`() {
+            val memory = Memory(setupMemory(InstructionSet.php.u))
+            val state = CpuState(
+                    stackPointer = 0xff,
+                    isNegativeFlag = true,
+                    isCarryFlag = true,
+                    isZeroFlag = true,
+                    isDecimalFlag = true,
+                    isBreakCommandFlag = true,
+                    isOverflowFlag = true,
+                    isInterruptDisabledFlag = true
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x01,
+                    stackPointer = 0xfe
+            )
+            memory.readUInt(0x1ff) shouldBe 0xffu
+        }
+    }
+
+    @Nested
     inner class PullProcessorStatus {
         @Test
         fun `Should read the flags from the stack`() {
