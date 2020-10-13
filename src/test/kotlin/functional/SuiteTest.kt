@@ -11,6 +11,9 @@ import java.io.File
 @ExperimentalUnsignedTypes
 class SuiteTest {
 
+    val FINISH_ON_BREAK = false
+
+
     @EnabledIfEnvironmentVariable(named = "SUITE", matches = "true")
     @Test
     fun `Run external suite`() {
@@ -30,7 +33,7 @@ class SuiteTest {
                 println(state)
                 fail("hit trap at ${counter.toString(16)}")
             }
-        } while (!state.isBreakCommandFlag && counter != state.programCounter)
+        } while (!(state.isBreakCommandFlag && FINISH_ON_BREAK) && counter != state.programCounter)
 
         val finish = System.nanoTime()
 
