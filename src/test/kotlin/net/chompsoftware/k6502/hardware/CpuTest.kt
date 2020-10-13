@@ -145,6 +145,19 @@ class CpuTest {
                     programCounter = 0x1234
             )
         }
+
+        @Test
+        fun `Should set programCounter using indirect addressing`() {
+            val memory = Memory(setupMemory(jmp_ir.u, 0x04u, 0x00u, brk.u, 0x34u, 0x12u))
+            val state = CpuState(
+                    xRegister = 0x11u,
+                    stackPointer = 0x00
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x1234
+            )
+        }
     }
 
     @Nested
@@ -175,6 +188,38 @@ class CpuTest {
             cpu.run(state, memory) shouldBe state.copy(
                     programCounter = 0x01,
                     yRegister = 0x4u
+            )
+        }
+    }
+
+    @Nested
+    inner class IncrementX {
+        @Test
+        fun `Should increment X`() {
+            val memory = Memory(setupMemory(inx.u))
+            val state = CpuState(
+                    xRegister = 0x5u
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x01,
+                    xRegister = 0x6u
+            )
+        }
+    }
+
+    @Nested
+    inner class IncrementY {
+        @Test
+        fun `Should increment Y`() {
+            val memory = Memory(setupMemory(iny.u))
+            val state = CpuState(
+                    yRegister = 0x5u
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x01,
+                    yRegister = 0x6u
             )
         }
     }

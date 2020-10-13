@@ -54,7 +54,11 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
     eor_ixir(0x41u, Address.ixir, Operations.exclusiveOr),
     eor_irix(0x51u, Address.irix, Operations.exclusiveOr),
 
+    inx(0xe8u, Address.none, Operations.incrementx),
+    iny(0xc8u, Address.none, Operations.incrementy),
+
     jmp_ab(0x4cu, Address.ab, Operations.jump),
+    jmp_ir(0x6cu, Address.ir, Operations.jump),
 
     lda_i(0xa9u, Address.i, Operations.loadAccumulator),
     lda_ab(0xadu, Address.ab, Operations.loadAccumulator),
@@ -119,6 +123,7 @@ enum class Address(val size: Int) {
     i(2),
     irix(10001),
     ixir(10002),
+    ir(10006),
     ab(3),
     abx(10003),
     aby(10004),

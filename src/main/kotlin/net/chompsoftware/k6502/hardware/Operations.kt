@@ -113,6 +113,14 @@ internal object Operations {
         state.copyWithY(state.yRegister - 1u, programCounter = state.programCounter + 1)
     }
 
+    val incrementx = { _: InstructionSet, state: CpuState, _: Memory ->
+        state.copyWithX(state.xRegister + 1u, programCounter = state.programCounter + 1)
+    }
+
+    val incrementy = { _: InstructionSet, state: CpuState, _: Memory ->
+        state.copyWithY(state.yRegister + 1u, programCounter = state.programCounter + 1)
+    }
+
     val exclusiveOr = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         state.copyWithA(state.aRegister.xor(memory.readUsing(instruction.ad, state)), state.programCounter + instruction.ad.size)
     }
