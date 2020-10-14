@@ -1,7 +1,6 @@
 package net.chompsoftware.k6502.hardware
 
 const val LOG_OPERATIONS: Boolean = true
-const val STACK_START = 0x100
 
 @ExperimentalUnsignedTypes
 internal typealias Operation = (instruction: InstructionSet, state: CpuState, memory: Memory) -> CpuState
@@ -182,7 +181,7 @@ internal object Operations {
     }
 
     val pushAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        memory[STACK_START + state.stackPointer] = state.aRegister.toUByte()
+        memory.writeUByteToStack(state.stackPointer, state.aRegister.toUByte())
         state.copy(
                 programCounter = state.programCounter + instruction.ad.size,
                 stackPointer = state.stackPointer-1
@@ -191,14 +190,14 @@ internal object Operations {
 
     val pullAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         state.copyWithA(
-                memory.readUInt(STACK_START + state.stackPointer + 1),
+                memory.readUIntFromStack(state.stackPointer + 1),
                 state.programCounter + instruction.ad.size,
                 state.stackPointer + 1
         )
     }
 
     val pushProcessorStatus = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        memory[STACK_START + state.stackPointer] = state.readFlagsAsUbyte()
+        memory.writeUByteToStack(state.stackPointer, state.readFlagsAsUbyte())
         state.copy(
                 programCounter = state.programCounter + instruction.ad.size,
                 stackPointer = state.stackPointer-1
@@ -207,7 +206,7 @@ internal object Operations {
 
     val pullProcessorStatus = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         state.setFlagsUsingUByte(
-                memory.readUInt(STACK_START + state.stackPointer + 1),
+                memory.readUIntFromStack(state.stackPointer + 1),
                 state.programCounter + instruction.ad.size,
                 state.stackPointer + 1
         )

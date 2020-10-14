@@ -1,5 +1,7 @@
 package net.chompsoftware.k6502.hardware
 
+private const val STACK_START = 0x100
+
 @ExperimentalUnsignedTypes
 class Memory(val store: UByteArray) {
     operator fun get(position: Int) = store[position]
@@ -20,31 +22,37 @@ class Memory(val store: UByteArray) {
         return toInt16(store[position], store[position + 1])
     }
 
-    fun writeUInt16ToStack(stackPosition:Int, value:UInt) {
-        val c1 = value.and(0xffu).toUByte()
-        val c2 = value.and(0xff00u).shr(8).toUByte()
-        writeUByte(0x100 + stackPosition-1,c1)
-        writeUByte(0x100 + stackPosition,c2)
+    fun readUIntFromStack(stackPosition: Int) = readUInt(STACK_START + stackPosition)
+
+    fun writeUByteToStack(stackPosition: Int, value: UByte) {
+        writeUByte(STACK_START + stackPosition, value)
     }
 
     fun readUInt16FromStack(stackPosition:Int):UInt {
         return toUInt16(
-                readUByte(0x100 + stackPosition + 0x1),
-                readUByte(0x100 + stackPosition + 0x2)
+                readUByte(STACK_START + stackPosition + 0x1),
+                readUByte(STACK_START + stackPosition + 0x2)
         )
     }
 
-    fun writeUByte(position: Int, value: UByte) {
-        store[position] = value
+    fun writeUInt16ToStack(stackPosition:Int, value:UInt) {
+        val c1 = value.and(0xffu).toUByte()
+        val c2 = value.and(0xff00u).shr(8).toUByte()
+        writeUByte(STACK_START + stackPosition-1,c1)
+        writeUByte(STACK_START + stackPosition,c2)
     }
-
 
     private fun toUInt16(c: UByte, c2: UByte) = c2.toUInt().shl(8).or(c.toUInt())
     private fun toInt16(c: UByte, c2: UByte) = toUInt16(c, c2).toInt()
 
     fun readUByte(position: Int) = store[position]
+
+    private fun writeUByte(position: Int, value: UByte) {
+        store[position] = value
+    }
+
     fun readUInt(position: Int) = readUByte(position).toUInt()
-    fun readInt(position: Int) = readUByte(position).toInt()
+    private fun readInt(position: Int) = readUByte(position).toInt()
 
     fun positionUsing(address: Address, state: CpuState): UInt {
         return when (address) {
