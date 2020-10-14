@@ -150,6 +150,15 @@ internal object Operations {
         state.copy(programCounter = memory.positionUsing(instruction.ad, state).toInt())
     }
 
+    val jumpToSubroutine = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        memory.writeUInt16ToStack(state.stackPointer, state.programCounter.toUInt() + 2u)
+        state.copy(
+                programCounter = memory.positionUsing(instruction.ad, state).toInt(),
+                stackPointer = state.stackPointer - 2
+        )
+
+    }
+
     val clearCarry = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copy(
                 programCounter = state.programCounter + instruction.ad.size,

@@ -161,6 +161,24 @@ class CpuTest {
     }
 
     @Nested
+    inner class JumpToSubroutine {
+        @Test
+        fun `Should set programCounter using Absolute addressing and save previous programCounter on stack`() {
+            val memory = Memory(setupMemory(brk.u, jsr_ab.u, 0x34u, 0x12u))
+            val state = CpuState(
+                    programCounter = 0x01,
+                    stackPointer = 0xff
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x1234,
+                    stackPointer = 0xfd
+            )
+            memory.readUInt16(0x1fe) shouldBe 0x03u
+        }
+    }
+
+    @Nested
     inner class DecrementX {
         @Test
         fun `Should decrement X`() {

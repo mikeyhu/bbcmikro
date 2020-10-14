@@ -59,6 +59,8 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
 
     jmp_ab(0x4cu, Address.ab, Operations.jump),
     jmp_ir(0x6cu, Address.ir, Operations.jump),
+    jsr_ab(0x20u, Address.ab, Operations.jumpToSubroutine),
+
 
     lda_i(0xa9u, Address.i, Operations.loadAccumulator),
     lda_ab(0xadu, Address.ab, Operations.loadAccumulator),

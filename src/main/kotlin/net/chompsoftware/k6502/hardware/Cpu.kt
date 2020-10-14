@@ -85,6 +85,11 @@ data class CpuState(
 
     private fun tweakNegative(value: UInt) = value.shr(7) != 0u
     private fun tweakZero(value: UInt) = value == 0u
+
+    override fun toString(): String {
+        return "CpuState(pc=${programCounter.toString(16)}, bl=${breakLocation.toString(16)}, a=${aRegister.toString(16)}, x=${xRegister.toString(16)}, y=${yRegister.toString(16)}" +
+                ", sp=${stackPointer.toString(16)}, brk=$isBreakCommandFlag, neg=$isNegativeFlag, zro=$isZeroFlag, dec=$isDecimalFlag, car=$isCarryFlag, ovr=$isOverflowFlag, int=$isInterruptDisabledFlag)"
+    }
 }
 
 @ExperimentalUnsignedTypes
