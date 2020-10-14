@@ -27,6 +27,13 @@ class Memory(val store: UByteArray) {
         writeUByte(0x100 + stackPosition,c2)
     }
 
+    fun readUInt16FromStack(stackPosition:Int):UInt {
+        return toUInt16(
+                readUByte(0x100 + stackPosition + 0x1),
+                readUByte(0x100 + stackPosition + 0x2)
+        )
+    }
+
     fun writeUByte(position: Int, value: UByte) {
         store[position] = value
     }

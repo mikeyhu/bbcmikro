@@ -179,6 +179,23 @@ class CpuTest {
     }
 
     @Nested
+    inner class ReturnFromSubroutine {
+        @Test
+        fun `Should set programCounter using the value on the stack`() {
+            val memory = Memory(setupMemory(rts.u))
+            memory.writeUInt16ToStack(0xff, 0x1234u)
+            val state = CpuState(
+                    stackPointer = 0xfd
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    programCounter = 0x1235,
+                    stackPointer = 0xff
+            )
+        }
+    }
+
+    @Nested
     inner class DecrementX {
         @Test
         fun `Should decrement X`() {

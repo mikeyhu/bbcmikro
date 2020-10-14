@@ -20,7 +20,9 @@ class SuiteTest {
         val suiteFile = readFileToByteArray("externalSuite/6502_functional_test.bin")
         val memory = Memory(suiteFile)
 
-        var state = CpuState(programCounter = 0x400)
+        var state = CpuState(
+                programCounter = 0x400,
+                breakLocation = 0xfffe)
         val cpu = Cpu()
         var operationsDone = 0
         val start = System.nanoTime()

@@ -159,6 +159,14 @@ internal object Operations {
 
     }
 
+    val returnFromSubroutine = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        state.copy(
+                programCounter = memory.readUInt16FromStack(state.stackPointer).toInt() + 1,
+                stackPointer = state.stackPointer + 2
+        )
+
+    }
+
     val clearCarry = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copy(
                 programCounter = state.programCounter + instruction.ad.size,

@@ -90,6 +90,8 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation) {
     php(0x08u, Address.none, Operations.pushProcessorStatus),
     plp(0x28u, Address.none, Operations.pullProcessorStatus),
 
+    rts(0x60u, Address.none, Operations.returnFromSubroutine),
+
     sta_ab(0x8du, Address.ab, Operations.storeAccumulator),
     sta_abx(0x9du, Address.abx, Operations.storeAccumulator),
     sta_aby(0x99u, Address.aby, Operations.storeAccumulator),
