@@ -29,38 +29,64 @@ data class CpuState(
         val isOverflowFlag: Boolean = false,
         val isInterruptDisabledFlag: Boolean = false
 ) {
-    fun copyWithA(value: UInt, programCounter: Int, cycles: Long) = this.copy(
-            cycleCount = cycleCount + cycles,
-            programCounter = programCounter,
+    fun copyRelativeWithA(instruction: InstructionSet, value: UInt) = this.copy(
+            cycleCount = cycleCount + instruction.cy,
+            programCounter = programCounter + instruction.ad.size,
             aRegister = value,
             isNegativeFlag = tweakNegative(value),
             isZeroFlag = tweakZero(value)
     )
 
-    fun copyWithA(value: UInt, programCounter: Int, cycles: Long, stackPointer: Int) = this.copy(
-            cycleCount = cycleCount + cycles,
-            programCounter = programCounter,
+    fun copyRelativeWithA(instruction: InstructionSet, value: UInt, stackPointer: Int) = this.copy(
+            cycleCount = cycleCount + instruction.cy,
+            programCounter = programCounter + instruction.ad.size,
             aRegister = value,
             isNegativeFlag = tweakNegative(value),
             isZeroFlag = tweakZero(value),
             stackPointer = stackPointer
     )
 
-    fun copyWithX(value: UInt, programCounter: Int, cycles: Long) = this.copy(
-            cycleCount = cycleCount + cycles,
-            programCounter = programCounter,
+    fun copyRelativeWithX(instruction: InstructionSet, value: UInt) = this.copy(
+            cycleCount = cycleCount + instruction.cy,
+            programCounter = programCounter + instruction.ad.size,
             xRegister = value,
             isNegativeFlag = tweakNegative(value),
             isZeroFlag = tweakZero(value)
 
     )
 
-    fun copyWithY(value: UInt, programCounter: Int, cycles: Long) = this.copy(
-            cycleCount = cycleCount + cycles,
-            programCounter = programCounter,
+    fun copyRelativeWithY(instruction: InstructionSet, value: UInt) = this.copy(
+            cycleCount = cycleCount + instruction.cy,
+            programCounter = programCounter + instruction.ad.size,
             yRegister = value,
             isNegativeFlag = tweakNegative(value),
             isZeroFlag = tweakZero(value)
+    )
+
+    fun copyRelativeWithFlags(
+            instruction: InstructionSet,
+            carryFlag: Boolean? = null,
+            overflowFlag: Boolean? = null,
+            interruptDisabledFlag: Boolean? = null,
+            decimalFlag: Boolean? = null,
+            negativeFlag: Boolean? = null,
+            breakCommandFlag: Boolean? = null,
+            zeroFlag: Boolean? = null
+    ) = CpuState(
+            cycleCount = cycleCount + instruction.cy,
+            programCounter = programCounter + instruction.ad.size,
+            breakLocation = breakLocation,
+            aRegister = aRegister,
+            xRegister = xRegister,
+            yRegister = yRegister,
+            stackPointer = stackPointer,
+            isCarryFlag = carryFlag ?: isCarryFlag,
+            isZeroFlag = zeroFlag ?: isZeroFlag,
+            isInterruptDisabledFlag = interruptDisabledFlag ?: isInterruptDisabledFlag,
+            isDecimalFlag = decimalFlag ?: isDecimalFlag,
+            isOverflowFlag = overflowFlag ?: isOverflowFlag,
+            isNegativeFlag = negativeFlag ?: isNegativeFlag,
+            isBreakCommandFlag = breakCommandFlag ?: isBreakCommandFlag
     )
 
     fun setFlagsUsingUByte(byte: UInt, programCounter: Int, stackPointer: Int, cycles: Long) = this.copy(

@@ -53,6 +53,23 @@ class CpuTest {
         }
     }
 
+    @Test
+    fun `copyRelativeWithFlags should not reset unsent properties`() {
+        val cpu = CpuState(cycleCount = 0x100,
+                programCounter = 0x200,
+                breakLocation = 0x300,
+                stackPointer = 0xfe,
+                aRegister = 0x1u,
+                xRegister = 0x2u,
+                yRegister = 0x3u)
+
+        cpu.copyRelativeWithFlags(instruction = clc, interruptDisabledFlag = true) shouldBe cpu.copy(
+                cycleCount = 0x102,
+                programCounter = 0x201,
+                isInterruptDisabledFlag = true
+        )
+    }
+
     @Nested
     inner class Brk {
         @Test
