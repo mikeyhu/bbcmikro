@@ -13,6 +13,7 @@ object CpuSettings {
 
 @ExperimentalUnsignedTypes
 data class CpuState(
+        val cycleCount: Long = 0,
         val programCounter: Int = 0x00,
         val breakLocation: Int = 0x00,
         val aRegister: UInt = 0x0u,
@@ -81,7 +82,9 @@ data class CpuState(
                 (if(isNegativeFlag) CpuSettings.NEGATIVE_BYTE_POSITION else 0u)).toUByte()
     }
 
-    fun incrementCounterBy(value: Int) = this.copy(programCounter = programCounter + value)
+    fun incrementCountersBy(program: Int, cycle: Long) = this.copy(
+            cycleCount = cycleCount + cycle,
+            programCounter = programCounter + program)
 
     private fun tweakNegative(value: UInt) = value.shr(7) != 0u
     private fun tweakZero(value: UInt) = value == 0u

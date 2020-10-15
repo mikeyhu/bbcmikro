@@ -19,6 +19,7 @@ class StackTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 3,
                     programCounter = 0x01,
                     stackPointer = 0xfe
             )
@@ -62,6 +63,7 @@ class StackTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 3,
                     programCounter = 0x01,
                     stackPointer = 0xfe
             )

@@ -21,6 +21,7 @@ internal object Operations {
         val sum = state.aRegister + amount
 
         state.copy(
+                cycleCount = state.cycleCount + instruction.cy,
                 programCounter = state.programCounter + instruction.ad.size,
                 aRegister = if (sum > 0xffu) sum - 0x100u else sum,
                 isCarryFlag = sum > 0xffu
@@ -31,9 +32,12 @@ internal object Operations {
         val newState = if (check) {
             val location = memory.readUsing(instruction.ad, state)
             val newLocation = if (location >= 0x80u) -0x100 + location.toInt() else location.toInt()
-            state.copy(programCounter = state.programCounter + instruction.ad.size + newLocation)
+            state.copy(
+                    cycleCount = instruction.cy + 1,
+                    programCounter = state.programCounter + instruction.ad.size + newLocation
+            )
 
-        } else state.incrementCounterBy(instruction.ad.size)
+        } else state.incrementCountersBy(instruction.ad.size, instruction.cy)
         log("Branch ${check} from ${state.programCounter.toString(16)} to ${newState.programCounter.toString(16)}")
         newState
     }
@@ -77,6 +81,7 @@ internal object Operations {
     val compareAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         val compareTo = memory.readUsing(instruction.ad, state)
         state.copy(
+                cycleCount = state.cycleCount + instruction.cy,
                 programCounter = state.programCounter + instruction.ad.size,
                 isZeroFlag = state.aRegister == compareTo,
                 isCarryFlag = state.aRegister >= compareTo,
@@ -87,6 +92,7 @@ internal object Operations {
     val compareX = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         val compareTo = memory.readUsing(instruction.ad, state)
         state.copy(
+                cycleCount = state.cycleCount + instruction.cy,
                 programCounter = state.programCounter + instruction.ad.size,
                 isZeroFlag = state.xRegister == compareTo,
                 isCarryFlag = state.xRegister >= compareTo,
@@ -97,6 +103,7 @@ internal object Operations {
     val compareY = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         val compareTo = memory.readUsing(instruction.ad, state)
         state.copy(
+                cycleCount = state.cycleCount + instruction.cy,
                 programCounter = state.programCounter + instruction.ad.size,
                 isZeroFlag = state.yRegister == compareTo,
                 isCarryFlag = state.yRegister >= compareTo,
@@ -127,7 +134,7 @@ internal object Operations {
     val storeAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         val location = memory.positionUsing(instruction.ad, state)
         memory[location] = state.aRegister.toUByte()
-        state.incrementCounterBy(instruction.ad.size)
+        state.incrementCountersBy(instruction.ad.size, instruction.cy)
     }
 
     val loadAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
@@ -152,6 +159,7 @@ internal object Operations {
     val jumpToSubroutine = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         memory.writeUInt16ToStack(state.stackPointer, state.programCounter.toUInt() + 2u)
         state.copy(
+                cycleCount = state.cycleCount + instruction.cy,
                 programCounter = memory.positionUsing(instruction.ad, state).toInt(),
                 stackPointer = state.stackPointer - 2
         )
@@ -160,6 +168,7 @@ internal object Operations {
 
     val returnFromSubroutine = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         state.copy(
+                cycleCount = state.cycleCount + instruction.cy,
                 programCounter = memory.readUInt16FromStack(state.stackPointer).toInt() + 1,
                 stackPointer = state.stackPointer + 2
         )
@@ -175,6 +184,7 @@ internal object Operations {
 
     val clearDecimal = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copy(
+                cycleCount = state.cycleCount + instruction.cy,
                 programCounter = state.programCounter + instruction.ad.size,
                 isDecimalFlag = false
         )
@@ -183,6 +193,7 @@ internal object Operations {
     val pushAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         memory.writeUByteToStack(state.stackPointer, state.aRegister.toUByte())
         state.copy(
+                cycleCount = state.cycleCount + instruction.cy,
                 programCounter = state.programCounter + instruction.ad.size,
                 stackPointer = state.stackPointer-1
         )
@@ -199,6 +210,7 @@ internal object Operations {
     val pushProcessorStatus = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         memory.writeUByteToStack(state.stackPointer, state.readFlagsAsUbyte())
         state.copy(
+                cycleCount = state.cycleCount + instruction.cy,
                 programCounter = state.programCounter + instruction.ad.size,
                 stackPointer = state.stackPointer-1
         )
@@ -214,6 +226,7 @@ internal object Operations {
 
     val transferXToStack = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copy(
+                cycleCount = state.cycleCount + instruction.cy,
                 programCounter = state.programCounter + instruction.ad.size,
                 stackPointer = state.xRegister.toInt()
         )
@@ -239,7 +252,7 @@ internal object Operations {
         state.copyWithA(state.xRegister, programCounter = state.programCounter + instruction.ad.size)
     }
 
-    val noOperation = { _: InstructionSet, state: CpuState, _: Memory ->
-        state.incrementCounterBy(1)
+    val noOperation = { instruction: InstructionSet, state: CpuState, _: Memory ->
+        state.incrementCountersBy(instruction.ad.size, instruction.cy)
     }
 }

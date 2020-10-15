@@ -18,6 +18,7 @@ class TransferTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2,
                     programCounter = 0x01,
                     stackPointer = 0x11
             )

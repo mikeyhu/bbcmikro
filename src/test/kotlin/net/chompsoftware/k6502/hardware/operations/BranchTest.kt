@@ -17,6 +17,7 @@ class BranchTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 3,
                     programCounter = 0x04
             )
         }
@@ -30,6 +31,7 @@ class BranchTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 3,
                     programCounter = 0x00
             )
         }
@@ -42,6 +44,7 @@ class BranchTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2,
                     programCounter = 0x02
             )
         }
@@ -57,6 +60,7 @@ class BranchTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 3,
                     programCounter = 0x04
             )
         }
@@ -69,6 +73,7 @@ class BranchTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2,
                     programCounter = 0x02
             )
         }
@@ -84,6 +89,7 @@ class BranchTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 3,
                     programCounter = 0x04
             )
         }
@@ -96,6 +102,7 @@ class BranchTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2,
                     programCounter = 0x02
             )
         }
@@ -111,6 +118,7 @@ class BranchTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 3,
                     programCounter = 0x04
             )
         }
@@ -123,6 +131,7 @@ class BranchTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2,
                     programCounter = 0x02
             )
         }
@@ -138,6 +147,7 @@ class BranchTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 3,
                     programCounter = 0x04
             )
         }
@@ -150,6 +160,7 @@ class BranchTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2,
                     programCounter = 0x02
             )
         }
@@ -165,6 +176,7 @@ class BranchTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 3,
                     programCounter = 0x04
             )
         }
@@ -177,6 +189,7 @@ class BranchTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2,
                     programCounter = 0x02
             )
         }
@@ -192,6 +205,7 @@ class BranchTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 3,
                     programCounter = 0x04
             )
         }
@@ -204,6 +218,7 @@ class BranchTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2,
                     programCounter = 0x02
             )
         }
@@ -219,6 +234,7 @@ class BranchTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 3,
                     programCounter = 0x04
             )
         }
@@ -231,6 +247,7 @@ class BranchTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2,
                     programCounter = 0x02
             )
         }

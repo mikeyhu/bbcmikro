@@ -31,6 +31,7 @@ class CpuTest {
             val state = CpuState(aRegister = 0x11u)
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 3,
                     programCounter = 0x02
             )
             memory.readUInt(0x05) shouldBe 0x11u
@@ -42,6 +43,7 @@ class CpuTest {
             val state = CpuState(aRegister = 0x11u)
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 4,
                     programCounter = 0x03
             )
             memory.readUInt(0x105) shouldBe 0x11u
@@ -71,6 +73,7 @@ class CpuTest {
             val state = CpuState(aRegister = 0x0fu)
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2,
                     programCounter = 0x02,
                     aRegister = 0x10u,
                     isCarryFlag = false
@@ -83,6 +86,7 @@ class CpuTest {
             val state = CpuState(aRegister = 0xc0u)
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2,
                     programCounter = 0x02,
                     aRegister = 0x84u,
                     isCarryFlag = true
@@ -112,6 +116,7 @@ class CpuTest {
             val state = CpuState(isDecimalFlag = true)
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2,
                     programCounter = 0x01,
                     isDecimalFlag = false
             )
@@ -126,6 +131,7 @@ class CpuTest {
             val state = CpuState()
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2,
                     programCounter = 0x01
             )
         }
@@ -171,6 +177,7 @@ class CpuTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 6,
                     programCounter = 0x1234,
                     stackPointer = 0xfd
             )
@@ -189,6 +196,7 @@ class CpuTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 6,
                     programCounter = 0x1235,
                     stackPointer = 0xff
             )
@@ -272,6 +280,7 @@ class CpuTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2,
                     programCounter = 0x02,
                     isZeroFlag = true,
                     isCarryFlag = true,
@@ -293,6 +302,7 @@ class CpuTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2,
                     programCounter = 0x02,
                     isZeroFlag = true,
                     isCarryFlag = true,
@@ -314,6 +324,7 @@ class CpuTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2,
                     programCounter = 0x02,
                     isZeroFlag = true,
                     isCarryFlag = true,
