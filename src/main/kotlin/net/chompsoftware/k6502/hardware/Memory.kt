@@ -60,7 +60,7 @@ class Memory(val store: UByteArray) {
             Address.z -> readUInt(readInt(state.programCounter + 1))
             Address.ab -> readUInt16(state.programCounter + 1)
             Address.ir -> readUInt16(positionUsing(Address.ab, state).toInt())
-            else -> throw Error("Address mode ${address.name} not implemented")
+            else -> throw NotImplementedError("Address mode ${address.name} not implemented")
         }
     }
 
@@ -69,7 +69,7 @@ class Memory(val store: UByteArray) {
             Address.i -> readUInt(state.programCounter + 1)
             Address.z -> readUInt(readInt(state.programCounter + 1))
             Address.ab -> readUInt(readUInt16(state.programCounter + 1).toInt())
-            else -> throw Error("Address mode ${address.name} not implemented")
+            else -> throw NotImplementedError("Address mode ${address.name} not implemented")
         }
     }
 }

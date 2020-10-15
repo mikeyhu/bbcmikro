@@ -36,6 +36,7 @@ class TransferTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
                     programCounter = 0x01,
                     xRegister = 0x11u
             )
@@ -52,6 +53,7 @@ class TransferTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
                     programCounter = 0x01,
                     aRegister = 0x11u
             )
@@ -68,6 +70,7 @@ class TransferTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
                     programCounter = 0x01,
                     aRegister = 0x11u
             )
@@ -84,6 +87,7 @@ class TransferTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
                     programCounter = 0x01,
                     xRegister = 0x11u
             )
@@ -100,6 +104,7 @@ class TransferTest {
             )
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
                     programCounter = 0x01,
                     yRegister = 0x11u
             )

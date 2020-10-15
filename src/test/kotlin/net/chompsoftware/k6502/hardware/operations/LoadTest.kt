@@ -16,6 +16,7 @@ class LoadTest {
             val state = CpuState()
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
                     programCounter = 0x02,
                     aRegister = 0x08u
             )
@@ -27,6 +28,7 @@ class LoadTest {
             val state = CpuState()
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
                     programCounter = 0x02,
                     aRegister = 0x80u,
                     isNegativeFlag = true
@@ -39,6 +41,7 @@ class LoadTest {
             val state = CpuState()
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
                     programCounter = 0x02,
                     aRegister = 0x0u,
                     isZeroFlag = true
@@ -51,6 +54,7 @@ class LoadTest {
             val state = CpuState()
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 4L,
                     programCounter = 0x03,
                     aRegister = 0x11u
             )
@@ -65,6 +69,7 @@ class LoadTest {
             val state = CpuState()
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
                     programCounter = 0x02,
                     xRegister = 0x08u
             )
@@ -76,6 +81,7 @@ class LoadTest {
             val state = CpuState()
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
                     programCounter = 0x02,
                     xRegister = 0x80u,
                     isNegativeFlag = true
@@ -88,6 +94,7 @@ class LoadTest {
             val state = CpuState()
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
                     programCounter = 0x02,
                     xRegister = 0x0u,
                     isZeroFlag = true
@@ -103,6 +110,7 @@ class LoadTest {
             val state = CpuState()
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
                     programCounter = 0x02,
                     yRegister = 0x08u
             )
@@ -114,6 +122,7 @@ class LoadTest {
             val state = CpuState()
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
                     programCounter = 0x02,
                     yRegister = 0x80u,
                     isNegativeFlag = true
@@ -126,6 +135,7 @@ class LoadTest {
             val state = CpuState()
             val cpu = Cpu()
             cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
                     programCounter = 0x02,
                     yRegister = 0x0u,
                     isZeroFlag = true

@@ -29,14 +29,16 @@ data class CpuState(
         val isOverflowFlag: Boolean = false,
         val isInterruptDisabledFlag: Boolean = false
 ) {
-    fun copyWithA(value: UInt, programCounter: Int) = this.copy(
+    fun copyWithA(value: UInt, programCounter: Int, cycles: Long) = this.copy(
+            cycleCount = cycleCount + cycles,
             programCounter = programCounter,
             aRegister = value,
             isNegativeFlag = tweakNegative(value),
             isZeroFlag = tweakZero(value)
     )
 
-    fun copyWithA(value: UInt, programCounter: Int, stackPointer: Int) = this.copy(
+    fun copyWithA(value: UInt, programCounter: Int, cycles: Long, stackPointer: Int) = this.copy(
+            cycleCount = cycleCount + cycles,
             programCounter = programCounter,
             aRegister = value,
             isNegativeFlag = tweakNegative(value),
@@ -44,7 +46,8 @@ data class CpuState(
             stackPointer = stackPointer
     )
 
-    fun copyWithX(value: UInt, programCounter: Int) = this.copy(
+    fun copyWithX(value: UInt, programCounter: Int, cycles: Long) = this.copy(
+            cycleCount = cycleCount + cycles,
             programCounter = programCounter,
             xRegister = value,
             isNegativeFlag = tweakNegative(value),
@@ -52,14 +55,16 @@ data class CpuState(
 
     )
 
-    fun copyWithY(value: UInt, programCounter: Int) = this.copy(
+    fun copyWithY(value: UInt, programCounter: Int, cycles: Long) = this.copy(
+            cycleCount = cycleCount + cycles,
             programCounter = programCounter,
             yRegister = value,
             isNegativeFlag = tweakNegative(value),
             isZeroFlag = tweakZero(value)
     )
 
-    fun setFlagsUsingUByte(byte: UInt, programCounter: Int, stackPointer: Int) = this.copy(
+    fun setFlagsUsingUByte(byte: UInt, programCounter: Int, stackPointer: Int, cycles: Long) = this.copy(
+            cycleCount = cycleCount + cycles,
             programCounter = programCounter,
             stackPointer = stackPointer,
             isCarryFlag = byte.and(CpuSettings.CARRY_BYTE_POSITION) == CpuSettings.CARRY_BYTE_POSITION,
@@ -90,7 +95,7 @@ data class CpuState(
     private fun tweakZero(value: UInt) = value == 0u
 
     override fun toString(): String {
-        return "CpuState(pc=${programCounter.toString(16)}, bl=${breakLocation.toString(16)}, a=${aRegister.toString(16)}, x=${xRegister.toString(16)}, y=${yRegister.toString(16)}" +
+        return "CpuState(pc=${programCounter.toString(16)}, cc=${cycleCount} bl=${breakLocation.toString(16)}, a=${aRegister.toString(16)}, x=${xRegister.toString(16)}, y=${yRegister.toString(16)}" +
                 ", sp=${stackPointer.toString(16)}, brk=$isBreakCommandFlag, neg=$isNegativeFlag, zro=$isZeroFlag, dec=$isDecimalFlag, car=$isCarryFlag, ovr=$isOverflowFlag, int=$isInterruptDisabledFlag)"
     }
 }
