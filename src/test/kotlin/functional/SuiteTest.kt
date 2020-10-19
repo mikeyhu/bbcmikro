@@ -23,13 +23,21 @@ class SuiteTest {
         var state = CpuState(
                 programCounter = 0x400,
                 breakLocation = 0xfffe)
+        var previousState = state
         val cpu = Cpu()
         var operationsDone = 0
         val start = System.nanoTime()
 
         do {
             val counter = state.programCounter
-            state = cpu.run(state, memory)
+            previousState = state
+            try {
+                state = cpu.run(state, memory)
+                println(state)
+            } catch (error: Error) {
+                println(previousState)
+                fail("failed at ${state.programCounter.toString(16)} with $error")
+            }
             operationsDone++
             if (counter == state.programCounter) {
                 println(state)

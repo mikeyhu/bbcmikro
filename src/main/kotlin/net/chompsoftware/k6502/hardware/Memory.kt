@@ -48,6 +48,8 @@ class Memory(val store: UByteArray) {
     fun readUByte(position: Int) = store[position]
 
     private fun writeUByte(position: Int, value: UByte) {
+        println("write ${value.toString(16)} to ${position.toString(16)}")
+
         store[position] = value
     }
 
@@ -56,20 +58,27 @@ class Memory(val store: UByteArray) {
 
     fun positionUsing(address: Address, state: CpuState): UInt {
         return when (address) {
-            Address.i -> readUInt(state.programCounter + 1)
-            Address.z -> readUInt(readInt(state.programCounter + 1))
+//            Address.i -> readUInt(state.programCounter + 1)
+            Address.z -> readUInt(state.programCounter + 1)
             Address.ab -> readUInt16(state.programCounter + 1)
+            Address.abx -> readUInt16(state.programCounter + 1) + state.xRegister
             Address.ir -> readUInt16(positionUsing(Address.ab, state).toInt())
-            else -> throw NotImplementedError("Address mode ${address.name} not implemented")
+            else -> throw NotImplementedError("Address mode ${address.name} not implemented for positionUsing")
+        }.also {
+            println("position using ${address} for ${state.programCounter} is ${it.toString(16)}")
         }
     }
 
     fun readUsing(address: Address, state: CpuState): UInt {
         return when (address) {
             Address.i -> readUInt(state.programCounter + 1)
-            Address.z -> readUInt(readInt(state.programCounter + 1))
-            Address.ab -> readUInt(readUInt16(state.programCounter + 1).toInt())
-            else -> throw NotImplementedError("Address mode ${address.name} not implemented")
+            Address.z -> readUInt(positionUsing(address, state).toInt())
+            Address.ab -> readUInt(positionUsing(address, state).toInt())
+//            Address.ab -> readUInt16(readUInt16(state.programCounter + 1).toInt())
+            Address.abx -> readUInt(positionUsing(address, state).toInt())
+            else -> throw NotImplementedError("Address mode ${address.name} not implemented for readUsing")
         }
     }
+
+
 }

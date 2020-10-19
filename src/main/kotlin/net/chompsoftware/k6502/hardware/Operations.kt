@@ -75,14 +75,21 @@ internal object Operations {
     }
 
     val brk = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        memory.writeUInt16ToStack(state.stackPointer, state.programCounter.toUInt() + 1u)
+        memory.writeUByteToStack(state.stackPointer - 2, state.copy(isBreakCommandFlag = true).readFlagsAsUbyte())
+
         state.copy(
                 cycleCount = state.cycleCount + instruction.cy,
                 isBreakCommandFlag = true,
-                programCounter = memory.readInt16(state.breakLocation))
+                programCounter = memory.readInt16(state.breakLocation),
+                stackPointer = state.stackPointer - 3
+        )
     }
 
     val compareAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         val compareTo = memory.readUsing(instruction.ad, state)
+        println("compareAccumulator for ${instruction}: aRegister=${state.aRegister.toString(16)} compareTo=${compareTo.toString(16)}")
+
         state.copyRelativeWithFlags(
                 instruction,
                 zeroFlag = state.aRegister == compareTo,
@@ -136,6 +143,12 @@ internal object Operations {
     val storeAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         val location = memory.positionUsing(instruction.ad, state)
         memory[location] = state.aRegister.toUByte()
+        state.incrementCountersBy(instruction.ad.size, instruction.cy)
+    }
+
+    val storeX = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        val location = memory.positionUsing(instruction.ad, state)
+        memory[location] = state.xRegister.toUByte()
         state.incrementCountersBy(instruction.ad.size, instruction.cy)
     }
 

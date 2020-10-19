@@ -4,7 +4,7 @@ package net.chompsoftware.k6502.hardware
 enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val cy: Long) {
     adc_i(0x69u, Address.i, Operations.addWithCarry, 2),
     adc_ab(0x6du, Address.ab, Operations.addWithCarry, 4),
-    adc_abx(0x7du, Address.abx, Operations.addWithCarry, 4),
+//    adc_abx(0x7du, Address.abx, Operations.addWithCarry, 4),
     adc_aby(0x79u, Address.aby, Operations.addWithCarry, 4),
     adc_z(0x65u, Address.z, Operations.addWithCarry, 3),
     adc_zx(0x75u, Address.zx, Operations.addWithCarry, 4),
@@ -27,7 +27,7 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 
     cmp_i(0xc9u, Address.i, Operations.compareAccumulator, 2),
     cmp_ab(0xcdu, Address.ab, Operations.compareAccumulator, 4),
-    cmp_abx(0xddu, Address.abx, Operations.compareAccumulator, 4),
+//    cmp_abx(0xddu, Address.abx, Operations.compareAccumulator, 4),
     cmp_aby(0xd9u, Address.aby, Operations.compareAccumulator, 4),
     cmp_z(0xc5u, Address.z, Operations.compareAccumulator, 3),
     cmp_zx(0xd5u, Address.zx, Operations.compareAccumulator, 4),
@@ -47,7 +47,7 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 
     eor_i(0x49u, Address.i, Operations.exclusiveOr, 2),
     eor_ab(0x4du, Address.ab, Operations.exclusiveOr, 4),
-    eor_abx(0x5du, Address.abx, Operations.exclusiveOr, 4),
+//    eor_abx(0x5du, Address.abx, Operations.exclusiveOr, 4),
     eor_aby(0x59u, Address.aby, Operations.exclusiveOr, 4),
     eor_z(0x45u, Address.z, Operations.exclusiveOr, 3),
     eor_zx(0x55u, Address.zx, Operations.exclusiveOr, 4),
@@ -79,7 +79,7 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 
     ldy_i(0xa0u, Address.i, Operations.loady, 2),
     ldy_ab(0xacu, Address.ab, Operations.loady, 4),
-    ldy_abx(0xbcu, Address.abx, Operations.loady, 4),
+//    ldy_abx(0xbcu, Address.abx, Operations.loady, 4),
     ldy_z(0xa4u, Address.z, Operations.loady, 3),
     ldy_zx(0xb4u, Address.zx, Operations.loady, 4),
 
@@ -93,12 +93,16 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     rts(0x60u, Address.none, Operations.returnFromSubroutine, 6),
 
     sta_ab(0x8du, Address.ab, Operations.storeAccumulator, 4),
-    sta_abx(0x9du, Address.abx, Operations.storeAccumulator, 5),
+//    sta_abx(0x9du, Address.abx, Operations.storeAccumulator, 5),
     sta_aby(0x99u, Address.aby, Operations.storeAccumulator, 5),
     sta_z(0x85u, Address.z, Operations.storeAccumulator, 3),
     sta_zx(0x95u, Address.zx, Operations.storeAccumulator, 4),
     sta_ixir(0x81u, Address.ixir, Operations.storeAccumulator, 6),
     sta_irix(0x91u, Address.irix, Operations.storeAccumulator, 6),
+
+    stx_ab(0x8eu, Address.ab, Operations.storeX, 4),
+    stx_z(0x86u, Address.z, Operations.storeX, 3),
+    stx_zy(0x96u, Address.zy, Operations.storeX, 4),
 
     tay(0xa8u, Address.none, Operations.transferAccumulatorToY, 2),
     tax(0xaau, Address.none, Operations.transferAccumulatorToX, 2),
@@ -125,12 +129,13 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 enum class Address(val size: Int) {
     none(1),
     i(2),
-    irix(10001),
-    ixir(10002),
-    ir(10006),
+    irix(100000001),
+    ixir(100000002),
+    ir(1000000006),
     ab(3),
-    abx(10003),
-    aby(10004),
+    abx(3),
+    aby(100000004),
     z(2),
-    zx(10005)
+    zx(100000005),
+    zy(100000007)
 }
