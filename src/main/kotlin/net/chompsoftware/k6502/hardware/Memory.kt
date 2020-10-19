@@ -48,7 +48,7 @@ class Memory(val store: UByteArray) {
     fun readUByte(position: Int) = store[position]
 
     private fun writeUByte(position: Int, value: UByte) {
-        println("write ${value.toString(16)} to ${position.toString(16)}")
+        if(VERBOSE) println("write ${value.toString(16)} to ${position.toString(16)}")
 
         store[position] = value
     }
@@ -65,7 +65,7 @@ class Memory(val store: UByteArray) {
             Address.ir -> readUInt16(positionUsing(Address.ab, state).toInt())
             else -> throw NotImplementedError("Address mode ${address.name} not implemented for positionUsing")
         }.also {
-            println("position using ${address} for ${state.programCounter} is ${it.toString(16)}")
+            if(VERBOSE) println("position using ${address} for ${state.programCounter} is ${it.toString(16)}")
         }
     }
 

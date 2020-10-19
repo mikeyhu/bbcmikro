@@ -1,16 +1,10 @@
 package net.chompsoftware.k6502.hardware
 
-const val LOG_OPERATIONS: Boolean = true
-
 @ExperimentalUnsignedTypes
 internal typealias Operation = (instruction: InstructionSet, state: CpuState, memory: Memory) -> CpuState
 
 @ExperimentalUnsignedTypes
 internal object Operations {
-    fun log(s: String) {
-        if (LOG_OPERATIONS) println(s)
-    }
-
     val notImplementedOperation = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         throw NotImplementedError("Not Implemented Operation ${instruction.name}:${instruction.u.toString(16)} at ${state.programCounter.toString(16)}")
     }
@@ -38,7 +32,7 @@ internal object Operations {
             )
 
         } else state.incrementCountersBy(instruction.ad.size, instruction.cy)
-        log("Branch ${check} from ${state.programCounter.toString(16)} to ${newState.programCounter.toString(16)}")
+        if(VERBOSE) println("Branch ${check} from ${state.programCounter.toString(16)} to ${newState.programCounter.toString(16)}")
         newState
     }
 
@@ -88,7 +82,7 @@ internal object Operations {
 
     val compareAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         val compareTo = memory.readUsing(instruction.ad, state)
-        println("compareAccumulator for ${instruction}: aRegister=${state.aRegister.toString(16)} compareTo=${compareTo.toString(16)}")
+        if(VERBOSE) println("compareAccumulator for ${instruction}: aRegister=${state.aRegister.toString(16)} compareTo=${compareTo.toString(16)}")
 
         state.copyRelativeWithFlags(
                 instruction,

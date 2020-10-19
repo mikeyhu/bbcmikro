@@ -111,7 +111,7 @@ data class CpuState(
                 CpuSettings.BREAK_BYTE_POSITION  +
                 (if(isOverflowFlag) CpuSettings.OVERFLOW_BYTE_POSITION else 0u) +
                 (if(isNegativeFlag) CpuSettings.NEGATIVE_BYTE_POSITION else 0u)).toUByte()
-        println("saving flags ${ub.toString(16)} from $this")
+        if(VERBOSE) println("saving flags ${ub.toString(16)} from $this")
         return ub
     }
 
