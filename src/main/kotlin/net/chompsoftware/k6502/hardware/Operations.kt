@@ -69,14 +69,16 @@ internal object Operations {
     }
 
     val brk = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        memory.writeUInt16ToStack(state.stackPointer, state.programCounter.toUInt() + 1u)
+        memory.writeUInt16ToStack(state.stackPointer, state.programCounter.toUInt() + 2u)
         memory.writeUByteToStack(state.stackPointer - 2, state.copy(isBreakCommandFlag = true).readFlagsAsUbyte())
 
         state.copy(
                 cycleCount = state.cycleCount + instruction.cy,
                 isBreakCommandFlag = true,
                 programCounter = memory.readInt16(state.breakLocation),
-                stackPointer = state.stackPointer - 3
+                stackPointer = state.stackPointer - 3,
+                isInterruptDisabledFlag = true
+
         )
     }
 

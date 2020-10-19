@@ -80,6 +80,7 @@ class CpuTest {
             cpu.run(state, memory) should {
                 it.programCounter shouldBe 0x201
                 it.isBreakCommandFlag shouldBe true
+                it.isInterruptDisabledFlag shouldBe true
             }
         }
     }
