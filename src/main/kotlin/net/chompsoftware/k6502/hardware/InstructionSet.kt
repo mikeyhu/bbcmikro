@@ -51,7 +51,7 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     // Clear flags
     clc(0x18u, Address.none, FlagOperations.clearCarry, 2),
     cld(0xd8u, Address.none, FlagOperations.clearDecimal, 2),
-    clv(0xb8u, Address.none, Operations.notImplementedOperation, 2),
+    clv(0xb8u, Address.none, FlagOperations.clearOverflow, 2),
     cli(0x58u, Address.none, FlagOperations.clearInterrupt, 2),
 
     // Compare Accumulator
@@ -187,8 +187,8 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 
     // Set Flags
     sec(0x38u, Address.none, FlagOperations.setCarry, 2),
-//    sei(0x78u, Address.none, Operations.notImplementedOperation, 2),
-//    sed(0xf8u, Address.none, Operations.notImplementedOperation, 2),
+    sei(0x78u, Address.none, FlagOperations.setInterrupt, 2),
+    sed(0xf8u, Address.none, FlagOperations.setDecimal, 2),
 
     // Store Accumulator
     sta_ab(0x8du, Address.ab, MemoryOperations.storeAccumulator, 4),

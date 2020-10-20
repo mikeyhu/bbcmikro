@@ -11,6 +11,10 @@ internal object FlagOperations {
         state.copyRelativeWithFlags(instruction, interruptDisabledFlag = false)
     }
 
+    val setInterrupt = { instruction: InstructionSet, state: CpuState, _: Memory ->
+        state.copyRelativeWithFlags(instruction, interruptDisabledFlag = true)
+    }
+
     val clearCarry = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copyRelativeWithFlags(instruction, carryFlag = false)
     }
@@ -21,5 +25,13 @@ internal object FlagOperations {
 
     val clearDecimal = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copyRelativeWithFlags(instruction, decimalFlag = false)
+    }
+
+    val setDecimal = { instruction: InstructionSet, state: CpuState, _: Memory ->
+        state.copyRelativeWithFlags(instruction, decimalFlag = true)
+    }
+
+    val clearOverflow = { instruction: InstructionSet, state: CpuState, _: Memory ->
+        state.copyRelativeWithFlags(instruction, overflowFlag = false)
     }
 }

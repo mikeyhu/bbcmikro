@@ -54,6 +54,21 @@ class FlagOperationsTest {
     }
 
     @Nested
+    inner class SetDecimal {
+        @Test
+        fun `Should set decimal flag`() {
+            val memory = Memory(setupMemory(InstructionSet.sed.u))
+            val state = CpuState(isDecimalFlag = false)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
+                    programCounter = 0x01,
+                    isDecimalFlag = true
+            )
+        }
+    }
+
+    @Nested
     inner class ClearInterrupt {
         @Test
         fun `Should reset interrupt flag`() {
@@ -64,6 +79,36 @@ class FlagOperationsTest {
                     cycleCount = 2,
                     programCounter = 0x01,
                     isInterruptDisabledFlag = false
+            )
+        }
+    }
+
+    @Nested
+    inner class SetInterrupt {
+        @Test
+        fun `Should set interrupt flag`() {
+            val memory = Memory(setupMemory(InstructionSet.sei.u))
+            val state = CpuState(isInterruptDisabledFlag = false)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
+                    programCounter = 0x01,
+                    isInterruptDisabledFlag = true
+            )
+        }
+    }
+
+    @Nested
+    inner class ClearOverflow {
+        @Test
+        fun `Should reset overflow flag`() {
+            val memory = Memory(setupMemory(InstructionSet.clv.u))
+            val state = CpuState(isOverflowFlag = true)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2,
+                    programCounter = 0x01,
+                    isOverflowFlag = false
             )
         }
     }
