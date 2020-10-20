@@ -22,6 +22,8 @@ internal object ComparisonOperations {
 
     val compareX = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         val compareTo = memory.readUsing(instruction.ad, state)
+        if(VERBOSE) println("compareX for ${instruction}: xRegister=${state.xRegister.toString(16)} compareTo=${compareTo.toString(16)}")
+
         state.copyRelativeWithFlags(
                 instruction,
                 zeroFlag = state.xRegister == compareTo,
@@ -32,6 +34,8 @@ internal object ComparisonOperations {
 
     val compareY = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         val compareTo = memory.readUsing(instruction.ad, state)
+        if(VERBOSE) println("compareY for ${instruction}: yRegister=${state.yRegister.toString(16)} compareTo=${compareTo.toString(16)}")
+
         state.copyRelativeWithFlags(
                 instruction,
                 zeroFlag = state.yRegister == compareTo,

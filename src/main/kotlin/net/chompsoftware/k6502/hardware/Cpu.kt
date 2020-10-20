@@ -29,39 +29,53 @@ data class CpuState(
         val isOverflowFlag: Boolean = false,
         val isInterruptDisabledFlag: Boolean = false
 ) {
-    fun copyRelativeWithA(instruction: InstructionSet, value: UInt) = this.copy(
-            cycleCount = cycleCount + instruction.cy,
-            programCounter = programCounter + instruction.ad.size,
-            aRegister = value,
-            isNegativeFlag = tweakNegative(value),
-            isZeroFlag = tweakZero(value)
-    )
+    fun copyRelativeWithA(instruction: InstructionSet, value: UInt): CpuState {
+        val ubyteValue = removeOverflow(value)
+        return this.copy(
+                cycleCount = cycleCount + instruction.cy,
+                programCounter = programCounter + instruction.ad.size,
+                aRegister = ubyteValue,
+                isNegativeFlag = tweakNegative(ubyteValue),
+                isZeroFlag = tweakZero(ubyteValue)
+        )
+    }
 
-    fun copyRelativeWithA(instruction: InstructionSet, value: UInt, stackPointer: Int) = this.copy(
-            cycleCount = cycleCount + instruction.cy,
-            programCounter = programCounter + instruction.ad.size,
-            aRegister = value,
-            isNegativeFlag = tweakNegative(value),
-            isZeroFlag = tweakZero(value),
-            stackPointer = stackPointer
-    )
+    fun copyRelativeWithA(instruction: InstructionSet, value: UInt, stackPointer: Int): CpuState {
+        val ubyteValue = removeOverflow(value)
+        return this.copy(
+                cycleCount = cycleCount + instruction.cy,
+                programCounter = programCounter + instruction.ad.size,
+                aRegister = ubyteValue,
+                isNegativeFlag = tweakNegative(ubyteValue),
+                isZeroFlag = tweakZero(ubyteValue),
+                stackPointer = stackPointer
+        )
+    }
 
-    fun copyRelativeWithX(instruction: InstructionSet, value: UInt) = this.copy(
-            cycleCount = cycleCount + instruction.cy,
-            programCounter = programCounter + instruction.ad.size,
-            xRegister = value,
-            isNegativeFlag = tweakNegative(value),
-            isZeroFlag = tweakZero(value)
+    fun copyRelativeWithX(instruction: InstructionSet, value: UInt): CpuState {
+        val ubyteValue = removeOverflow(value)
+        return this.copy(
+                cycleCount = cycleCount + instruction.cy,
+                programCounter = programCounter + instruction.ad.size,
+                xRegister = ubyteValue,
+                isNegativeFlag = tweakNegative(ubyteValue),
+                isZeroFlag = tweakZero(ubyteValue)
 
-    )
+        )
+    }
 
-    fun copyRelativeWithY(instruction: InstructionSet, value: UInt) = this.copy(
-            cycleCount = cycleCount + instruction.cy,
-            programCounter = programCounter + instruction.ad.size,
-            yRegister = value,
-            isNegativeFlag = tweakNegative(value),
-            isZeroFlag = tweakZero(value)
-    )
+    fun copyRelativeWithY(instruction: InstructionSet, value: UInt): CpuState {
+        val ubyteValue = removeOverflow(value)
+        return this.copy(
+                cycleCount = cycleCount + instruction.cy,
+                programCounter = programCounter + instruction.ad.size,
+                yRegister = ubyteValue,
+                isNegativeFlag = tweakNegative(ubyteValue),
+                isZeroFlag = tweakZero(ubyteValue)
+        )
+    }
+
+    private fun removeOverflow(value: UInt) = value.and(0xffu)
 
     fun copyRelativeWithFlags(
             instruction: InstructionSet,

@@ -119,6 +119,21 @@ class MathOperationsTest {
                     xRegister = 0x6u
             )
         }
+
+        @Test
+        fun `Should increment X wrapping around at 0x100u`() {
+            val memory = Memory(setupMemory(InstructionSet.inx.u))
+            val state = CpuState(
+                    xRegister = 0xffu
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
+                    programCounter = 0x01,
+                    xRegister = 0x0u,
+                    isZeroFlag = true
+            )
+        }
     }
 
     @Nested
