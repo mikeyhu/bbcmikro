@@ -1,6 +1,8 @@
 package net.chompsoftware.k6502.hardware
 
+import net.chompsoftware.k6502.hardware.operations.BranchOperations
 import net.chompsoftware.k6502.hardware.operations.FlagOperations
+import net.chompsoftware.k6502.hardware.operations.MemoryOperations
 import net.chompsoftware.k6502.hardware.operations.MathOperations
 
 @ExperimentalUnsignedTypes
@@ -14,14 +16,14 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     adc_ixir(0x61u, Address.ixir, MathOperations.addWithCarry, 6),
     adc_irix(0x71u, Address.irix, MathOperations.addWithCarry, 5),
 
-    bcc(0x90u, Address.i, Operations.branchOnCarryClear, 2),
-    bcs(0xb0u, Address.i, Operations.branchOnCarrySet, 2),
-    beq(0xf0u, Address.i, Operations.branchOnEqual, 2),
-    bmi(0x30u, Address.i, Operations.branchOnMinus, 2),
-    bne(0xd0u, Address.i, Operations.branchOnNotEqual, 2),
-    bpl(0x10u, Address.i, Operations.branchOnPlus, 2),
-    bvc(0x50u, Address.i, Operations.branchOnOverflowClear, 2),
-    bvs(0x70u, Address.i, Operations.branchOnOverflowSet, 2),
+    bcc(0x90u, Address.i, BranchOperations.branchOnCarryClear, 2),
+    bcs(0xb0u, Address.i, BranchOperations.branchOnCarrySet, 2),
+    beq(0xf0u, Address.i, BranchOperations.branchOnEqual, 2),
+    bmi(0x30u, Address.i, BranchOperations.branchOnMinus, 2),
+    bne(0xd0u, Address.i, BranchOperations.branchOnNotEqual, 2),
+    bpl(0x10u, Address.i, BranchOperations.branchOnPlus, 2),
+    bvc(0x50u, Address.i, BranchOperations.branchOnOverflowClear, 2),
+    bvs(0x70u, Address.i, BranchOperations.branchOnOverflowSet, 2),
 
     brk(0x00u, Address.none, Operations.brk, 7),
 
@@ -66,26 +68,26 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     jsr_ab(0x20u, Address.ab, Operations.jumpToSubroutine, 6),
 
 
-    lda_i(0xa9u, Address.i, Operations.loadAccumulator, 2),
-    lda_ab(0xadu, Address.ab, Operations.loadAccumulator, 4),
-    lda_abx(0xbdu, Address.abx, Operations.loadAccumulator, 4),
-    lda_aby(0xb9u, Address.aby, Operations.loadAccumulator, 4),
-    lda_z(0xa5u, Address.z, Operations.loadAccumulator, 3),
-    lda_zx(0xb5u, Address.zx, Operations.loadAccumulator, 4),
-    lda_ixir(0xa1u, Address.ixir, Operations.loadAccumulator, 6),
-    lda_irix(0xb1u, Address.irix, Operations.loadAccumulator, 5),
+    lda_i(0xa9u, Address.i, MemoryOperations.loadAccumulator, 2),
+    lda_ab(0xadu, Address.ab, MemoryOperations.loadAccumulator, 4),
+    lda_abx(0xbdu, Address.abx, MemoryOperations.loadAccumulator, 4),
+    lda_aby(0xb9u, Address.aby, MemoryOperations.loadAccumulator, 4),
+    lda_z(0xa5u, Address.z, MemoryOperations.loadAccumulator, 3),
+    lda_zx(0xb5u, Address.zx, MemoryOperations.loadAccumulator, 4),
+    lda_ixir(0xa1u, Address.ixir, MemoryOperations.loadAccumulator, 6),
+    lda_irix(0xb1u, Address.irix, MemoryOperations.loadAccumulator, 5),
 
-    ldx_i(0xa2u, Address.i, Operations.loadx, 2),
-    ldx_ab(0xaeu, Address.ab, Operations.loadx, 4),
-    ldx_aby(0xbeu, Address.aby, Operations.loadx, 4),
-    ldx_z(0xa6u, Address.z, Operations.loadx, 3),
-    ldx_zx(0xb6u, Address.zx, Operations.loadx, 4),
+    ldx_i(0xa2u, Address.i, MemoryOperations.loadx, 2),
+    ldx_ab(0xaeu, Address.ab, MemoryOperations.loadx, 4),
+    ldx_aby(0xbeu, Address.aby, MemoryOperations.loadx, 4),
+    ldx_z(0xa6u, Address.z, MemoryOperations.loadx, 3),
+    ldx_zx(0xb6u, Address.zx, MemoryOperations.loadx, 4),
 
-    ldy_i(0xa0u, Address.i, Operations.loady, 2),
-    ldy_ab(0xacu, Address.ab, Operations.loady, 4),
-//    ldy_abx(0xbcu, Address.abx, Operations.loady, 4),
-    ldy_z(0xa4u, Address.z, Operations.loady, 3),
-    ldy_zx(0xb4u, Address.zx, Operations.loady, 4),
+    ldy_i(0xa0u, Address.i, MemoryOperations.loady, 2),
+    ldy_ab(0xacu, Address.ab, MemoryOperations.loady, 4),
+//    ldy_abx(0xbcu, Address.abx, LoadOperations.loady, 4),
+    ldy_z(0xa4u, Address.z, MemoryOperations.loady, 3),
+    ldy_zx(0xb4u, Address.zx, MemoryOperations.loady, 4),
 
     nop(0xeau, Address.none, Operations.noOperation, 2),
 
@@ -106,17 +108,17 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 
     sec(0x38u, Address.none, FlagOperations.setCarry, 2),
 
-    sta_ab(0x8du, Address.ab, Operations.storeAccumulator, 4),
-//    sta_abx(0x9du, Address.abx, Operations.storeAccumulator, 5),
-    sta_aby(0x99u, Address.aby, Operations.storeAccumulator, 5),
-    sta_z(0x85u, Address.z, Operations.storeAccumulator, 3),
-    sta_zx(0x95u, Address.zx, Operations.storeAccumulator, 4),
-    sta_ixir(0x81u, Address.ixir, Operations.storeAccumulator, 6),
-    sta_irix(0x91u, Address.irix, Operations.storeAccumulator, 6),
+    sta_ab(0x8du, Address.ab, MemoryOperations.storeAccumulator, 4),
+//    sta_abx(0x9du, Address.abx, MemoryOperations.storeAccumulator, 5),
+    sta_aby(0x99u, Address.aby, MemoryOperations.storeAccumulator, 5),
+    sta_z(0x85u, Address.z, MemoryOperations.storeAccumulator, 3),
+    sta_zx(0x95u, Address.zx, MemoryOperations.storeAccumulator, 4),
+    sta_ixir(0x81u, Address.ixir, MemoryOperations.storeAccumulator, 6),
+    sta_irix(0x91u, Address.irix, MemoryOperations.storeAccumulator, 6),
 
-    stx_ab(0x8eu, Address.ab, Operations.storeX, 4),
-    stx_z(0x86u, Address.z, Operations.storeX, 3),
-    stx_zy(0x96u, Address.zy, Operations.storeX, 4),
+    stx_ab(0x8eu, Address.ab, MemoryOperations.storeX, 4),
+    stx_z(0x86u, Address.z, MemoryOperations.storeX, 3),
+    stx_zy(0x96u, Address.zy, MemoryOperations.storeX, 4),
 
     tay(0xa8u, Address.none, Operations.transferAccumulatorToY, 2),
     tax(0xaau, Address.none, Operations.transferAccumulatorToX, 2),

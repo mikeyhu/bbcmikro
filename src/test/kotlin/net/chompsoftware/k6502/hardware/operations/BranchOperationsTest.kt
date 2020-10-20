@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 @ExperimentalUnsignedTypes
-class BranchTest {
+class BranchOperationsTest {
     @Nested
     inner class BranchOnNotEqual {
         @Test

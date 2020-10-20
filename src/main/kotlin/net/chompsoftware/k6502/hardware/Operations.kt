@@ -9,55 +9,6 @@ internal object Operations {
         throw NotImplementedError("Not Implemented Operation ${instruction.name}:${instruction.u.toString(16)} at ${state.programCounter.toString(16)}")
     }
 
-
-
-
-    private val branchIfTrue = { check: Boolean, instruction: InstructionSet, state: CpuState, memory: Memory ->
-        val newState = if (check) {
-            val location = memory.readUsing(instruction.ad, state)
-            val newLocation = if (location >= 0x80u) -0x100 + location.toInt() else location.toInt()
-            state.copy(
-                    cycleCount = state.cycleCount + instruction.cy + 1,
-                    programCounter = state.programCounter + instruction.ad.size + newLocation
-            )
-
-        } else state.incrementCountersBy(instruction.ad.size, instruction.cy)
-        if(VERBOSE) println("Branch ${check} from ${state.programCounter.toString(16)} to ${newState.programCounter.toString(16)}")
-        newState
-    }
-
-    val branchOnCarryClear = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        branchIfTrue(!state.isCarryFlag, instruction, state, memory)
-    }
-
-    val branchOnCarrySet = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        branchIfTrue(state.isCarryFlag, instruction, state, memory)
-    }
-
-    val branchOnMinus = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        branchIfTrue(state.isNegativeFlag, instruction, state, memory)
-    }
-
-    val branchOnNotEqual = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        branchIfTrue(!state.isZeroFlag, instruction, state, memory)
-    }
-
-    val branchOnEqual = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        branchIfTrue(state.isZeroFlag, instruction, state, memory)
-    }
-
-    val branchOnPlus = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        branchIfTrue(!state.isNegativeFlag, instruction, state, memory)
-    }
-
-    val branchOnOverflowClear = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        branchIfTrue(!state.isOverflowFlag, instruction, state, memory)
-    }
-
-    val branchOnOverflowSet = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        branchIfTrue(state.isOverflowFlag, instruction, state, memory)
-    }
-
     val brk = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         memory.writeUInt16ToStack(state.stackPointer, state.programCounter.toUInt() + 2u)
         memory.writeUByteToStack(state.stackPointer - 2, state.copy(isBreakCommandFlag = true).readFlagsAsUbyte())
@@ -102,41 +53,6 @@ internal object Operations {
                 carryFlag = state.yRegister >= compareTo,
                 negativeFlag = state.yRegister < compareTo
         )
-    }
-
-
-
-
-
-
-
-    val storeAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        val location = memory.positionUsing(instruction.ad, state)
-        memory[location] = state.aRegister.toUByte()
-        state.incrementCountersBy(instruction.ad.size, instruction.cy)
-    }
-
-    val storeX = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        val location = memory.positionUsing(instruction.ad, state)
-        memory[location] = state.xRegister.toUByte()
-        state.incrementCountersBy(instruction.ad.size, instruction.cy)
-    }
-
-    val loadAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        val register = memory.readUsing(instruction.ad, state)
-        state.copyRelativeWithA(
-                instruction,
-                register)
-    }
-
-    val loadx = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        val register = memory.readUsing(instruction.ad, state)
-        state.copyRelativeWithX(instruction, register)
-    }
-
-    val loady = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        val register = memory.readUsing(instruction.ad, state)
-        state.copyRelativeWithY(instruction, register)
     }
 
     val jump = { instruction: InstructionSet, state: CpuState, memory: Memory ->

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 
 
 @ExperimentalUnsignedTypes
-class LoadTest {
+class MemoryOperationsTest {
     @Nested
     inner class LoadAccumulator {
         @Test
@@ -140,6 +140,60 @@ class LoadTest {
                     yRegister = 0x0u,
                     isZeroFlag = true
             )
+        }
+    }
+
+    @Nested
+    inner class StoreAccumulator {
+        @Test
+        fun `Should store accumulator in memory using Zero Page addressing`() {
+            val memory = Memory(setupMemory(InstructionSet.sta_z.u, 0x02u, 0x05u))
+            val state = CpuState(aRegister = 0x11u)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 3,
+                    programCounter = 0x02
+            )
+            memory.readUInt(0x02) shouldBe 0x11u
+        }
+
+        @Test
+        fun `Should store accumulator in memory using Absolute addressing`() {
+            val memory = Memory(setupMemory(InstructionSet.sta_ab.u, 0x05u, 0x01u))
+            val state = CpuState(aRegister = 0x11u)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 4,
+                    programCounter = 0x03
+            )
+            memory.readUInt(0x105) shouldBe 0x11u
+        }
+    }
+
+    @Nested
+    inner class StoreX {
+        @Test
+        fun `Should store X in memory using Zero Page addressing`() {
+            val memory = Memory(setupMemory(InstructionSet.stx_z.u, 0x02u, 0x05u))
+            val state = CpuState(xRegister = 0x11u)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 3,
+                    programCounter = 0x02
+            )
+            memory.readUInt(0x02) shouldBe 0x11u
+        }
+
+        @Test
+        fun `Should store X in memory using Absolute addressing`() {
+            val memory = Memory(setupMemory(InstructionSet.stx_ab.u, 0x05u, 0x01u))
+            val state = CpuState(xRegister = 0x11u)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 4,
+                    programCounter = 0x03
+            )
+            memory.readUInt(0x105) shouldBe 0x11u
         }
     }
 
