@@ -91,6 +91,7 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     plp(0x28u, Address.none, Operations.pullProcessorStatus, 4),
 
     rts(0x60u, Address.none, Operations.returnFromSubroutine, 6),
+    rti(0x40u, Address.none, Operations.returnFromInterrupt, 6),
 
     sta_ab(0x8du, Address.ab, Operations.storeAccumulator, 4),
 //    sta_abx(0x9du, Address.abx, Operations.storeAccumulator, 5),

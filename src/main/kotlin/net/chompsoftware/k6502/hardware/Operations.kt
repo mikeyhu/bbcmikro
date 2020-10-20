@@ -188,7 +188,17 @@ internal object Operations {
                 programCounter = memory.readUInt16FromStack(state.stackPointer).toInt() + 1,
                 stackPointer = state.stackPointer + 2
         )
+    }
 
+    val returnFromInterrupt = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        val flagsByte = memory.readUIntFromStack(state.stackPointer + 1)
+        val position = memory.readUInt16FromStack(state.stackPointer + 1)
+        state.setFlagsUsingUByte(
+                flagsByte,
+                position.toInt(),
+                state.stackPointer + 3,
+                instruction.cy
+        )
     }
 
     val clearCarry = { instruction: InstructionSet, state: CpuState, _: Memory ->

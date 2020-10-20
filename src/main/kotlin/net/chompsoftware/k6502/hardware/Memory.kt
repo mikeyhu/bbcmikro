@@ -45,11 +45,14 @@ class Memory(val store: UByteArray) {
     private fun toUInt16(c: UByte, c2: UByte) = c2.toUInt().shl(8).or(c.toUInt())
     private fun toInt16(c: UByte, c2: UByte) = toUInt16(c, c2).toInt()
 
-    fun readUByte(position: Int) = store[position]
+    fun readUByte(position: Int): UByte {
+        val value = store[position]
+        if(VERBOSE) println("read Ubyte ${value.toString(16)} from ${position.toString(16)}")
+        return value
+    }
 
     private fun writeUByte(position: Int, value: UByte) {
-        if(VERBOSE) println("write ${value.toString(16)} to ${position.toString(16)}")
-
+        if(VERBOSE) println("write Ubyte ${value.toString(16)} to ${position.toString(16)}")
         store[position] = value
     }
 

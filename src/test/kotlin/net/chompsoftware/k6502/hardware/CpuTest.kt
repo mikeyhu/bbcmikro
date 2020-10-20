@@ -2,10 +2,7 @@ package net.chompsoftware.k6502.hardware
 
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
-import io.kotest.matchers.string.shouldStartWith
 import net.chompsoftware.k6502.hardware.InstructionSet.*
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
@@ -37,10 +34,11 @@ class CpuTest {
         values().forEach {instruction ->
             val memory = Memory(setupMemory(brk.u, instruction.u, 0x04u, 0x00u, 0xffu, 0x00u))
             memory.writeUInt16ToStack(0xfe, 0x9999u)
+            memory.writeUByteToStack(0xfd, 0x99u)
             val state = CpuState(
                     programCounter = 1,
                     breakLocation = 0x04,
-                    stackPointer = 0xfd
+                    stackPointer = 0xfc
             )
             try {
                 val result = Cpu().run(state, memory)
@@ -81,6 +79,22 @@ class CpuTest {
                 it.programCounter shouldBe 0x201
                 it.isBreakCommandFlag shouldBe true
                 it.isInterruptDisabledFlag shouldBe true
+            }
+        }
+    }
+
+    @Nested
+    inner class ReturnFromInterrupt {
+        @Test
+        fun `Should return back from a break`() {
+            val memory = Memory(setupMemory(brk.u, 0x01u, 0x02u))
+            memory[0x201] = rti.u
+            val state = CpuState(breakLocation = 0x01)
+            val cpu = Cpu()
+            val stateAfterBreak = cpu.run(state, memory)
+            cpu.run(stateAfterBreak, memory) should {
+                it.programCounter shouldBe 2
+                it.isBreakCommandFlag shouldBe true
             }
         }
     }
