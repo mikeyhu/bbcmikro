@@ -1,5 +1,7 @@
 package net.chompsoftware.k6502.hardware
 
+import net.chompsoftware.k6502.hardware.operations.FlagOperations
+
 @ExperimentalUnsignedTypes
 enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val cy: Long) {
     adc_i(0x69u, Address.i, Operations.addWithCarry, 2),
@@ -22,8 +24,9 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 
     brk(0x00u, Address.none, Operations.brk, 7),
 
-    clc(0x18u, Address.none, Operations.clearCarry, 2),
-    cld(0xd8u, Address.none, Operations.clearDecimal, 2),
+    clc(0x18u, Address.none, FlagOperations.clearCarry, 2),
+    cld(0xd8u, Address.none, FlagOperations.clearDecimal, 2),
+    cli(0x58u, Address.none, FlagOperations.clearInterrupt, 2),
 
     cmp_i(0xc9u, Address.i, Operations.compareAccumulator, 2),
     cmp_ab(0xcdu, Address.ab, Operations.compareAccumulator, 4),
@@ -100,7 +103,7 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     rts(0x60u, Address.none, Operations.returnFromSubroutine, 6),
     rti(0x40u, Address.none, Operations.returnFromInterrupt, 6),
 
-    sec(0x38u, Address.none, Operations.setCarry, 2),
+    sec(0x38u, Address.none, FlagOperations.setCarry, 2),
 
     sta_ab(0x8du, Address.ab, Operations.storeAccumulator, 4),
 //    sta_abx(0x9du, Address.abx, Operations.storeAccumulator, 5),

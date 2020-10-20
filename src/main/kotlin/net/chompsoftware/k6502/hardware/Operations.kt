@@ -5,7 +5,7 @@ internal typealias Operation = (instruction: InstructionSet, state: CpuState, me
 
 @ExperimentalUnsignedTypes
 internal object Operations {
-    val notImplementedOperation = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val notImplementedOperation = { instruction: InstructionSet, state: CpuState, _: Memory ->
         throw NotImplementedError("Not Implemented Operation ${instruction.name}:${instruction.u.toString(16)} at ${state.programCounter.toString(16)}")
     }
 
@@ -205,18 +205,6 @@ internal object Operations {
                 state.stackPointer + 3,
                 instruction.cy
         )
-    }
-
-    val clearCarry = { instruction: InstructionSet, state: CpuState, _: Memory ->
-        state.copyRelativeWithFlags(instruction, carryFlag = false)
-    }
-
-    val setCarry = { instruction: InstructionSet, state: CpuState, _: Memory ->
-        state.copyRelativeWithFlags(instruction, carryFlag = true)
-    }
-
-    val clearDecimal = { instruction: InstructionSet, state: CpuState, _: Memory ->
-        state.copyRelativeWithFlags(instruction, decimalFlag = false)
     }
 
     val pushAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->

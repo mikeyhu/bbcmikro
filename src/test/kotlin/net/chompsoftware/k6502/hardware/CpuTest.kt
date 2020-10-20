@@ -215,51 +215,6 @@ class CpuTest {
     }
 
     @Nested
-    inner class ClearCarry {
-        @Test
-        fun `Should reset carry flag`() {
-            val memory = Memory(setupMemory(clc.u))
-            val state = CpuState(isCarryFlag = true)
-            val cpu = Cpu()
-            cpu.run(state, memory) shouldBe state.copy(
-                    cycleCount = 2L,
-                    programCounter = 0x01,
-                    isCarryFlag = false
-            )
-        }
-    }
-
-    @Nested
-    inner class SetCarry {
-        @Test
-        fun `Should set carry flag`() {
-            val memory = Memory(setupMemory(sec.u))
-            val state = CpuState(isCarryFlag = false)
-            val cpu = Cpu()
-            cpu.run(state, memory) shouldBe state.copy(
-                    cycleCount = 2L,
-                    programCounter = 0x01,
-                    isCarryFlag = true
-            )
-        }
-    }
-
-    @Nested
-    inner class ClearDecimal {
-        @Test
-        fun `Should reset decimal flag`() {
-            val memory = Memory(setupMemory(cld.u))
-            val state = CpuState(isDecimalFlag = true)
-            val cpu = Cpu()
-            cpu.run(state, memory) shouldBe state.copy(
-                    cycleCount = 2,
-                    programCounter = 0x01,
-                    isDecimalFlag = false
-            )
-        }
-    }
-
-    @Nested
     inner class NoOperation {
         @Test
         fun `Should just update programCounter`() {
