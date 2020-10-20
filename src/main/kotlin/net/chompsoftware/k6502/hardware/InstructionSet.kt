@@ -1,17 +1,18 @@
 package net.chompsoftware.k6502.hardware
 
 import net.chompsoftware.k6502.hardware.operations.FlagOperations
+import net.chompsoftware.k6502.hardware.operations.MathOperations
 
 @ExperimentalUnsignedTypes
 enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val cy: Long) {
-    adc_i(0x69u, Address.i, Operations.addWithCarry, 2),
-    adc_ab(0x6du, Address.ab, Operations.addWithCarry, 4),
-//    adc_abx(0x7du, Address.abx, Operations.addWithCarry, 4),
-    adc_aby(0x79u, Address.aby, Operations.addWithCarry, 4),
-    adc_z(0x65u, Address.z, Operations.addWithCarry, 3),
-    adc_zx(0x75u, Address.zx, Operations.addWithCarry, 4),
-    adc_ixir(0x61u, Address.ixir, Operations.addWithCarry, 6),
-    adc_irix(0x71u, Address.irix, Operations.addWithCarry, 5),
+    adc_i(0x69u, Address.i, MathOperations.addWithCarry, 2),
+    adc_ab(0x6du, Address.ab, MathOperations.addWithCarry, 4),
+//    adc_abx(0x7du, Address.abx, MathOperations.addWithCarry, 4),
+    adc_aby(0x79u, Address.aby, MathOperations.addWithCarry, 4),
+    adc_z(0x65u, Address.z, MathOperations.addWithCarry, 3),
+    adc_zx(0x75u, Address.zx, MathOperations.addWithCarry, 4),
+    adc_ixir(0x61u, Address.ixir, MathOperations.addWithCarry, 6),
+    adc_irix(0x71u, Address.irix, MathOperations.addWithCarry, 5),
 
     bcc(0x90u, Address.i, Operations.branchOnCarryClear, 2),
     bcs(0xb0u, Address.i, Operations.branchOnCarrySet, 2),
@@ -45,20 +46,20 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     cpy_ab(0xccu, Address.ab, Operations.compareY, 4),
     cpy_z(0xc4u, Address.z, Operations.compareY, 3),
 
-    dex(0xcau, Address.none, Operations.decrementx, 2),
-    dey(0x88u, Address.none, Operations.decrementy, 2),
+    dex(0xcau, Address.none, MathOperations.decrementx, 2),
+    dey(0x88u, Address.none, MathOperations.decrementy, 2),
 
-    eor_i(0x49u, Address.i, Operations.exclusiveOr, 2),
-    eor_ab(0x4du, Address.ab, Operations.exclusiveOr, 4),
-//    eor_abx(0x5du, Address.abx, Operations.exclusiveOr, 4),
-    eor_aby(0x59u, Address.aby, Operations.exclusiveOr, 4),
-    eor_z(0x45u, Address.z, Operations.exclusiveOr, 3),
-    eor_zx(0x55u, Address.zx, Operations.exclusiveOr, 4),
-    eor_ixir(0x41u, Address.ixir, Operations.exclusiveOr, 6),
-    eor_irix(0x51u, Address.irix, Operations.exclusiveOr, 5),
+    eor_i(0x49u, Address.i, MathOperations.exclusiveOr, 2),
+    eor_ab(0x4du, Address.ab, MathOperations.exclusiveOr, 4),
+//    eor_abx(0x5du, Address.abx, MathOperations.exclusiveOr, 4),
+    eor_aby(0x59u, Address.aby, MathOperations.exclusiveOr, 4),
+    eor_z(0x45u, Address.z, MathOperations.exclusiveOr, 3),
+    eor_zx(0x55u, Address.zx, MathOperations.exclusiveOr, 4),
+    eor_ixir(0x41u, Address.ixir, MathOperations.exclusiveOr, 6),
+    eor_irix(0x51u, Address.irix, MathOperations.exclusiveOr, 5),
 
-    inx(0xe8u, Address.none, Operations.incrementx, 2),
-    iny(0xc8u, Address.none, Operations.incrementy, 2),
+    inx(0xe8u, Address.none, MathOperations.incrementx, 2),
+    iny(0xc8u, Address.none, MathOperations.incrementy, 2),
 
     jmp_ab(0x4cu, Address.ab, Operations.jump, 3),
     jmp_ir(0x6cu, Address.ir, Operations.jump, 5),
@@ -88,12 +89,12 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 
     nop(0xeau, Address.none, Operations.noOperation, 2),
 
-    ora_i(0x09u, Address.i, Operations.orWithAccumulator, 2),
-//    ora_z(0x05u, Address.z, Operations.orWithAccumulator, 3),
-//    ora_zx(0x15u, Address.zx, Operations.orWithAccumulator, 4),
-//    ora_ab(0x0Du, Address.ab, Operations.orWithAccumulator, 4),
-//    ora_abx(0x1Du, Address.abx, Operations.orWithAccumulator, 4),
-//    ora_aby(0x19u, Address.aby, Operations.orWithAccumulator, 4),
+    ora_i(0x09u, Address.i, MathOperations.orWithAccumulator, 2),
+//    ora_z(0x05u, Address.z, MathOperations.orWithAccumulator, 3),
+//    ora_zx(0x15u, Address.zx, MathOperations.orWithAccumulator, 4),
+//    ora_ab(0x0Du, Address.ab, MathOperations.orWithAccumulator, 4),
+//    ora_abx(0x1Du, Address.abx, MathOperations.orWithAccumulator, 4),
+//    ora_aby(0x19u, Address.aby, MathOperations.orWithAccumulator, 4),
 
     pha(0x48u, Address.none, Operations.pushAccumulator, 3),
     pla(0x68u, Address.none, Operations.pullAccumulator, 4),
