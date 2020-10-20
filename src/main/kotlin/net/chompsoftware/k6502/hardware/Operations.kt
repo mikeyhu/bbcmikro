@@ -136,6 +136,12 @@ internal object Operations {
                 state.aRegister.xor(memory.readUsing(instruction.ad, state)))
     }
 
+    val orWithAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        state.copyRelativeWithA(
+                instruction,
+                state.aRegister.or(memory.readUsing(instruction.ad, state)))
+    }
+
     val storeAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         val location = memory.positionUsing(instruction.ad, state)
         memory[location] = state.aRegister.toUByte()
@@ -203,6 +209,10 @@ internal object Operations {
 
     val clearCarry = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copyRelativeWithFlags(instruction, carryFlag = false)
+    }
+
+    val setCarry = { instruction: InstructionSet, state: CpuState, _: Memory ->
+        state.copyRelativeWithFlags(instruction, carryFlag = true)
     }
 
     val clearDecimal = { instruction: InstructionSet, state: CpuState, _: Memory ->

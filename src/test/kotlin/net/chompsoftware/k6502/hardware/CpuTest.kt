@@ -156,7 +156,7 @@ class CpuTest {
     @Nested
     inner class ExclusiveOr {
         @Test
-        fun `Should OR the accumulator with the immediate value`() {
+        fun `Should XOR the accumulator with the immediate value`() {
             val memory = Memory(setupMemory(eor_i.u, 0xffu))
             val state = CpuState(aRegister = 0x0fu)
             val cpu = Cpu()
@@ -199,6 +199,22 @@ class CpuTest {
     }
 
     @Nested
+    inner class OrWithAccumulator {
+        @Test
+        fun `Should OR the accumulator with the immediate value`() {
+            val memory = Memory(setupMemory(ora_i.u, 0xf0u))
+            val state = CpuState(aRegister = 0x0fu)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
+                    programCounter = 0x02,
+                    aRegister = 0xffu,
+                    isNegativeFlag = true
+            )
+        }
+    }
+
+    @Nested
     inner class ClearCarry {
         @Test
         fun `Should reset carry flag`() {
@@ -209,6 +225,21 @@ class CpuTest {
                     cycleCount = 2L,
                     programCounter = 0x01,
                     isCarryFlag = false
+            )
+        }
+    }
+
+    @Nested
+    inner class SetCarry {
+        @Test
+        fun `Should set carry flag`() {
+            val memory = Memory(setupMemory(sec.u))
+            val state = CpuState(isCarryFlag = false)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
+                    programCounter = 0x01,
+                    isCarryFlag = true
             )
         }
     }

@@ -85,6 +85,13 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 
     nop(0xeau, Address.none, Operations.noOperation, 2),
 
+    ora_i(0x09u, Address.i, Operations.orWithAccumulator, 2),
+//    ora_z(0x05u, Address.z, Operations.orWithAccumulator, 3),
+//    ora_zx(0x15u, Address.zx, Operations.orWithAccumulator, 4),
+//    ora_ab(0x0Du, Address.ab, Operations.orWithAccumulator, 4),
+//    ora_abx(0x1Du, Address.abx, Operations.orWithAccumulator, 4),
+//    ora_aby(0x19u, Address.aby, Operations.orWithAccumulator, 4),
+
     pha(0x48u, Address.none, Operations.pushAccumulator, 3),
     pla(0x68u, Address.none, Operations.pullAccumulator, 4),
     php(0x08u, Address.none, Operations.pushProcessorStatus, 3),
@@ -92,6 +99,8 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 
     rts(0x60u, Address.none, Operations.returnFromSubroutine, 6),
     rti(0x40u, Address.none, Operations.returnFromInterrupt, 6),
+
+    sec(0x38u, Address.none, Operations.setCarry, 2),
 
     sta_ab(0x8du, Address.ab, Operations.storeAccumulator, 4),
 //    sta_abx(0x9du, Address.abx, Operations.storeAccumulator, 5),
