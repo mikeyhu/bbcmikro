@@ -1,9 +1,11 @@
 package net.chompsoftware.k6502.hardware
 
+import net.chompsoftware.k6502.hardware.operations.*
 import net.chompsoftware.k6502.hardware.operations.BranchOperations
 import net.chompsoftware.k6502.hardware.operations.FlagOperations
-import net.chompsoftware.k6502.hardware.operations.MemoryOperations
 import net.chompsoftware.k6502.hardware.operations.MathOperations
+import net.chompsoftware.k6502.hardware.operations.MemoryOperations
+import net.chompsoftware.k6502.hardware.operations.StackOperations
 
 @ExperimentalUnsignedTypes
 enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val cy: Long) {
@@ -98,10 +100,10 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 //    ora_abx(0x1Du, Address.abx, MathOperations.orWithAccumulator, 4),
 //    ora_aby(0x19u, Address.aby, MathOperations.orWithAccumulator, 4),
 
-    pha(0x48u, Address.none, Operations.pushAccumulator, 3),
-    pla(0x68u, Address.none, Operations.pullAccumulator, 4),
-    php(0x08u, Address.none, Operations.pushProcessorStatus, 3),
-    plp(0x28u, Address.none, Operations.pullProcessorStatus, 4),
+    pha(0x48u, Address.none, StackOperations.pushAccumulator, 3),
+    pla(0x68u, Address.none, StackOperations.pullAccumulator, 4),
+    php(0x08u, Address.none, StackOperations.pushProcessorStatus, 3),
+    plp(0x28u, Address.none, StackOperations.pullProcessorStatus, 4),
 
     rts(0x60u, Address.none, Operations.returnFromSubroutine, 6),
     rti(0x40u, Address.none, Operations.returnFromInterrupt, 6),
