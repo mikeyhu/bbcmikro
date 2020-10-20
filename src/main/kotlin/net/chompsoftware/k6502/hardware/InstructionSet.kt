@@ -1,6 +1,8 @@
 package net.chompsoftware.k6502.hardware
 
+import net.chompsoftware.k6502.hardware.operations.*
 import net.chompsoftware.k6502.hardware.operations.BranchOperations
+import net.chompsoftware.k6502.hardware.operations.ComparisonOperations
 import net.chompsoftware.k6502.hardware.operations.FlagOperations
 import net.chompsoftware.k6502.hardware.operations.MathOperations
 import net.chompsoftware.k6502.hardware.operations.MemoryOperations
@@ -33,22 +35,22 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     cld(0xd8u, Address.none, FlagOperations.clearDecimal, 2),
     cli(0x58u, Address.none, FlagOperations.clearInterrupt, 2),
 
-    cmp_i(0xc9u, Address.i, Operations.compareAccumulator, 2),
-    cmp_ab(0xcdu, Address.ab, Operations.compareAccumulator, 4),
-//    cmp_abx(0xddu, Address.abx, Operations.compareAccumulator, 4),
-    cmp_aby(0xd9u, Address.aby, Operations.compareAccumulator, 4),
-    cmp_z(0xc5u, Address.z, Operations.compareAccumulator, 3),
-    cmp_zx(0xd5u, Address.zx, Operations.compareAccumulator, 4),
-    cmp_ixir(0xc1u, Address.ixir, Operations.compareAccumulator, 6),
-    cmp_irix(0xd1u, Address.irix, Operations.compareAccumulator, 5),
+    cmp_i(0xc9u, Address.i, ComparisonOperations.compareAccumulator, 2),
+    cmp_ab(0xcdu, Address.ab, ComparisonOperations.compareAccumulator, 4),
+//    cmp_abx(0xddu, Address.abx, ComparisonOperations.compareAccumulator, 4),
+    cmp_aby(0xd9u, Address.aby, ComparisonOperations.compareAccumulator, 4),
+    cmp_z(0xc5u, Address.z, ComparisonOperations.compareAccumulator, 3),
+    cmp_zx(0xd5u, Address.zx, ComparisonOperations.compareAccumulator, 4),
+    cmp_ixir(0xc1u, Address.ixir, ComparisonOperations.compareAccumulator, 6),
+    cmp_irix(0xd1u, Address.irix, ComparisonOperations.compareAccumulator, 5),
 
-    cpx_i(0xe0u, Address.i, Operations.compareX, 2),
-    cpx_ab(0xecu, Address.ab, Operations.compareX, 4),
-    cpx_z(0xe4u, Address.z, Operations.compareX, 3),
+    cpx_i(0xe0u, Address.i, ComparisonOperations.compareX, 2),
+    cpx_ab(0xecu, Address.ab, ComparisonOperations.compareX, 4),
+    cpx_z(0xe4u, Address.z, ComparisonOperations.compareX, 3),
 
-    cpy_i(0xc0u, Address.i, Operations.compareY, 2),
-    cpy_ab(0xccu, Address.ab, Operations.compareY, 4),
-    cpy_z(0xc4u, Address.z, Operations.compareY, 3),
+    cpy_i(0xc0u, Address.i, ComparisonOperations.compareY, 2),
+    cpy_ab(0xccu, Address.ab, ComparisonOperations.compareY, 4),
+    cpy_z(0xc4u, Address.z, ComparisonOperations.compareY, 3),
 
     dex(0xcau, Address.none, MathOperations.decrementx, 2),
     dey(0x88u, Address.none, MathOperations.decrementy, 2),
