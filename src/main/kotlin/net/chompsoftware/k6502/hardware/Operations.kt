@@ -91,34 +91,6 @@ internal object Operations {
         )
     }
 
-    val transferXToStack = { instruction: InstructionSet, state: CpuState, _: Memory ->
-        state.copy(
-                cycleCount = state.cycleCount + instruction.cy,
-                programCounter = state.programCounter + instruction.ad.size,
-                stackPointer = state.xRegister.toInt()
-        )
-    }
-
-    val transferStackToX = { instruction: InstructionSet, state: CpuState, _: Memory ->
-        state.copyRelativeWithX(instruction, state.stackPointer.toUInt())
-    }
-
-    val transferAccumulatorToX = { instruction: InstructionSet, state: CpuState, _: Memory ->
-        state.copyRelativeWithX(instruction, state.aRegister)
-    }
-
-    val transferAccumulatorToY = { instruction: InstructionSet, state: CpuState, _: Memory ->
-        state.copyRelativeWithY(instruction, state.aRegister)
-    }
-
-    val transferYtoAccumulator = { instruction: InstructionSet, state: CpuState, _: Memory ->
-        state.copyRelativeWithA(instruction, state.yRegister)
-    }
-
-    val transferXtoAccumulator = { instruction: InstructionSet, state: CpuState, _: Memory ->
-        state.copyRelativeWithA(instruction, state.xRegister)
-    }
-
     val noOperation = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.incrementCountersBy(instruction.ad.size, instruction.cy)
     }

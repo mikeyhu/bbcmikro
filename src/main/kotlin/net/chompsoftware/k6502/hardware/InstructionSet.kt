@@ -1,11 +1,11 @@
 package net.chompsoftware.k6502.hardware
 
-import net.chompsoftware.k6502.hardware.operations.*
 import net.chompsoftware.k6502.hardware.operations.BranchOperations
 import net.chompsoftware.k6502.hardware.operations.FlagOperations
 import net.chompsoftware.k6502.hardware.operations.MathOperations
 import net.chompsoftware.k6502.hardware.operations.MemoryOperations
 import net.chompsoftware.k6502.hardware.operations.StackOperations
+import net.chompsoftware.k6502.hardware.operations.TransferOperations
 
 @ExperimentalUnsignedTypes
 enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val cy: Long) {
@@ -122,12 +122,12 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     stx_z(0x86u, Address.z, MemoryOperations.storeX, 3),
     stx_zy(0x96u, Address.zy, MemoryOperations.storeX, 4),
 
-    tay(0xa8u, Address.none, Operations.transferAccumulatorToY, 2),
-    tax(0xaau, Address.none, Operations.transferAccumulatorToX, 2),
-    tya(0x98u, Address.none, Operations.transferYtoAccumulator, 2),
-    txa(0x8au, Address.none, Operations.transferXtoAccumulator, 2),
-    txs(0x9au, Address.none, Operations.transferXToStack, 2),
-    tsx(0xbau, Address.none, Operations.transferStackToX, 2);
+    tay(0xa8u, Address.none, TransferOperations.transferAccumulatorToY, 2),
+    tax(0xaau, Address.none, TransferOperations.transferAccumulatorToX, 2),
+    tya(0x98u, Address.none, TransferOperations.transferYtoAccumulator, 2),
+    txa(0x8au, Address.none, TransferOperations.transferXtoAccumulator, 2),
+    txs(0x9au, Address.none, TransferOperations.transferXToStack, 2),
+    tsx(0xbau, Address.none, TransferOperations.transferStackToX, 2);
 
     fun run(state: CpuState, memory: Memory) = op(this, state, memory)
 

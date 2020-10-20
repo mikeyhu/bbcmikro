@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 @ExperimentalUnsignedTypes
-class TransferTest {
+class TransferOperationsTest {
     @Nested
     inner class TransferXtoStack {
         @Test
