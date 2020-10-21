@@ -100,6 +100,32 @@ class MemoryOperationsTest {
                     isZeroFlag = true
             )
         }
+
+        @Test
+        fun `Should handle LoaDX instruction with zy addressing`() {
+            val memory = Memory(setupMemory(InstructionSet.ldx_zy.u, 0xf0u))
+            memory[0xf1u] = 0x0fu
+            val state = CpuState(yRegister = 0x1u)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 4L,
+                    programCounter = 0x02,
+                    xRegister = 0x0fu
+            )
+        }
+
+        @Test
+        fun `Should handle LoaDX instruction with zy addressing with wrap around`() {
+            val memory = Memory(setupMemory(InstructionSet.ldx_zy.u, 0xf0u))
+            memory[0x10u] = 0x0fu
+            val state = CpuState(yRegister = 0x20u)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 4L,
+                    programCounter = 0x02,
+                    xRegister = 0x0fu
+            )
+        }
     }
 
     @Nested

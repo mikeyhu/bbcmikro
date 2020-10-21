@@ -58,7 +58,7 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     cmp_i(0xc9u, Address.i, ComparisonOperations.compareAccumulator, 2),
     cmp_ab(0xcdu, Address.ab, ComparisonOperations.compareAccumulator, 4),
 //    cmp_abx(0xddu, Address.abx, ComparisonOperations.compareAccumulator, 4),
-//    cmp_aby(0xd9u, Address.aby, ComparisonOperations.compareAccumulator, 4),
+    cmp_aby(0xd9u, Address.aby, ComparisonOperations.compareAccumulator, 4),
 //    cmp_z(0xc5u, Address.z, ComparisonOperations.compareAccumulator, 3),
 //    cmp_zx(0xd5u, Address.zx, ComparisonOperations.compareAccumulator, 4),
 //    cmp_iix(0xc1u, Address.iix, ComparisonOperations.compareAccumulator, 6),
@@ -124,7 +124,7 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 //    ldx_ab(0xaeu, Address.ab, MemoryOperations.loadx, 4),
 //    ldx_aby(0xbeu, Address.aby, MemoryOperations.loadx, 4),
     ldx_z(0xa6u, Address.z, MemoryOperations.loadx, 3),
-//    ldx_zx(0xb6u, Address.zx, MemoryOperations.loadx, 4),
+    ldx_zy(0xb6u, Address.zy, MemoryOperations.loadx, 4),
 
     // Load Y
     ldy_i(0xa0u, Address.i, MemoryOperations.loady, 2),
@@ -193,7 +193,7 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     // Store Accumulator
     sta_ab(0x8du, Address.ab, MemoryOperations.storeAccumulator, 4),
 //    sta_abx(0x9du, Address.abx, MemoryOperations.storeAccumulator, 5),
-//    sta_aby(0x99u, Address.aby, MemoryOperations.storeAccumulator, 5),
+    sta_aby(0x99u, Address.aby, MemoryOperations.storeAccumulator, 5),
     sta_z(0x85u, Address.z, MemoryOperations.storeAccumulator, 3),
 //    sta_zx(0x95u, Address.zx, MemoryOperations.storeAccumulator, 4),
 //    sta_iix(0x81u, Address.iix, MemoryOperations.storeAccumulator, 6),
@@ -240,8 +240,8 @@ enum class Address(val size: Int) {
     ir(1000000006),
     ab(3),
     abx(3),
-    aby(100000004),
+    aby(3),
     z(2),
-    zx(100000005),
-    zy(100000007)
+    zx(2),
+    zy(2)
 }

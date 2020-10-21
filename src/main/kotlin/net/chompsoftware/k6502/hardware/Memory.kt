@@ -63,8 +63,11 @@ class Memory(val store: UByteArray) {
         return when (address) {
 //            Address.i -> readUInt(state.programCounter + 1)
             Address.z -> readUInt(state.programCounter + 1)
+            Address.zx -> (readUInt(state.programCounter + 1) + state.xRegister) % 0x100u
+            Address.zy -> (readUInt(state.programCounter + 1) + state.yRegister) % 0x100u
             Address.ab -> readUInt16(state.programCounter + 1)
             Address.abx -> readUInt16(state.programCounter + 1) + state.xRegister
+            Address.aby -> readUInt16(state.programCounter + 1) + state.yRegister
             Address.ir -> readUInt16(positionUsing(Address.ab, state).toInt())
             else -> throw NotImplementedError("Address mode ${address.name} not implemented for positionUsing")
         }.also {
@@ -75,10 +78,12 @@ class Memory(val store: UByteArray) {
     fun readUsing(address: Address, state: CpuState): UInt {
         return when (address) {
             Address.i -> readUInt(state.programCounter + 1)
-            Address.z -> readUInt(positionUsing(address, state).toInt())
-            Address.ab -> readUInt(positionUsing(address, state).toInt())
-//            Address.ab -> readUInt16(readUInt16(state.programCounter + 1).toInt())
-            Address.abx -> readUInt(positionUsing(address, state).toInt())
+            Address.z,
+            Address.zx,
+            Address.zy,
+            Address.ab,
+            Address.abx,
+            Address.aby -> readUInt(positionUsing(address, state).toInt())
             else -> throw NotImplementedError("Address mode ${address.name} not implemented for readUsing")
         }
     }
