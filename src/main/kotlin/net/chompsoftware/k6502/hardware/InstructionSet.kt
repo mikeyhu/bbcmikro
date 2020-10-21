@@ -62,7 +62,7 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     cmp_z(0xc5u, Address.z, ComparisonOperations.compareAccumulator, 3),
     cmp_zx(0xd5u, Address.zx, ComparisonOperations.compareAccumulator, 4),
 //    cmp_iix(0xc1u, Address.iix, ComparisonOperations.compareAccumulator, 6),
-//    cmp_iiy(0xd1u, Address.iiy, ComparisonOperations.compareAccumulator, 5),
+    cmp_iiy(0xd1u, Address.iiy, ComparisonOperations.compareAccumulator, 5),
 
     // Compare X
     cpx_i(0xe0u, Address.i, ComparisonOperations.compareX, 2),
@@ -116,8 +116,8 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     lda_aby(0xb9u, Address.aby, MemoryOperations.loadAccumulator, 4),
     lda_z(0xa5u, Address.z, MemoryOperations.loadAccumulator, 3),
     lda_zx(0xb5u, Address.zx, MemoryOperations.loadAccumulator, 4),
-//    lda_iix(0xa1u, Address.iix, MemoryOperations.loadAccumulator, 6),
-//    lda_iiy(0xb1u, Address.iiy, MemoryOperations.loadAccumulator, 5),
+    lda_iix(0xa1u, Address.iix, MemoryOperations.loadAccumulator, 6),
+    lda_iiy(0xb1u, Address.iiy, MemoryOperations.loadAccumulator, 5),
 
     // Load X
     ldx_i(0xa2u, Address.i, MemoryOperations.loadx, 2),
@@ -196,8 +196,8 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     sta_aby(0x99u, Address.aby, MemoryOperations.storeAccumulator, 5),
     sta_z(0x85u, Address.z, MemoryOperations.storeAccumulator, 3),
     sta_zx(0x95u, Address.zx, MemoryOperations.storeAccumulator, 4),
-//    sta_iix(0x81u, Address.iix, MemoryOperations.storeAccumulator, 6),
-//    sta_iiy(0x91u, Address.iiy, MemoryOperations.storeAccumulator, 6),
+    sta_iix(0x81u, Address.iix, MemoryOperations.storeAccumulator, 6),
+    sta_iiy(0x91u, Address.iiy, MemoryOperations.storeAccumulator, 6),
 
     // Store X
     stx_ab(0x8eu, Address.ab, MemoryOperations.storeX, 4),
@@ -235,9 +235,9 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 enum class Address(val size: Int) {
     none(1),
     i(2),
-    iiy(100000001),
-    iix(100000002),
-    ir(1000000006),
+    iiy(2),
+    iix(2),
+    ir(3),
     ab(3),
     abx(3),
     aby(3),
