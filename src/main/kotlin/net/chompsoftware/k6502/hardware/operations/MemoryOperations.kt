@@ -35,4 +35,10 @@ internal object MemoryOperations {
         memory[location] = state.xRegister.toUByte()
         state.incrementCountersBy(instruction.ad.size, instruction.cy)
     }
+
+    val storeY = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        val location = memory.positionUsing(instruction.ad, state)
+        memory[location] = state.yRegister.toUByte()
+        state.incrementCountersBy(instruction.ad.size, instruction.cy)
+    }
 }
