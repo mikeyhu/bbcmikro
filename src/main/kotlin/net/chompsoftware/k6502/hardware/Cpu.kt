@@ -135,6 +135,8 @@ data class CpuState(
         return "CpuState(pc=${programCounter.toHex()}, cc=${cycleCount} bl=${breakLocation.toHex()}, a=${aRegister.toHex()}, x=${xRegister.toHex()}, y=${yRegister.toHex()}" +
                 ", sp=${stackPointer.toHex()}, brk=$isBreakCommandFlag, neg=$isNegativeFlag, zro=$isZeroFlag, dec=$isDecimalFlag, car=$isCarryFlag, ovr=$isOverflowFlag, int=$isInterruptDisabledFlag)"
     }
+
+    fun addressParameters() = programCounter + 1
 }
 
 @ExperimentalUnsignedTypes

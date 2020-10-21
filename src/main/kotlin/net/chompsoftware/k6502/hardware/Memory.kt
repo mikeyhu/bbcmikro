@@ -61,12 +61,12 @@ class Memory(val store: UByteArray) {
 
     fun positionUsing(address: Address, state: CpuState): UInt {
         return when (address) {
-            Address.z -> readUInt(state.programCounter + 1)
-            Address.zx -> (readUInt(state.programCounter + 1) + state.xRegister) % 0x100u
-            Address.zy -> (readUInt(state.programCounter + 1) + state.yRegister) % 0x100u
-            Address.ab -> readUInt16(state.programCounter + 1)
-            Address.abx -> readUInt16(state.programCounter + 1) + state.xRegister
-            Address.aby -> readUInt16(state.programCounter + 1) + state.yRegister
+            Address.z -> readUInt(state.addressParameters())
+            Address.zx -> (readUInt(state.addressParameters()) + state.xRegister) % 0x100u
+            Address.zy -> (readUInt(state.addressParameters()) + state.yRegister) % 0x100u
+            Address.ab -> readUInt16(state.addressParameters())
+            Address.abx -> readUInt16(state.addressParameters()) + state.xRegister
+            Address.aby -> readUInt16(state.addressParameters()) + state.yRegister
             Address.ir -> readUInt16(positionUsing(Address.ab, state).toInt())
             Address.iix -> readUInt16(positionUsing(Address.zx, state).toInt())
             Address.iiy -> readUInt16(positionUsing(Address.z, state).toInt()) + state.yRegister
@@ -78,7 +78,7 @@ class Memory(val store: UByteArray) {
 
     fun readUsing(address: Address, state: CpuState): UInt {
         return when (address) {
-            Address.i -> readUInt(state.programCounter + 1)
+            Address.i -> readUInt(state.addressParameters())
             else -> readUInt(positionUsing(address, state).toInt())
         }
     }
