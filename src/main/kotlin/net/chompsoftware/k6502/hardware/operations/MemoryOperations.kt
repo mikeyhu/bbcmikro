@@ -27,18 +27,18 @@ internal object MemoryOperations {
     val storeAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         val location = memory.positionUsing(instruction.ad, state)
         memory[location] = state.aRegister.toUByte()
-        state.incrementCountersBy(instruction.ad.size, instruction.cy)
+        state.incrementByInstruction(instruction)
     }
 
     val storeX = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         val location = memory.positionUsing(instruction.ad, state)
         memory[location] = state.xRegister.toUByte()
-        state.incrementCountersBy(instruction.ad.size, instruction.cy)
+        state.incrementByInstruction(instruction)
     }
 
     val storeY = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         val location = memory.positionUsing(instruction.ad, state)
         memory[location] = state.yRegister.toUByte()
-        state.incrementCountersBy(instruction.ad.size, instruction.cy)
+        state.incrementByInstruction(instruction)
     }
 }

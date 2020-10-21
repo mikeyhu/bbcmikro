@@ -6,20 +6,6 @@ import net.chompsoftware.k6502.hardware.*
 @ExperimentalUnsignedTypes
 internal object BranchOperations {
 
-    private val branchIfTrue = { check: Boolean, instruction: InstructionSet, state: CpuState, memory: Memory ->
-        val newState = if (check) {
-            val location = memory.readUsing(instruction.ad, state)
-            val newLocation = if (location >= 0x80u) -0x100 + location.toInt() else location.toInt()
-            state.copy(
-                    cycleCount = state.cycleCount + instruction.cy + 1,
-                    programCounter = state.programCounter + instruction.ad.size + newLocation
-            )
-
-        } else state.incrementCountersBy(instruction.ad.size, instruction.cy)
-        if(VERBOSE) println("Branch ${check} from ${state.programCounter.toHex()} to ${newState.programCounter.toHex()}")
-        newState
-    }
-
     val branchOnCarryClear = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         branchIfTrue(!state.isCarryFlag, instruction, state, memory)
     }
@@ -50,5 +36,19 @@ internal object BranchOperations {
 
     val branchOnOverflowSet = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         branchIfTrue(state.isOverflowFlag, instruction, state, memory)
+    }
+
+    private val branchIfTrue = { check: Boolean, instruction: InstructionSet, state: CpuState, memory: Memory ->
+        val newState = if (check) {
+            val location = memory.readUsing(instruction.ad, state)
+            val newLocation = if (location >= 0x80u) -0x100 + location.toInt() else location.toInt()
+            state.copy(
+                    cycleCount = state.cycleCount + instruction.cy + 1,
+                    programCounter = state.programCounter + instruction.ad.size + newLocation
+            )
+
+        } else state.incrementByInstruction(instruction)
+        if (VERBOSE) println("Branch ${check} from ${state.programCounter.toHex()} to ${newState.programCounter.toHex()}")
+        newState
     }
 }

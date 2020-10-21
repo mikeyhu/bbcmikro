@@ -44,20 +44,19 @@ internal object Operations {
                 programCounter = memory.positionUsing(instruction.ad, state).toInt(),
                 stackPointer = state.stackPointer - 2
         )
-
     }
 
     val returnFromSubroutine = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         state.copy(
                 cycleCount = state.cycleCount + instruction.cy,
-                programCounter = memory.readUInt16FromStack(state.stackPointer).toInt() + 1,
+                programCounter = memory.readUInt16FromStack(state.stackPointer + 1).toInt() + 1,
                 stackPointer = state.stackPointer + 2
         )
     }
 
     val returnFromInterrupt = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         val flagsByte = memory.readUIntFromStack(state.stackPointer + 1)
-        val position = memory.readUInt16FromStack(state.stackPointer + 1)
+        val position = memory.readUInt16FromStack(state.stackPointer + 2)
         state.setFlagsUsingUByte(
                 flagsByte,
                 position.toInt(),
@@ -67,6 +66,6 @@ internal object Operations {
     }
 
     val noOperation = { instruction: InstructionSet, state: CpuState, _: Memory ->
-        state.incrementCountersBy(instruction.ad.size, instruction.cy)
+        state.incrementByInstruction(instruction)
     }
 }

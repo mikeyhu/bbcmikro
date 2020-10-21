@@ -47,5 +47,4 @@ internal object MathOperations {
                 instruction,
                 state.aRegister.or(memory.readUsing(instruction.ad, state)))
     }
-
 }

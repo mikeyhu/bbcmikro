@@ -30,8 +30,8 @@ class Memory(val store: UByteArray) {
 
     fun readUInt16FromStack(stackPosition:Int):UInt {
         return toUInt16(
-                readUByte(STACK_START + stackPosition + 0x1),
-                readUByte(STACK_START + stackPosition + 0x2)
+                readUByte(STACK_START + stackPosition),
+                readUByte(STACK_START + stackPosition + 0x1)
         )
     }
 

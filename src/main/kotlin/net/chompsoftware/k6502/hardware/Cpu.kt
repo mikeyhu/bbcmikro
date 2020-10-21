@@ -29,18 +29,7 @@ data class CpuState(
         val isOverflowFlag: Boolean = false,
         val isInterruptDisabledFlag: Boolean = false
 ) {
-    fun copyRelativeWithA(instruction: InstructionSet, value: UInt): CpuState {
-        val ubyteValue = removeOverflow(value)
-        return this.copy(
-                cycleCount = cycleCount + instruction.cy,
-                programCounter = programCounter + instruction.ad.size,
-                aRegister = ubyteValue,
-                isNegativeFlag = tweakNegative(ubyteValue),
-                isZeroFlag = tweakZero(ubyteValue)
-        )
-    }
-
-    fun copyRelativeWithA(instruction: InstructionSet, value: UInt, stackPointer: Int): CpuState {
+    fun copyRelativeWithA(instruction: InstructionSet, value: UInt, stackPoint: Int? = null): CpuState {
         val ubyteValue = removeOverflow(value)
         return this.copy(
                 cycleCount = cycleCount + instruction.cy,
@@ -48,7 +37,7 @@ data class CpuState(
                 aRegister = ubyteValue,
                 isNegativeFlag = tweakNegative(ubyteValue),
                 isZeroFlag = tweakZero(ubyteValue),
-                stackPointer = stackPointer
+                stackPointer = stackPoint ?: stackPointer
         )
     }
 
@@ -60,7 +49,6 @@ data class CpuState(
                 xRegister = ubyteValue,
                 isNegativeFlag = tweakNegative(ubyteValue),
                 isZeroFlag = tweakZero(ubyteValue)
-
         )
     }
 
@@ -106,7 +94,7 @@ data class CpuState(
     )
 
     fun setFlagsUsingUByte(byte: UInt, programCounter: Int, stackPointer: Int, cycles: Long): CpuState {
-         val withFlags = this.copy(
+        val withFlags = this.copy(
                 cycleCount = cycleCount + cycles,
                 programCounter = programCounter,
                 stackPointer = stackPointer,
@@ -118,26 +106,27 @@ data class CpuState(
                 isOverflowFlag = byte.and(CpuSettings.OVERFLOW_BYTE_POSITION) == CpuSettings.OVERFLOW_BYTE_POSITION,
                 isNegativeFlag = byte.and(CpuSettings.NEGATIVE_BYTE_POSITION) == CpuSettings.NEGATIVE_BYTE_POSITION
         )
-        if(VERBOSE) println("loaded flags $withFlags from ${byte.toHex()}")
+        if (VERBOSE) println("loaded flags $withFlags from ${byte.toHex()}")
         return withFlags
     }
 
-    fun readFlagsAsUbyte():UByte {
+    fun readFlagsAsUbyte(): UByte {
         val ub = (0x20u +
-                (if(isCarryFlag) CpuSettings.CARRY_BYTE_POSITION else 0u) +
-                (if(isZeroFlag) CpuSettings.ZERO_BYTE_POSITION else 0u) +
-                (if(isInterruptDisabledFlag) CpuSettings.INTERRUPT_BYTE_POSITION else 0u) +
-                (if(isDecimalFlag) CpuSettings.DECIMAL_BYTE_POSITION else 0u) +
-                CpuSettings.BREAK_BYTE_POSITION  +
-                (if(isOverflowFlag) CpuSettings.OVERFLOW_BYTE_POSITION else 0u) +
-                (if(isNegativeFlag) CpuSettings.NEGATIVE_BYTE_POSITION else 0u)).toUByte()
-        if(VERBOSE) println("saving flags ${ub.toHex()} from $this")
+                (if (isCarryFlag) CpuSettings.CARRY_BYTE_POSITION else 0u) +
+                (if (isZeroFlag) CpuSettings.ZERO_BYTE_POSITION else 0u) +
+                (if (isInterruptDisabledFlag) CpuSettings.INTERRUPT_BYTE_POSITION else 0u) +
+                (if (isDecimalFlag) CpuSettings.DECIMAL_BYTE_POSITION else 0u) +
+                CpuSettings.BREAK_BYTE_POSITION +
+                (if (isOverflowFlag) CpuSettings.OVERFLOW_BYTE_POSITION else 0u) +
+                (if (isNegativeFlag) CpuSettings.NEGATIVE_BYTE_POSITION else 0u)).toUByte()
+        if (VERBOSE) println("saving flags ${ub.toHex()} from $this")
         return ub
     }
 
-    fun incrementCountersBy(program: Int, cycle: Long) = this.copy(
-            cycleCount = cycleCount + cycle,
-            programCounter = programCounter + program)
+    fun incrementByInstruction(instruction: InstructionSet) = this.copy(
+            cycleCount = cycleCount + instruction.cy,
+            programCounter = programCounter + instruction.ad.size
+    )
 
     private fun tweakNegative(value: UInt) = value.shr(7) != 0u
     private fun tweakZero(value: UInt) = value == 0u
