@@ -25,6 +25,22 @@ class StackOperationsTest {
             )
             memory.readUInt(0x1ff) shouldBe 0x11u
         }
+
+        @Test
+        fun `Should underflow the stack if required`() {
+            val memory = Memory(setupMemory(InstructionSet.pha.u))
+            val state = CpuState(
+                    aRegister = 0x11u,
+                    stackPointer = 0x00
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 3,
+                    programCounter = 0x01,
+                    stackPointer = 0xff
+            )
+            memory.readUInt(0x100) shouldBe 0x11u
+        }
     }
 
     @Nested

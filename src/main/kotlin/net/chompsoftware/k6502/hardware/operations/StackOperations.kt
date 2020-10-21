@@ -13,7 +13,7 @@ internal object StackOperations {
         state.copy(
                 cycleCount = state.cycleCount + instruction.cy,
                 programCounter = state.programCounter + instruction.ad.size,
-                stackPointer = state.stackPointer - 1
+                stackPointer = state.removeUnderflow(state.stackPointer - 1)
         )
     }
 
@@ -21,7 +21,7 @@ internal object StackOperations {
         state.copyRelativeWithA(
                 instruction,
                 memory.readUIntFromStack(state.stackPointer + 1),
-                state.stackPointer + 1
+                state.removeOverflow(state.stackPointer + 1)
         )
     }
 
@@ -30,15 +30,16 @@ internal object StackOperations {
         state.copy(
                 cycleCount = state.cycleCount + instruction.cy,
                 programCounter = state.programCounter + instruction.ad.size,
-                stackPointer = state.stackPointer - 1
+                stackPointer = state.removeUnderflow(state.stackPointer - 1)
         )
     }
 
     val pullProcessorStatus = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        val overflowedStack = state.removeOverflow(state.stackPointer + 1)
         state.setFlagsUsingUByte(
-                memory.readUIntFromStack(state.stackPointer + 1),
+                memory.readUIntFromStack(overflowedStack),
                 state.programCounter + instruction.ad.size,
-                state.stackPointer + 1,
+                overflowedStack,
                 instruction.cy
         )
     }

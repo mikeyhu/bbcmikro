@@ -75,7 +75,9 @@ data class CpuState(
         )
     }
 
-    private fun removeOverflow(value: UInt) = value.and(0xffu)
+    fun removeOverflow(value: UInt) = value.and(0xffu)
+    fun removeOverflow(value: Int) = value.and(0xff)
+    fun removeUnderflow(value: Int) = if (value < 0) 0x100 + value else value
 
     fun copyRelativeWithFlags(
             instruction: InstructionSet,
@@ -103,18 +105,22 @@ data class CpuState(
             isBreakCommandFlag = breakCommandFlag ?: isBreakCommandFlag
     )
 
-    fun setFlagsUsingUByte(byte: UInt, programCounter: Int, stackPointer: Int, cycles: Long) = this.copy(
-            cycleCount = cycleCount + cycles,
-            programCounter = programCounter,
-            stackPointer = stackPointer,
-            isCarryFlag = byte.and(CpuSettings.CARRY_BYTE_POSITION) == CpuSettings.CARRY_BYTE_POSITION,
-            isZeroFlag = byte.and(CpuSettings.ZERO_BYTE_POSITION) == CpuSettings.ZERO_BYTE_POSITION,
-            isInterruptDisabledFlag = byte.and(CpuSettings.INTERRUPT_BYTE_POSITION) == CpuSettings.INTERRUPT_BYTE_POSITION,
-            isDecimalFlag = byte.and(CpuSettings.DECIMAL_BYTE_POSITION) == CpuSettings.DECIMAL_BYTE_POSITION,
-            isBreakCommandFlag = byte.and(CpuSettings.BREAK_BYTE_POSITION) == CpuSettings.BREAK_BYTE_POSITION,
-            isOverflowFlag = byte.and(CpuSettings.OVERFLOW_BYTE_POSITION) == CpuSettings.OVERFLOW_BYTE_POSITION,
-            isNegativeFlag = byte.and(CpuSettings.NEGATIVE_BYTE_POSITION) == CpuSettings.NEGATIVE_BYTE_POSITION
-    )
+    fun setFlagsUsingUByte(byte: UInt, programCounter: Int, stackPointer: Int, cycles: Long): CpuState {
+         val withFlags = this.copy(
+                cycleCount = cycleCount + cycles,
+                programCounter = programCounter,
+                stackPointer = stackPointer,
+                isCarryFlag = byte.and(CpuSettings.CARRY_BYTE_POSITION) == CpuSettings.CARRY_BYTE_POSITION,
+                isZeroFlag = byte.and(CpuSettings.ZERO_BYTE_POSITION) == CpuSettings.ZERO_BYTE_POSITION,
+                isInterruptDisabledFlag = byte.and(CpuSettings.INTERRUPT_BYTE_POSITION) == CpuSettings.INTERRUPT_BYTE_POSITION,
+                isDecimalFlag = byte.and(CpuSettings.DECIMAL_BYTE_POSITION) == CpuSettings.DECIMAL_BYTE_POSITION,
+                isBreakCommandFlag = byte.and(CpuSettings.BREAK_BYTE_POSITION) == CpuSettings.BREAK_BYTE_POSITION,
+                isOverflowFlag = byte.and(CpuSettings.OVERFLOW_BYTE_POSITION) == CpuSettings.OVERFLOW_BYTE_POSITION,
+                isNegativeFlag = byte.and(CpuSettings.NEGATIVE_BYTE_POSITION) == CpuSettings.NEGATIVE_BYTE_POSITION
+        )
+        if(VERBOSE) println("loaded flags $withFlags from ${byte.toString(16)}")
+        return withFlags
+    }
 
     fun readFlagsAsUbyte():UByte {
         val ub = (0x20u +
