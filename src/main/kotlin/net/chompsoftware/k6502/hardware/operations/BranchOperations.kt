@@ -1,9 +1,6 @@
 package net.chompsoftware.k6502.hardware.operations
 
-import net.chompsoftware.k6502.hardware.CpuState
-import net.chompsoftware.k6502.hardware.InstructionSet
-import net.chompsoftware.k6502.hardware.Memory
-import net.chompsoftware.k6502.hardware.VERBOSE
+import net.chompsoftware.k6502.hardware.*
 
 
 @ExperimentalUnsignedTypes
@@ -19,7 +16,7 @@ internal object BranchOperations {
             )
 
         } else state.incrementCountersBy(instruction.ad.size, instruction.cy)
-        if(VERBOSE) println("Branch ${check} from ${state.programCounter.toString(16)} to ${newState.programCounter.toString(16)}")
+        if(VERBOSE) println("Branch ${check} from ${state.programCounter.toHex()} to ${newState.programCounter.toHex()}")
         newState
     }
 

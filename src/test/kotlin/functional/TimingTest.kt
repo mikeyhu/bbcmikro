@@ -42,11 +42,11 @@ class TimingTest {
             try {
                 state = cpu.run(state, memory)
             } catch (error: Error) {
-                fail("failed at ${state.programCounter.toString(16)} with $error")
+                fail("failed at ${state.programCounter.toHex()} with $error")
             }
             operationsDone++
             if (counter == state.programCounter) {
-                fail("hit trap at ${counter.toString(16)}")
+                fail("hit trap at ${counter.toHex()}")
             }
         } while (!(state.isBreakCommandFlag) && state.cycleCount < cyclesToRun)
 

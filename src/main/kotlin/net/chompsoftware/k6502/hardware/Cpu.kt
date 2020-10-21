@@ -118,7 +118,7 @@ data class CpuState(
                 isOverflowFlag = byte.and(CpuSettings.OVERFLOW_BYTE_POSITION) == CpuSettings.OVERFLOW_BYTE_POSITION,
                 isNegativeFlag = byte.and(CpuSettings.NEGATIVE_BYTE_POSITION) == CpuSettings.NEGATIVE_BYTE_POSITION
         )
-        if(VERBOSE) println("loaded flags $withFlags from ${byte.toString(16)}")
+        if(VERBOSE) println("loaded flags $withFlags from ${byte.toHex()}")
         return withFlags
     }
 
@@ -131,7 +131,7 @@ data class CpuState(
                 CpuSettings.BREAK_BYTE_POSITION  +
                 (if(isOverflowFlag) CpuSettings.OVERFLOW_BYTE_POSITION else 0u) +
                 (if(isNegativeFlag) CpuSettings.NEGATIVE_BYTE_POSITION else 0u)).toUByte()
-        if(VERBOSE) println("saving flags ${ub.toString(16)} from $this")
+        if(VERBOSE) println("saving flags ${ub.toHex()} from $this")
         return ub
     }
 
@@ -143,8 +143,8 @@ data class CpuState(
     private fun tweakZero(value: UInt) = value == 0u
 
     override fun toString(): String {
-        return "CpuState(pc=${programCounter.toString(16)}, cc=${cycleCount} bl=${breakLocation.toString(16)}, a=${aRegister.toString(16)}, x=${xRegister.toString(16)}, y=${yRegister.toString(16)}" +
-                ", sp=${stackPointer.toString(16)}, brk=$isBreakCommandFlag, neg=$isNegativeFlag, zro=$isZeroFlag, dec=$isDecimalFlag, car=$isCarryFlag, ovr=$isOverflowFlag, int=$isInterruptDisabledFlag)"
+        return "CpuState(pc=${programCounter.toHex()}, cc=${cycleCount} bl=${breakLocation.toHex()}, a=${aRegister.toHex()}, x=${xRegister.toHex()}, y=${yRegister.toHex()}" +
+                ", sp=${stackPointer.toHex()}, brk=$isBreakCommandFlag, neg=$isNegativeFlag, zro=$isZeroFlag, dec=$isDecimalFlag, car=$isCarryFlag, ovr=$isOverflowFlag, int=$isInterruptDisabledFlag)"
     }
 }
 
@@ -156,7 +156,7 @@ class Cpu {
         val instruction = InstructionSet.from(instructionByte)
 
         return when (instruction) {
-            null -> throw Error("Undefined instruction ${instructionByte.toString(16)} at PC ${state.programCounter.toString(16)}")
+            null -> throw Error("Undefined instruction ${instructionByte.toHex()} at PC ${state.programCounter.toHex()}")
             else -> instruction.run(state, memory)
         }
     }

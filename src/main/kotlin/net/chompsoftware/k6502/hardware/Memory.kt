@@ -47,12 +47,12 @@ class Memory(val store: UByteArray) {
 
     fun readUByte(position: Int): UByte {
         val value = store[position]
-        if(VERBOSE) println("read Ubyte ${value.toString(16)} from ${position.toString(16)}")
+        if(VERBOSE) println("read Ubyte ${value.toHex()} from ${position.toHex()}")
         return value
     }
 
     private fun writeUByte(position: Int, value: UByte) {
-        if(VERBOSE) println("write Ubyte ${value.toString(16)} to ${position.toString(16)}")
+        if(VERBOSE) println("write Ubyte ${value.toHex()} to ${position.toHex()}")
         store[position] = value
     }
 
@@ -72,7 +72,7 @@ class Memory(val store: UByteArray) {
             Address.iiy -> readUInt16(positionUsing(Address.z, state).toInt()) + state.yRegister
             else -> throw NotImplementedError("Address mode ${address.name} not implemented for positionUsing")
         }.also {
-            if(VERBOSE) println("position using ${address} for ${state.programCounter} is ${it.toString(16)}")
+            if(VERBOSE) println("position using ${address} for ${state.programCounter} is ${it.toHex()}")
         }
     }
 

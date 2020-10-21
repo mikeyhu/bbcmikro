@@ -3,6 +3,7 @@ package net.chompsoftware.k6502.hardware.operations
 import net.chompsoftware.k6502.hardware.CpuState
 import net.chompsoftware.k6502.hardware.InstructionSet
 import net.chompsoftware.k6502.hardware.Memory
+import net.chompsoftware.k6502.hardware.toHex
 
 @ExperimentalUnsignedTypes
 internal typealias Operation = (instruction: InstructionSet, state: CpuState, memory: Memory) -> CpuState
@@ -10,7 +11,7 @@ internal typealias Operation = (instruction: InstructionSet, state: CpuState, me
 @ExperimentalUnsignedTypes
 internal object Operations {
     val notImplementedOperation = { instruction: InstructionSet, state: CpuState, _: Memory ->
-        throw NotImplementedError("Not Implemented Operation ${instruction.name}:${instruction.u.toString(16)} at ${state.programCounter.toString(16)}")
+        throw NotImplementedError("Not Implemented Operation ${instruction.name}:${instruction.u.toHex()} at ${state.programCounter.toHex()}")
     }
 
     val brk = { instruction: InstructionSet, state: CpuState, memory: Memory ->

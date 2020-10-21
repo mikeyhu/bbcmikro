@@ -3,6 +3,7 @@ package functional
 import net.chompsoftware.k6502.hardware.Cpu
 import net.chompsoftware.k6502.hardware.CpuState
 import net.chompsoftware.k6502.hardware.Memory
+import net.chompsoftware.k6502.hardware.toHex
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable
 import org.junit.jupiter.api.fail
@@ -23,25 +24,25 @@ class SuiteTest {
         var state = CpuState(
                 programCounter = 0x400,
                 breakLocation = 0xfffe)
-        var previousState = state
+
         val cpu = Cpu()
         var operationsDone = 0
         val start = System.nanoTime()
 
         do {
             val counter = state.programCounter
-            previousState = state
+            val previousState = state
             try {
                 state = cpu.run(state, memory)
                 println(state)
             } catch (error: Error) {
                 println(previousState)
-                fail("failed at ${state.programCounter.toString(16)} with $error")
+                fail("failed at ${state.programCounter.toHex()} with $error")
             }
             operationsDone++
             if (counter == state.programCounter) {
                 println(state)
-                fail("hit trap at ${counter.toString(16)}")
+                fail("hit trap at ${counter.toHex()}")
             }
         } while (!(state.isBreakCommandFlag && FINISH_ON_BREAK) && counter != state.programCounter)
 
@@ -52,7 +53,7 @@ class SuiteTest {
     }
 
     fun logState(state: CpuState) {
-        println("PC:${state.programCounter.toString(16)} state:${state}")
+        println("PC:${state.programCounter.toHex()} state:${state}")
     }
 
     fun readFileToByteArray(fileName: String) = File(fileName).inputStream().readBytes().asUByteArray()
