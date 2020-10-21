@@ -25,7 +25,7 @@ internal object MathOperations {
     }
 
     val decrementy = { instruction: InstructionSet, state: CpuState, _: Memory ->
-        state.copyRelativeWithY(instruction,state.yRegister - 1u)
+        state.copyRelativeWithY(instruction, state.yRegister - 1u)
     }
 
     val incrementx = { instruction: InstructionSet, state: CpuState, _: Memory ->
@@ -33,7 +33,7 @@ internal object MathOperations {
     }
 
     val incrementy = { instruction: InstructionSet, state: CpuState, _: Memory ->
-        state.copyRelativeWithY(instruction,state.yRegister + 1u)
+        state.copyRelativeWithY(instruction, state.yRegister + 1u)
     }
 
     val exclusiveOr = { instruction: InstructionSet, state: CpuState, memory: Memory ->

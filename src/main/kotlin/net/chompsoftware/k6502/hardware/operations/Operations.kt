@@ -29,7 +29,6 @@ internal object Operations {
     }
 
 
-
     val jump = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         state.copy(
                 cycleCount = state.cycleCount + instruction.cy,

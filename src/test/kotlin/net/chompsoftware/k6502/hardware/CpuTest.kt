@@ -1,9 +1,7 @@
 package net.chompsoftware.k6502.hardware
 
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import net.chompsoftware.k6502.hardware.InstructionSet.*
-import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 
@@ -12,15 +10,15 @@ class CpuTest {
 
     @Test
     fun `All operations should take at least 1 cycle`() {
-        values().forEach {instruction ->
+        values().forEach { instruction ->
             val memory = Memory(setupMemory(instruction.u, 0x01u, 0x02u))
             val state = CpuState(cycleCount = 100)
             try {
                 val result = Cpu().run(state, memory)
-                if(result.cycleCount == 100L) {
+                if (result.cycleCount == 100L) {
                     fail("${instruction.name} took 0 cycles")
                 }
-                if(result.cycleCount < 100L) {
+                if (result.cycleCount < 100L) {
                     fail("${instruction.name} reset cycles to ${result.cycleCount}")
                 }
             } catch (error: NotImplementedError) {
@@ -31,7 +29,7 @@ class CpuTest {
 
     @Test
     fun `All operations should set the program Counter to something higher than it was before`() {
-        values().forEach {instruction ->
+        values().forEach { instruction ->
             val memory = Memory(setupMemory(brk.u, instruction.u, 0x04u, 0x00u, 0xffu, 0x00u))
             memory.writeUInt16ToStack(0xfe, 0x9999u)
             memory.writeUByteToStack(0xfd, 0x99u)
@@ -42,7 +40,7 @@ class CpuTest {
             )
             try {
                 val result = Cpu().run(state, memory)
-                if(result.programCounter <= 1) {
+                if (result.programCounter <= 1) {
                     fail("${instruction.name} did not set program counter to something reasonable ${result.programCounter}")
                 }
             } catch (error: NotImplementedError) {
