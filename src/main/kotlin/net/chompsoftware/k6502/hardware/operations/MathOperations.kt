@@ -63,21 +63,32 @@ internal object MathOperations {
     }
 
     val arithmeticShiftLeft = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-
         val position = if (instruction.ad == Address.none) null else memory.positionUsing(instruction.ad, state)
         val shiftedValue = (position?.let { memory.get(position).toUInt() } ?: state.aRegister).shl(1)
         val carry = shiftedValue.shr(8) > 0u
         val shiftedByte = shiftedValue.and(0xffu)
 
-        position?.also {
-            memory[position] = shiftedByte.toUByte()
-        }
         position?.let {
             state.copyRelativeWithFlags(instruction,
                     carryFlag = carry,
                     zeroFlag = shiftedByte == 0u,
                     negativeFlag = (shiftedByte and 0x80u) > 0u
-            )
+            ).also { memory[position] = shiftedByte.toUByte() }
+        } ?: state.copyRelativeWithA(instruction, shiftedByte, carryFlag = carry)
+    }
+
+    val logicalShiftRight = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        val position = if (instruction.ad == Address.none) null else memory.positionUsing(instruction.ad, state)
+        val valueToShift = position?.let { memory.get(position).toUInt() } ?: state.aRegister
+        val shiftedByte = valueToShift.shr(1)
+        val carry = valueToShift.and(0x1u) > 0u
+
+        position?.let {
+            state.copyRelativeWithFlags(instruction,
+                    carryFlag = carry,
+                    zeroFlag = shiftedByte == 0u,
+                    negativeFlag = (shiftedByte and 0x80u) > 0u
+            ).also { memory[position] = shiftedByte.toUByte() }
         } ?: state.copyRelativeWithA(instruction, shiftedByte, carryFlag = carry)
     }
 }

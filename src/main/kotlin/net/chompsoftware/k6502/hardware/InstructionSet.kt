@@ -137,11 +137,11 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     ldy_zx(0xb4u, Address.zx, withRead(MemoryOperations.loady), 4),
 
     // Logical Shift Right
-//    lsr_none(0x4au, Address.none, Operations.notImplementedOperation, 2),
-//    lsr_z(0x46u, Address.z, Operations.notImplementedOperation, 5),
-//    lsr_zx(0x56u, Address.zx, Operations.notImplementedOperation, 6),
-//    lsr_ab(0x4eu, Address.ab, Operations.notImplementedOperation, 6),
-//    lsr_abx(0x5eu, Address.abx, Operations.notImplementedOperation, 7),
+    lsr_none(0x4au, Address.none, MathOperations.logicalShiftRight, 2),
+    lsr_z(0x46u, Address.z, MathOperations.logicalShiftRight, 5),
+//    lsr_zx(0x56u, Address.zx, MathOperations.logicalShiftRight, 6),
+//    lsr_ab(0x4eu, Address.ab, MathOperations.logicalShiftRight, 6),
+//    lsr_abx(0x5eu, Address.abx, MathOperations.logicalShiftRight, 7),
 
     // No Operation
     nop(0xeau, Address.none, Operations.noOperation, 2),
