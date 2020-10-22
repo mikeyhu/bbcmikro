@@ -91,4 +91,20 @@ internal object MathOperations {
             ).also { memory[position] = shiftedByte.toUByte() }
         } ?: state.copyRelativeWithA(instruction, shiftedByte, carryFlag = carry)
     }
+
+    val rotateLeft = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        val position = if (instruction.ad == Address.none) null else memory.positionUsing(instruction.ad, state)
+        val shiftedValue = (position?.let { memory.get(position).toUInt() } ?: state.aRegister).shl(1) + if(state.isCarryFlag) 1u else 0u
+
+        val shiftedByte = shiftedValue.and(0xffu)
+        val carry = shiftedValue.shr(8) > 0u
+
+        position?.let {
+            state.copyRelativeWithFlags(instruction,
+                    carryFlag = carry,
+                    zeroFlag = shiftedByte == 0u,
+                    negativeFlag = (shiftedByte and 0x80u) > 0u
+            ).also { memory[position] = shiftedByte.toUByte() }
+        } ?: state.copyRelativeWithA(instruction, shiftedByte, carryFlag = carry)
+    }
 }

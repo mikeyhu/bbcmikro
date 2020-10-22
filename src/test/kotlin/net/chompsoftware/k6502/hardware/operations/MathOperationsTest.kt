@@ -255,4 +255,37 @@ class MathOperationsTest {
             memory[0xeeu].toUInt() shouldBe 0x40u
         }
     }
+
+    @Nested
+    inner class RotateLeft {
+        @Test
+        fun `Should rotate the accumulator left`() {
+            val memory = Memory(setupMemory(InstructionSet.rol_none.u))
+            val state = CpuState(
+                    aRegister = 0x81u
+
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
+                    programCounter = 0x01,
+                    aRegister = 0x2u,
+                    isCarryFlag = true
+            )
+        }
+
+        @Test
+        fun `Should shift the zero page address left`() {
+            val memory = Memory(setupMemory(InstructionSet.rol_z.u, 0xeeu))
+            memory[0xeeu] = 0x81u
+            val state = CpuState()
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 5L,
+                    programCounter = 0x02,
+                    isCarryFlag = true
+            )
+            memory[0xeeu].toUInt() shouldBe 0x2u
+        }
+    }
 }

@@ -155,11 +155,11 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 //    ora_aby(0x19u, Address.aby, MathOperations.orWithAccumulator, 4),
 
     // Rotate Left
-//    rol_none(0x2au, Address.none, Operations.notImplementedOperation, 2),
-//    rol_z(0x26u, Address.z, Operations.notImplementedOperation, 5),
-//    rol_zx(0x36u, Address.zx, Operations.notImplementedOperation, 6),
-//    rol_ab(0x2eu, Address.ab, Operations.notImplementedOperation, 6),
-//    rol_abx(0x3eu, Address.abx, Operations.notImplementedOperation, 7),
+    rol_none(0x2au, Address.none, MathOperations.rotateLeft, 2),
+    rol_z(0x26u, Address.z, MathOperations.rotateLeft, 5),
+//    rol_zx(0x36u, Address.zx, MathOperations.rotateLeft, 6),
+//    rol_ab(0x2eu, Address.ab, MathOperations.rotateLeft, 6),
+//    rol_abx(0x3eu, Address.abx, MathOperations.rotateLeft, 7),
 
     // Rotate Right
 //    ror_none(0x6au, Address.none, Operations.notImplementedOperation, 2),
