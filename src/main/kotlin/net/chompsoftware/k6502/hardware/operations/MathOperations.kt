@@ -1,8 +1,6 @@
 package net.chompsoftware.k6502.hardware.operations
 
-import net.chompsoftware.k6502.hardware.CpuState
-import net.chompsoftware.k6502.hardware.InstructionSet
-import net.chompsoftware.k6502.hardware.Memory
+import net.chompsoftware.k6502.hardware.*
 
 
 @ExperimentalUnsignedTypes
@@ -45,5 +43,22 @@ internal object MathOperations {
         state.copyRelativeWithA(
                 instruction,
                 state.aRegister.or(memory.readUsing(instruction.ad, state)))
+    }
+
+    val bitWithAccumulator = { instruction: InstructionSet, state: CpuState, value: UInt ->
+        val andByte = state.aRegister and value
+
+        val zeroFlag = andByte == 0u
+        val negativeFlag = value and CpuSettings.NEGATIVE_BYTE_POSITION > 0u
+        val overflowFlag = value and CpuSettings.OVERFLOW_BYTE_POSITION > 0u
+
+        if (VERBOSE) println("bit for ${instruction}: aRegister=${state.aRegister.toHex()} result=${andByte.toHex()} zro=${zeroFlag} neg=${negativeFlag} ovr=${overflowFlag}")
+
+        state.copyRelativeWithFlags(
+                instruction,
+                zeroFlag = zeroFlag,
+                negativeFlag = negativeFlag,
+                overflowFlag = overflowFlag
+        )
     }
 }

@@ -152,4 +152,41 @@ class MathOperationsTest {
             )
         }
     }
+
+    @Nested
+    inner class Bit {
+        @Test
+        fun `Should set flags based on ANDing accumulator and value`() {
+            val memory = Memory(setupMemory(InstructionSet.bit_z.u, 0xf0u))
+            memory[0xf0u] = 0xf0u
+            val state = CpuState(
+                    aRegister = 0xffu
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 3L,
+                    programCounter = 0x02,
+                    isNegativeFlag = true,
+                    isOverflowFlag = true
+            )
+        }
+
+        @Test
+        fun `Should unset flags based on ANDing accumulator and value`() {
+            val memory = Memory(setupMemory(InstructionSet.bit_z.u, 0x00u))
+            memory[0xf0u] = 0xf0u
+            val state = CpuState(
+                    aRegister = 0xffu,
+                    isNegativeFlag = true,
+                    isOverflowFlag = true
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 3L,
+                    programCounter = 0x02,
+                    isNegativeFlag = false,
+                    isOverflowFlag = false
+            )
+        }
+    }
 }

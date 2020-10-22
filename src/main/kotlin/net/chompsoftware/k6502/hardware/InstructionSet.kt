@@ -34,8 +34,8 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 //    asl_zx(0x16u, Address.zx, Operations.notImplementedOperation, 6),
 
     // Bit
-//    bit_z(0x24u, Address.z, Operations.notImplementedOperation, 3),
-//    bit_ab(0x2cu, Address.ab, Operations.notImplementedOperation, 3),
+    bit_z(0x24u, Address.z, withRead(MathOperations.bitWithAccumulator), 3),
+    bit_ab(0x2cu, Address.ab, withRead(MathOperations.bitWithAccumulator), 3),
 
     // Branch
     bcc(0x90u, Address.i, withRead(BranchOperations.branchOnCarryClear), 2),
