@@ -64,7 +64,7 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     cmp_z(0xc5u, Address.z, withRead(ComparisonOperations.compareAccumulator), 3),
     cmp_zx(0xd5u, Address.zx, withRead(ComparisonOperations.compareAccumulator), 4),
 
-    //    cmp_iix(0xc1u, Address.iix, withRead(ComparisonOperations.compareAccumulator), 6),
+    cmp_iix(0xc1u, Address.iix, withRead(ComparisonOperations.compareAccumulator), 6),
     cmp_iiy(0xd1u, Address.iiy, withRead(ComparisonOperations.compareAccumulator), 5),
 
     // Compare X
