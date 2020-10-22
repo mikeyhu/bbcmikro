@@ -27,11 +27,11 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 //    and_iiy(0x31u, Address.iiy, Operations.notImplementedOperation, 5),
 
     // Arithmetic Shift Left
-//    asl_none(0x0au, Address.none, Operations.notImplementedOperation, 2),
-//    asl_ab(0x0eu, Address.ab, Operations.notImplementedOperation, 6),
-//    asl_abx(0x1eu, Address.abx, Operations.notImplementedOperation, 7),
-//    asl_z(0x06u, Address.z, Operations.notImplementedOperation, 5),
-//    asl_zx(0x16u, Address.zx, Operations.notImplementedOperation, 6),
+    asl_none(0x0au, Address.none, MathOperations.arithmeticShiftLeft, 2),
+//    asl_ab(0x0eu, Address.ab, MathOperations.arithmeticShiftLeft, 6),
+//    asl_abx(0x1eu, Address.abx, MathOperations.arithmeticShiftLeft, 7),
+    asl_z(0x06u, Address.z, MathOperations.arithmeticShiftLeft, 5),
+//    asl_zx(0x16u, Address.zx, MathOperations.arithmeticShiftLeft, 6),
 
     // Bit
     bit_z(0x24u, Address.z, withRead(MathOperations.bitWithAccumulator), 3),

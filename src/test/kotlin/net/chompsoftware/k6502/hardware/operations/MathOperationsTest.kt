@@ -189,4 +189,38 @@ class MathOperationsTest {
             )
         }
     }
+
+    @Nested
+    inner class ArithmeticShiftLeft {
+        @Test
+        fun `Should shift the accumulator`() {
+            val memory = Memory(setupMemory(InstructionSet.asl_none.u))
+            val state = CpuState(
+                    aRegister = 0xf2u
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
+                    programCounter = 0x01,
+                    aRegister = 0xe4u,
+                    isNegativeFlag = true,
+                    isCarryFlag = true
+            )
+        }
+
+        @Test
+        fun `Should shift the zero page address`() {
+            val memory = Memory(setupMemory(InstructionSet.asl_z.u, 0xeeu))
+            memory[0xeeu] = 0xf2u
+            val state = CpuState()
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 5L,
+                    programCounter = 0x02,
+                    isNegativeFlag = true,
+                    isCarryFlag = true
+            )
+            memory[0xeeu].toUInt() shouldBe 0xe4u
+        }
+    }
 }

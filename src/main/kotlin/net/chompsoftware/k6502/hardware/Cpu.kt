@@ -29,7 +29,10 @@ data class CpuState(
         val isOverflowFlag: Boolean = false,
         val isInterruptDisabledFlag: Boolean = false
 ) {
-    fun copyRelativeWithA(instruction: InstructionSet, value: UInt, stackPoint: Int? = null): CpuState {
+    fun copyRelativeWithA(instruction: InstructionSet,
+                          value: UInt,
+                          stackPoint: Int? = null,
+                          carryFlag: Boolean? = null): CpuState {
         val ubyteValue = removeOverflow(value)
         return this.copy(
                 cycleCount = cycleCount + instruction.cy,
@@ -37,7 +40,8 @@ data class CpuState(
                 aRegister = ubyteValue,
                 isNegativeFlag = tweakNegative(ubyteValue),
                 isZeroFlag = tweakZero(ubyteValue),
-                stackPointer = stackPoint ?: stackPointer
+                stackPointer = stackPoint ?: stackPointer,
+                isCarryFlag = carryFlag ?: isCarryFlag
         )
     }
 
