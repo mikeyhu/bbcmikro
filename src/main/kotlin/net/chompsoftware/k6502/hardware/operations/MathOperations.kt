@@ -8,9 +8,8 @@ import net.chompsoftware.k6502.hardware.Memory
 @ExperimentalUnsignedTypes
 internal object MathOperations {
 
-    val addWithCarry = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        val amount = memory.readUsing(instruction.ad, state)
-        val sum = state.aRegister + amount
+    val addWithCarry = { instruction: InstructionSet, state: CpuState, value: UInt ->
+        val sum = state.aRegister + value
 
         state.copy(
                 cycleCount = state.cycleCount + instruction.cy,

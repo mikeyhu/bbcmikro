@@ -1,18 +1,20 @@
 package net.chompsoftware.k6502.hardware
 
 import net.chompsoftware.k6502.hardware.operations.*
+import net.chompsoftware.k6502.hardware.operations.Operations.withPosition
+import net.chompsoftware.k6502.hardware.operations.Operations.withRead
 
 @ExperimentalUnsignedTypes
 enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val cy: Long) {
     // Add With Carry
-    adc_i(0x69u, Address.i, MathOperations.addWithCarry, 2),
-//    adc_ab(0x6du, Address.ab, MathOperations.addWithCarry, 4),
-//    adc_abx(0x7du, Address.abx, MathOperations.addWithCarry, 4),
-//    adc_aby(0x79u, Address.aby, MathOperations.addWithCarry, 4),
-//    adc_z(0x65u, Address.z, MathOperations.addWithCarry, 3),
-//    adc_zx(0x75u, Address.zx, MathOperations.addWithCarry, 4),
-//    adc_iix(0x61u, Address.iix, MathOperations.addWithCarry, 6),
-//    adc_iiy(0x71u, Address.iiy, MathOperations.addWithCarry, 5),
+    adc_i(0x69u, Address.i, withRead(MathOperations.addWithCarry), 2),
+//    adc_ab(0x6du, Address.ab, withRead(MathOperations.addWithCarry), 4),
+//    adc_abx(0x7du, Address.abx, withRead(MathOperations.addWithCarry), 4),
+//    adc_aby(0x79u, Address.aby, withRead(MathOperations.addWithCarry), 4),
+//    adc_z(0x65u, Address.z, withRead(MathOperations.addWithCarry), 3),
+//    adc_zx(0x75u, Address.zx, withRead(MathOperations.addWithCarry), 4),
+//    adc_iix(0x61u, Address.iix, withRead(MathOperations.addWithCarry), 6),
+//    adc_iiy(0x71u, Address.iiy, withRead(MathOperations.addWithCarry), 5),
 
     // And With Accumulator
 //    and_i(0x29u, Address.i, Operations.notImplementedOperation, 2),
@@ -36,14 +38,14 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 //    bit_ab(0x2cu, Address.ab, Operations.notImplementedOperation, 3),
 
     // Branch
-    bcc(0x90u, Address.i, BranchOperations.branchOnCarryClear, 2),
-    bcs(0xb0u, Address.i, BranchOperations.branchOnCarrySet, 2),
-    beq(0xf0u, Address.i, BranchOperations.branchOnEqual, 2),
-    bmi(0x30u, Address.i, BranchOperations.branchOnMinus, 2),
-    bne(0xd0u, Address.i, BranchOperations.branchOnNotEqual, 2),
-    bpl(0x10u, Address.i, BranchOperations.branchOnPlus, 2),
-    bvc(0x50u, Address.i, BranchOperations.branchOnOverflowClear, 2),
-    bvs(0x70u, Address.i, BranchOperations.branchOnOverflowSet, 2),
+    bcc(0x90u, Address.i, withRead(BranchOperations.branchOnCarryClear), 2),
+    bcs(0xb0u, Address.i, withRead(BranchOperations.branchOnCarrySet), 2),
+    beq(0xf0u, Address.i, withRead(BranchOperations.branchOnEqual), 2),
+    bmi(0x30u, Address.i, withRead(BranchOperations.branchOnMinus), 2),
+    bne(0xd0u, Address.i, withRead(BranchOperations.branchOnNotEqual), 2),
+    bpl(0x10u, Address.i, withRead(BranchOperations.branchOnPlus), 2),
+    bvc(0x50u, Address.i, withRead(BranchOperations.branchOnOverflowClear), 2),
+    bvs(0x70u, Address.i, withRead(BranchOperations.branchOnOverflowSet), 2),
 
     // Break
     brk(0x00u, Address.none, Operations.brk, 7),
@@ -55,24 +57,25 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     cli(0x58u, Address.none, FlagOperations.clearInterrupt, 2),
 
     // Compare Accumulator
-    cmp_i(0xc9u, Address.i, ComparisonOperations.compareAccumulator, 2),
-    cmp_ab(0xcdu, Address.ab, ComparisonOperations.compareAccumulator, 4),
-    cmp_abx(0xddu, Address.abx, ComparisonOperations.compareAccumulator, 4),
-    cmp_aby(0xd9u, Address.aby, ComparisonOperations.compareAccumulator, 4),
-    cmp_z(0xc5u, Address.z, ComparisonOperations.compareAccumulator, 3),
-    cmp_zx(0xd5u, Address.zx, ComparisonOperations.compareAccumulator, 4),
-//    cmp_iix(0xc1u, Address.iix, ComparisonOperations.compareAccumulator, 6),
-    cmp_iiy(0xd1u, Address.iiy, ComparisonOperations.compareAccumulator, 5),
+    cmp_i(0xc9u, Address.i, withRead(ComparisonOperations.compareAccumulator), 2),
+    cmp_ab(0xcdu, Address.ab, withRead(ComparisonOperations.compareAccumulator), 4),
+    cmp_abx(0xddu, Address.abx, withRead(ComparisonOperations.compareAccumulator), 4),
+    cmp_aby(0xd9u, Address.aby, withRead(ComparisonOperations.compareAccumulator), 4),
+    cmp_z(0xc5u, Address.z, withRead(ComparisonOperations.compareAccumulator), 3),
+    cmp_zx(0xd5u, Address.zx, withRead(ComparisonOperations.compareAccumulator), 4),
+
+    //    cmp_iix(0xc1u, Address.iix, withRead(ComparisonOperations.compareAccumulator), 6),
+    cmp_iiy(0xd1u, Address.iiy, withRead(ComparisonOperations.compareAccumulator), 5),
 
     // Compare X
-    cpx_i(0xe0u, Address.i, ComparisonOperations.compareX, 2),
-    cpx_ab(0xecu, Address.ab, ComparisonOperations.compareX, 4),
-    cpx_z(0xe4u, Address.z, ComparisonOperations.compareX, 3),
+    cpx_i(0xe0u, Address.i, withRead(ComparisonOperations.compareX), 2),
+    cpx_ab(0xecu, Address.ab, withRead(ComparisonOperations.compareX), 4),
+    cpx_z(0xe4u, Address.z, withRead(ComparisonOperations.compareX), 3),
 
     // Compare Y
-    cpy_i(0xc0u, Address.i, ComparisonOperations.compareY, 2),
-    cpy_ab(0xccu, Address.ab, ComparisonOperations.compareY, 4),
-    cpy_z(0xc4u, Address.z, ComparisonOperations.compareY, 3),
+    cpy_i(0xc0u, Address.i, withRead(ComparisonOperations.compareY), 2),
+    cpy_ab(0xccu, Address.ab, withRead(ComparisonOperations.compareY), 4),
+    cpy_z(0xc4u, Address.z, withRead(ComparisonOperations.compareY), 3),
 
     // Decrement
 //    dec_ab(0xceu, Address.ab, Operations.notImplementedOperation, 5),
@@ -110,28 +113,28 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     jsr_ab(0x20u, Address.ab, Operations.jumpToSubroutine, 6),
 
     // Load Accumulator
-    lda_i(0xa9u, Address.i, MemoryOperations.loadAccumulator, 2),
-    lda_ab(0xadu, Address.ab, MemoryOperations.loadAccumulator, 4),
-    lda_abx(0xbdu, Address.abx, MemoryOperations.loadAccumulator, 4),
-    lda_aby(0xb9u, Address.aby, MemoryOperations.loadAccumulator, 4),
-    lda_z(0xa5u, Address.z, MemoryOperations.loadAccumulator, 3),
-    lda_zx(0xb5u, Address.zx, MemoryOperations.loadAccumulator, 4),
-    lda_iix(0xa1u, Address.iix, MemoryOperations.loadAccumulator, 6),
-    lda_iiy(0xb1u, Address.iiy, MemoryOperations.loadAccumulator, 5),
+    lda_i(0xa9u, Address.i, withRead(MemoryOperations.loadAccumulator), 2),
+    lda_ab(0xadu, Address.ab, withRead(MemoryOperations.loadAccumulator), 4),
+    lda_abx(0xbdu, Address.abx, withRead(MemoryOperations.loadAccumulator), 4),
+    lda_aby(0xb9u, Address.aby, withRead(MemoryOperations.loadAccumulator), 4),
+    lda_z(0xa5u, Address.z, withRead(MemoryOperations.loadAccumulator), 3),
+    lda_zx(0xb5u, Address.zx, withRead(MemoryOperations.loadAccumulator), 4),
+    lda_iix(0xa1u, Address.iix, withRead(MemoryOperations.loadAccumulator), 6),
+    lda_iiy(0xb1u, Address.iiy, withRead(MemoryOperations.loadAccumulator), 5),
 
     // Load X
-    ldx_i(0xa2u, Address.i, MemoryOperations.loadx, 2),
-    ldx_ab(0xaeu, Address.ab, MemoryOperations.loadx, 4),
-    ldx_aby(0xbeu, Address.aby, MemoryOperations.loadx, 4),
-    ldx_z(0xa6u, Address.z, MemoryOperations.loadx, 3),
-    ldx_zy(0xb6u, Address.zy, MemoryOperations.loadx, 4),
+    ldx_i(0xa2u, Address.i, withRead(MemoryOperations.loadx), 2),
+    ldx_ab(0xaeu, Address.ab, withRead(MemoryOperations.loadx), 4),
+    ldx_aby(0xbeu, Address.aby, withRead(MemoryOperations.loadx), 4),
+    ldx_z(0xa6u, Address.z, withRead(MemoryOperations.loadx), 3),
+    ldx_zy(0xb6u, Address.zy, withRead(MemoryOperations.loadx), 4),
 
     // Load Y
-    ldy_i(0xa0u, Address.i, MemoryOperations.loady, 2),
-    ldy_ab(0xacu, Address.ab, MemoryOperations.loady, 4),
-    ldy_abx(0xbcu, Address.abx, MemoryOperations.loady, 4),
-    ldy_z(0xa4u, Address.z, MemoryOperations.loady, 3),
-    ldy_zx(0xb4u, Address.zx, MemoryOperations.loady, 4),
+    ldy_i(0xa0u, Address.i, withRead(MemoryOperations.loady), 2),
+    ldy_ab(0xacu, Address.ab, withRead(MemoryOperations.loady), 4),
+    ldy_abx(0xbcu, Address.abx, withRead(MemoryOperations.loady), 4),
+    ldy_z(0xa4u, Address.z, withRead(MemoryOperations.loady), 3),
+    ldy_zx(0xb4u, Address.zx, withRead(MemoryOperations.loady), 4),
 
     // Logical Shift Right
 //    lsr_none(0x4au, Address.none, Operations.notImplementedOperation, 2),
@@ -191,23 +194,23 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     sed(0xf8u, Address.none, FlagOperations.setDecimal, 2),
 
     // Store Accumulator
-    sta_ab(0x8du, Address.ab, MemoryOperations.storeAccumulator, 4),
-    sta_abx(0x9du, Address.abx, MemoryOperations.storeAccumulator, 5),
-    sta_aby(0x99u, Address.aby, MemoryOperations.storeAccumulator, 5),
-    sta_z(0x85u, Address.z, MemoryOperations.storeAccumulator, 3),
-    sta_zx(0x95u, Address.zx, MemoryOperations.storeAccumulator, 4),
-    sta_iix(0x81u, Address.iix, MemoryOperations.storeAccumulator, 6),
-    sta_iiy(0x91u, Address.iiy, MemoryOperations.storeAccumulator, 6),
+    sta_ab(0x8du, Address.ab, withPosition(MemoryOperations.storeAccumulator), 4),
+    sta_abx(0x9du, Address.abx, withPosition(MemoryOperations.storeAccumulator), 5),
+    sta_aby(0x99u, Address.aby, withPosition(MemoryOperations.storeAccumulator), 5),
+    sta_z(0x85u, Address.z, withPosition(MemoryOperations.storeAccumulator), 3),
+    sta_zx(0x95u, Address.zx, withPosition(MemoryOperations.storeAccumulator), 4),
+    sta_iix(0x81u, Address.iix, withPosition(MemoryOperations.storeAccumulator), 6),
+    sta_iiy(0x91u, Address.iiy, withPosition(MemoryOperations.storeAccumulator), 6),
 
     // Store X
-    stx_ab(0x8eu, Address.ab, MemoryOperations.storeX, 4),
-    stx_z(0x86u, Address.z, MemoryOperations.storeX, 3),
-    stx_zy(0x96u, Address.zy, MemoryOperations.storeX, 4),
+    stx_ab(0x8eu, Address.ab, withPosition(MemoryOperations.storeX), 4),
+    stx_z(0x86u, Address.z, withPosition(MemoryOperations.storeX), 3),
+    stx_zy(0x96u, Address.zy, withPosition(MemoryOperations.storeX), 4),
 
     // Store Y
-    sty_ab(0x8cu, Address.ab, MemoryOperations.storeY, 4),
-    sty_z(0x84u, Address.z, MemoryOperations.storeY, 3),
-    sty_zx(0x94u, Address.zx, MemoryOperations.storeY, 4),
+    sty_ab(0x8cu, Address.ab, withPosition(MemoryOperations.storeY), 4),
+    sty_z(0x84u, Address.z, withPosition(MemoryOperations.storeY), 3),
+    sty_zx(0x94u, Address.zx, withPosition(MemoryOperations.storeY), 4),
 
     // Transfer
     tay(0xa8u, Address.none, TransferOperations.transferAccumulatorToY, 2),

@@ -6,41 +6,40 @@ import net.chompsoftware.k6502.hardware.*
 @ExperimentalUnsignedTypes
 internal object BranchOperations {
 
-    val branchOnCarryClear = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        branchIfTrue(!state.isCarryFlag, instruction, state, memory)
+    val branchOnCarryClear = { instruction: InstructionSet, state: CpuState, value: UInt ->
+        branchIfTrue(!state.isCarryFlag, instruction, state, value)
     }
 
-    val branchOnCarrySet = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        branchIfTrue(state.isCarryFlag, instruction, state, memory)
+    val branchOnCarrySet = { instruction: InstructionSet, state: CpuState, value: UInt ->
+        branchIfTrue(state.isCarryFlag, instruction, state, value)
     }
 
-    val branchOnMinus = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        branchIfTrue(state.isNegativeFlag, instruction, state, memory)
+    val branchOnMinus = { instruction: InstructionSet, state: CpuState, value: UInt ->
+        branchIfTrue(state.isNegativeFlag, instruction, state, value)
     }
 
-    val branchOnNotEqual = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        branchIfTrue(!state.isZeroFlag, instruction, state, memory)
+    val branchOnNotEqual = { instruction: InstructionSet, state: CpuState, value: UInt ->
+        branchIfTrue(!state.isZeroFlag, instruction, state, value)
     }
 
-    val branchOnEqual = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        branchIfTrue(state.isZeroFlag, instruction, state, memory)
+    val branchOnEqual = { instruction: InstructionSet, state: CpuState, value: UInt ->
+        branchIfTrue(state.isZeroFlag, instruction, state, value)
     }
 
-    val branchOnPlus = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        branchIfTrue(!state.isNegativeFlag, instruction, state, memory)
+    val branchOnPlus = { instruction: InstructionSet, state: CpuState, value: UInt ->
+        branchIfTrue(!state.isNegativeFlag, instruction, state, value)
     }
 
-    val branchOnOverflowClear = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        branchIfTrue(!state.isOverflowFlag, instruction, state, memory)
+    val branchOnOverflowClear = { instruction: InstructionSet, state: CpuState, value: UInt ->
+        branchIfTrue(!state.isOverflowFlag, instruction, state, value)
     }
 
-    val branchOnOverflowSet = { instruction: InstructionSet, state: CpuState, memory: Memory ->
-        branchIfTrue(state.isOverflowFlag, instruction, state, memory)
+    val branchOnOverflowSet = { instruction: InstructionSet, state: CpuState, value: UInt ->
+        branchIfTrue(state.isOverflowFlag, instruction, state, value)
     }
 
-    private val branchIfTrue = { check: Boolean, instruction: InstructionSet, state: CpuState, memory: Memory ->
+    private val branchIfTrue = { check: Boolean, instruction: InstructionSet, state: CpuState, location: UInt ->
         val newState = if (check) {
-            val location = memory.readUsing(instruction.ad, state)
             val newLocation = if (location >= 0x80u) -0x100 + location.toInt() else location.toInt()
             state.copy(
                     cycleCount = state.cycleCount + instruction.cy + 1,

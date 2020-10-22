@@ -9,7 +9,26 @@ import net.chompsoftware.k6502.hardware.toHex
 internal typealias Operation = (instruction: InstructionSet, state: CpuState, memory: Memory) -> CpuState
 
 @ExperimentalUnsignedTypes
+internal typealias ReadOperation = (instruction: InstructionSet, state: CpuState, value: UInt) -> CpuState
+
+@ExperimentalUnsignedTypes
+internal typealias PositionOperation = (instruction: InstructionSet, state: CpuState, memory: Memory, position: UInt) -> CpuState
+
+@ExperimentalUnsignedTypes
 internal object Operations {
+
+    inline fun withRead(crossinline op:ReadOperation):Operation {
+        return {instruction: InstructionSet, state: CpuState, memory: Memory ->
+            op(instruction, state, memory.readUsing(instruction.ad, state))
+        }
+    }
+
+    inline fun withPosition(crossinline op:PositionOperation):Operation {
+        return {instruction: InstructionSet, state: CpuState, memory: Memory ->
+            op(instruction, state, memory, memory.positionUsing(instruction.ad, state))
+        }
+    }
+
     val notImplementedOperation = { instruction: InstructionSet, state: CpuState, _: Memory ->
         throw NotImplementedError("Not Implemented Operation ${instruction.name}:${instruction.u.toHex()} at ${state.programCounter.toHex()}")
     }
