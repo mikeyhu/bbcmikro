@@ -11,7 +11,7 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 //    adc_ab(0x6du, Address.ab, withRead(MathOperations.addWithCarry), 4),
 //    adc_abx(0x7du, Address.abx, withRead(MathOperations.addWithCarry), 4),
 //    adc_aby(0x79u, Address.aby, withRead(MathOperations.addWithCarry), 4),
-//    adc_z(0x65u, Address.z, withRead(MathOperations.addWithCarry), 3),
+    adc_z(0x65u, Address.z, withRead(MathOperations.addWithCarry), 3),
 //    adc_zx(0x75u, Address.zx, withRead(MathOperations.addWithCarry), 4),
 //    adc_iix(0x61u, Address.iix, withRead(MathOperations.addWithCarry), 6),
 //    adc_iiy(0x71u, Address.iiy, withRead(MathOperations.addWithCarry), 5),
@@ -89,13 +89,13 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 
     // Exclusive OR
     eor_i(0x49u, Address.i, MathOperations.exclusiveOr, 2),
-//    eor_ab(0x4du, Address.ab, MathOperations.exclusiveOr, 4),
-//    eor_abx(0x5du, Address.abx, MathOperations.exclusiveOr, 4),
-//    eor_aby(0x59u, Address.aby, MathOperations.exclusiveOr, 4),
-//    eor_z(0x45u, Address.z, MathOperations.exclusiveOr, 3),
-//    eor_zx(0x55u, Address.zx, MathOperations.exclusiveOr, 4),
-//    eor_iix(0x41u, Address.iix, MathOperations.exclusiveOr, 6),
-//    eor_iiy(0x51u, Address.iiy, MathOperations.exclusiveOr, 5),
+    eor_ab(0x4du, Address.ab, MathOperations.exclusiveOr, 4),
+    eor_abx(0x5du, Address.abx, MathOperations.exclusiveOr, 4),
+    eor_aby(0x59u, Address.aby, MathOperations.exclusiveOr, 4),
+    eor_z(0x45u, Address.z, MathOperations.exclusiveOr, 3),
+    eor_zx(0x55u, Address.zx, MathOperations.exclusiveOr, 4),
+    eor_iix(0x41u, Address.iix, MathOperations.exclusiveOr, 6),
+    eor_iiy(0x51u, Address.iiy, MathOperations.exclusiveOr, 5),
 
     // Increment
     inc_z(0xe6u, Address.z, withPosition(MathOperations.increment), 5),
@@ -148,11 +148,13 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 
     // Or With Accumulator
     ora_i(0x09u, Address.i, MathOperations.orWithAccumulator, 2),
-//    ora_z(0x05u, Address.z, MathOperations.orWithAccumulator, 3),
-//    ora_zx(0x15u, Address.zx, MathOperations.orWithAccumulator, 4),
-//    ora_ab(0x0Du, Address.ab, MathOperations.orWithAccumulator, 4),
-//    ora_abx(0x1Du, Address.abx, MathOperations.orWithAccumulator, 4),
-//    ora_aby(0x19u, Address.aby, MathOperations.orWithAccumulator, 4),
+    ora_z(0x05u, Address.z, MathOperations.orWithAccumulator, 3),
+    ora_zx(0x15u, Address.zx, MathOperations.orWithAccumulator, 4),
+    ora_ab(0x0Du, Address.ab, MathOperations.orWithAccumulator, 4),
+    ora_abx(0x1Du, Address.abx, MathOperations.orWithAccumulator, 4),
+    ora_aby(0x19u, Address.aby, MathOperations.orWithAccumulator, 4),
+    ora_iix(0x01u, Address.iix, MathOperations.orWithAccumulator, 6),
+    ora_iiy(0x11u, Address.iiy, MathOperations.orWithAccumulator, 5),
 
     // Rotate Left
     rol_none(0x2au, Address.none, MathOperations.rotateLeft, 2),

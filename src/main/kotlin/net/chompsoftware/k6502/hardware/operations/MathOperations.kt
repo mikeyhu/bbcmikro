@@ -9,11 +9,13 @@ internal object MathOperations {
     val addWithCarry = { instruction: InstructionSet, state: CpuState, value: UInt ->
         val sum = state.aRegister + value
 
-        state.copy(
-                cycleCount = state.cycleCount + instruction.cy,
-                programCounter = state.programCounter + instruction.ad.size,
-                aRegister = if (sum > 0xffu) sum - 0x100u else sum,
-                isCarryFlag = sum > 0xffu
+        if (VERBOSE) println("sum for ${instruction}: aRegister=${state.aRegister.toHex()} value=${value.toHex()} result=${sum.toHex()}")
+
+        state.copyRelativeWithA(
+                instruction,
+                sum,
+                carryFlag = sum > 0xffu,
+                overflowFlag = false
         )
     }
 

@@ -77,7 +77,8 @@ class MathOperationsTest {
                     cycleCount = 2,
                     programCounter = 0x02,
                     aRegister = 0x84u,
-                    isCarryFlag = true
+                    isCarryFlag = true,
+                    isNegativeFlag = true
             )
         }
     }
