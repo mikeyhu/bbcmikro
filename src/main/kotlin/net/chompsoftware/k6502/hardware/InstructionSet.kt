@@ -28,8 +28,8 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 
     // Arithmetic Shift Left
     asl_none(0x0au, Address.none, MathOperations.arithmeticShiftLeft, 2),
-//    asl_ab(0x0eu, Address.ab, MathOperations.arithmeticShiftLeft, 6),
-//    asl_abx(0x1eu, Address.abx, MathOperations.arithmeticShiftLeft, 7),
+    asl_ab(0x0eu, Address.ab, MathOperations.arithmeticShiftLeft, 6),
+    asl_abx(0x1eu, Address.abx, MathOperations.arithmeticShiftLeft, 7),
     asl_z(0x06u, Address.z, MathOperations.arithmeticShiftLeft, 5),
 //    asl_zx(0x16u, Address.zx, MathOperations.arithmeticShiftLeft, 6),
 
@@ -162,11 +162,11 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 //    rol_abx(0x3eu, Address.abx, MathOperations.rotateLeft, 7),
 
     // Rotate Right
-//    ror_none(0x6au, Address.none, Operations.notImplementedOperation, 2),
-//    ror_z(0x66u, Address.z, Operations.notImplementedOperation, 5),
-//    ror_zx(0x76u, Address.zx, Operations.notImplementedOperation, 6),
-//    ror_ab(0x6eu, Address.ab, Operations.notImplementedOperation, 6),
-//    ror_abx(0x7eu, Address.abx, Operations.notImplementedOperation, 7),
+    ror_none(0x6au, Address.none, MathOperations.rotateRight, 2),
+    ror_z(0x66u, Address.z, MathOperations.rotateRight, 5),
+//    ror_zx(0x76u, Address.zx, MathOperations.rotateRight, 6),
+//    ror_ab(0x6eu, Address.ab, MathOperations.rotateRight, 6),
+//    ror_abx(0x7eu, Address.abx, MathOperations.rotateRight, 7),
 
     // Push and Pull Stack Operations
     pha(0x48u, Address.none, StackOperations.pushAccumulator, 3),

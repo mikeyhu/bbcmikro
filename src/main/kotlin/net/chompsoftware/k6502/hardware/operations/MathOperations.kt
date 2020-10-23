@@ -107,4 +107,22 @@ internal object MathOperations {
             ).also { memory[position] = shiftedByte.toUByte() }
         } ?: state.copyRelativeWithA(instruction, shiftedByte, carryFlag = carry)
     }
+
+    val rotateRight = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+        val position = if (instruction.ad == Address.none) null else memory.positionUsing(instruction.ad, state)
+        val valueToShift = position?.let { memory.get(position).toUInt() } ?: state.aRegister
+        val shiftedByte = valueToShift.shr(1) + if(state.isCarryFlag) 0x80u else 0u
+        val carry = valueToShift.and(0x1u) > 0u
+
+        if (VERBOSE) println("ror for ${instruction}: toShift=${valueToShift.toHex()} result=${shiftedByte.toHex()} carry=${carry}")
+
+
+        position?.let {
+            state.copyRelativeWithFlags(instruction,
+                    carryFlag = carry,
+                    zeroFlag = shiftedByte == 0u,
+                    negativeFlag = (shiftedByte and 0x80u) > 0u
+            ).also { memory[position] = shiftedByte.toUByte() }
+        } ?: state.copyRelativeWithA(instruction, shiftedByte, carryFlag = carry)
+    }
 }
