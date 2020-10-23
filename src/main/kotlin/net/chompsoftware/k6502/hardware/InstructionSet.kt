@@ -78,10 +78,10 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     cpy_z(0xc4u, Address.z, withRead(ComparisonOperations.compareY), 3),
 
     // Decrement
-//    dec_ab(0xceu, Address.ab, Operations.notImplementedOperation, 5),
-//    dec_abx(0xdeu, Address.abx, Operations.notImplementedOperation, 6),
-//    dec_z(0xc6u, Address.z, Operations.notImplementedOperation, 6),
-//    dec_zx(0xd6u, Address.zx, Operations.notImplementedOperation, 7),
+    dec_ab(0xceu, Address.ab, withPosition(MathOperations.decrement), 6),
+    dec_abx(0xdeu, Address.abx, withPosition(MathOperations.decrement), 7),
+    dec_z(0xc6u, Address.z, withPosition(MathOperations.decrement), 5),
+    dec_zx(0xd6u, Address.zx, withPosition(MathOperations.decrement), 6),
 
     // Decrement X, Y
     dex(0xcau, Address.none, MathOperations.decrementx, 2),
@@ -99,9 +99,9 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 
     // Increment
     inc_z(0xe6u, Address.z, withPosition(MathOperations.increment), 5),
-//    inc_zx(0xf6u, Address.zx, withPosition(MathOperations.increment), 6),
-//    inc_ab(0xeeu, Address.ab, withPosition(MathOperations.increment), 6),
-//    inc_abx(0xfeu, Address.abx, withPosition(MathOperations.increment), 7),
+    inc_zx(0xf6u, Address.zx, withPosition(MathOperations.increment), 6),
+    inc_ab(0xeeu, Address.ab, withPosition(MathOperations.increment), 6),
+    inc_abx(0xfeu, Address.abx, withPosition(MathOperations.increment), 7),
 
     // Increment X,Y
     inx(0xe8u, Address.none, MathOperations.incrementx, 2),

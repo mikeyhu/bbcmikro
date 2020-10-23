@@ -25,6 +25,15 @@ internal object MathOperations {
         state.copyRelativeWithY(instruction, state.yRegister - 1u)
     }
 
+    val decrement = { instruction: InstructionSet, state: CpuState, memory: Memory, position: UInt ->
+        val decremented = memory[position] - 1u
+        memory[position] = decremented.toUByte()
+        state.copyRelativeWithFlags(instruction,
+                negativeFlag = (decremented and 0x80u) > 0u,
+                zeroFlag = decremented.and(0xffu) == 0u
+        )
+    }
+
     val incrementx = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copyRelativeWithX(instruction, state.xRegister + 1u)
     }

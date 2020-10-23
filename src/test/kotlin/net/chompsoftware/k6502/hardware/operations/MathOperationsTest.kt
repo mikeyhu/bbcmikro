@@ -351,4 +351,35 @@ class MathOperationsTest {
             memory[0xffu].toUInt() shouldBe 0x80u
         }
     }
+
+    @Nested
+    inner class Decrement {
+        @Test
+        fun `Should decrement the memory location and underflow`() {
+            val memory = Memory(setupMemory(InstructionSet.dec_z.u, 0xffu))
+            memory[0xffu] = 0x0u
+            val state = CpuState()
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 5L,
+                    programCounter = 0x02,
+                    isNegativeFlag = true
+            )
+            memory[0xffu].toUInt() shouldBe 0xffu
+        }
+
+        @Test
+        fun `Should decrement the memory location and set zero`() {
+            val memory = Memory(setupMemory(InstructionSet.dec_z.u, 0xffu))
+            memory[0xffu] = 0x01u
+            val state = CpuState()
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 5L,
+                    programCounter = 0x02,
+                    isZeroFlag = true
+            )
+            memory[0xffu].toUInt() shouldBe 0x00u
+        }
+    }
 }
