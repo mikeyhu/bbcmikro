@@ -320,4 +320,35 @@ class MathOperationsTest {
             memory[0xeeu].toUInt() shouldBe 0x40u
         }
     }
+
+    @Nested
+    inner class Increment {
+        @Test
+        fun `Should increment the memory location and overflow`() {
+            val memory = Memory(setupMemory(InstructionSet.inc_z.u, 0xffu))
+            memory[0xffu] = 0xffu
+            val state = CpuState()
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 5L,
+                    programCounter = 0x02,
+                    isZeroFlag = true
+            )
+            memory[0xffu].toUInt() shouldBe 0x0u
+        }
+
+        @Test
+        fun `Should increment the memory location and set negative`() {
+            val memory = Memory(setupMemory(InstructionSet.inc_z.u, 0xffu))
+            memory[0xffu] = 0x7fu
+            val state = CpuState()
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 5L,
+                    programCounter = 0x02,
+                    isNegativeFlag = true
+            )
+            memory[0xffu].toUInt() shouldBe 0x80u
+        }
+    }
 }

@@ -98,10 +98,10 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 //    eor_iiy(0x51u, Address.iiy, MathOperations.exclusiveOr, 5),
 
     // Increment
-//    inc_z(0xe6u, Address.z, Operations.notImplementedOperation, 5),
-//    inc_zx(0xf6u, Address.zx, Operations.notImplementedOperation, 6),
-//    inc_ab(0xeeu, Address.ab, Operations.notImplementedOperation, 6),
-//    inc_abx(0xfeu, Address.abx, Operations.notImplementedOperation, 7),
+    inc_z(0xe6u, Address.z, withPosition(MathOperations.increment), 5),
+//    inc_zx(0xf6u, Address.zx, withPosition(MathOperations.increment), 6),
+//    inc_ab(0xeeu, Address.ab, withPosition(MathOperations.increment), 6),
+//    inc_abx(0xfeu, Address.abx, withPosition(MathOperations.increment), 7),
 
     // Increment X,Y
     inx(0xe8u, Address.none, MathOperations.incrementx, 2),

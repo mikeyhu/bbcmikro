@@ -33,6 +33,15 @@ internal object MathOperations {
         state.copyRelativeWithY(instruction, state.yRegister + 1u)
     }
 
+    val increment = { instruction: InstructionSet, state: CpuState, memory: Memory, position: UInt ->
+        val incremented = memory[position] + 1u
+        memory[position] = incremented.toUByte()
+        state.copyRelativeWithFlags(instruction,
+                negativeFlag = (incremented and 0x80u) > 0u,
+                zeroFlag = incremented.and(0xffu) == 0u
+        )
+    }
+
     val exclusiveOr = { instruction: InstructionSet, state: CpuState, memory: Memory ->
         state.copyRelativeWithA(
                 instruction,
