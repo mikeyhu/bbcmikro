@@ -17,6 +17,15 @@ internal object MathOperations {
         )
     }
 
+    val logicalAnd = { instruction: InstructionSet, state: CpuState, value: UInt ->
+        val result = state.aRegister.and(value)
+        if (VERBOSE) println("and for ${instruction}: aRegister=${state.aRegister.toHex()} value=${value.toHex()} result=${result.toHex()}")
+
+        state.copyRelativeWithA(
+                instruction,
+                result)
+    }
+
     val decrementx = { instruction: InstructionSet, state: CpuState, _: Memory ->
         state.copyRelativeWithX(instruction, state.xRegister - 1u)
     }

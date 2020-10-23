@@ -72,7 +72,7 @@ class Memory(val store: UByteArray) {
             Address.iiy -> readUInt16(positionUsing(Address.z, state).toInt()) + state.yRegister
             else -> throw NotImplementedError("Address mode ${address.name} not implemented for positionUsing")
         }.also {
-            if (VERBOSE) println("position using ${address} for ${state.programCounter} is ${it.toHex()}")
+            if (VERBOSE) println("position using ${address} for ${state.programCounter.toHex()} is ${it.toHex()}")
         }
     }
 

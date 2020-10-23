@@ -10,6 +10,34 @@ import org.junit.jupiter.api.Test
 class MathOperationsTest {
 
     @Nested
+    inner class And {
+        @Test
+        fun `Should AND the accumulator with the immediate value`() {
+            val memory = Memory(setupMemory(InstructionSet.and_i.u, 0xffu))
+            val state = CpuState(aRegister = 0x0fu)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
+                    programCounter = 0x02,
+                    aRegister = 0x0fu
+            )
+        }
+
+        @Test
+        fun `Should AND the accumulator with the immediate value and set negativeFlag`() {
+            val memory = Memory(setupMemory(InstructionSet.and_i.u, 0xffu))
+            val state = CpuState(aRegister = 0xf0u)
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2L,
+                    programCounter = 0x02,
+                    aRegister = 0xf0u,
+                    isNegativeFlag = true
+            )
+        }
+    }
+
+    @Nested
     inner class ExclusiveOr {
         @Test
         fun `Should XOR the accumulator with the immediate value`() {

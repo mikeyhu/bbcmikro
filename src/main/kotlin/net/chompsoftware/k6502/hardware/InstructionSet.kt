@@ -17,14 +17,14 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
 //    adc_iiy(0x71u, Address.iiy, withRead(MathOperations.addWithCarry), 5),
 
     // And With Accumulator
-//    and_i(0x29u, Address.i, Operations.notImplementedOperation, 2),
-//    and_z(0x2du, Address.z, Operations.notImplementedOperation, 3),
-//    and_zx(0x3du, Address.zx, Operations.notImplementedOperation, 4),
-//    and_ab(0x39u, Address.ab, Operations.notImplementedOperation, 4),
-//    and_abx(0x25u, Address.abx, Operations.notImplementedOperation, 4),
-//    and_aby(0x35u, Address.aby, Operations.notImplementedOperation, 4),
-//    and_iix(0x21u, Address.iix, Operations.notImplementedOperation, 6),
-//    and_iiy(0x31u, Address.iiy, Operations.notImplementedOperation, 5),
+    and_i(0x29u, Address.i, withRead(MathOperations.logicalAnd), 2),
+    and_z(0x25u, Address.z, withRead(MathOperations.logicalAnd), 3),
+    and_zx(0x35u, Address.zx, withRead(MathOperations.logicalAnd), 4),
+    and_ab(0x2du, Address.ab, withRead(MathOperations.logicalAnd), 4),
+    and_abx(0x3du, Address.abx, withRead(MathOperations.logicalAnd), 4),
+    and_aby(0x39u, Address.aby, withRead(MathOperations.logicalAnd), 4),
+    and_iix(0x21u, Address.iix, withRead(MathOperations.logicalAnd), 6),
+    and_iiy(0x31u, Address.iiy, withRead(MathOperations.logicalAnd), 5),
 
     // Arithmetic Shift Left
     asl_none(0x0au, Address.none, MathOperations.arithmeticShiftLeft, 2),
