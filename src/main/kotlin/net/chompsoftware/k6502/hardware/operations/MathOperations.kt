@@ -7,14 +7,27 @@ import net.chompsoftware.k6502.hardware.*
 internal object MathOperations {
 
     val addWithCarry = { instruction: InstructionSet, state: CpuState, value: UInt ->
-        val sum = state.aRegister + value
+        val sum = state.aRegister + value + if(state.isCarryFlag) 1u else 0u
 
-        if (VERBOSE) println("sum for ${instruction}: aRegister=${state.aRegister.toHex()} value=${value.toHex()} result=${sum.toHex()}")
+        if (VERBOSE) println("add for ${instruction}: aRegister=${state.aRegister.toHex()} value=${value.toHex()} result=${sum.toHex()}")
 
         state.copyRelativeWithA(
                 instruction,
                 sum,
                 carryFlag = sum > 0xffu,
+                overflowFlag = false
+        )
+    }
+
+    val subtractWithCarry = { instruction: InstructionSet, state: CpuState, value: UInt ->
+        val sum = state.aRegister.toUByte() - value.toUByte() - if(state.isCarryFlag) 0u else 1u
+
+        if (VERBOSE) println("subtract for ${instruction}: aRegister=${state.aRegister.toHex()} value=${value.toHex()} result=${sum.toHex()}")
+
+        state.copyRelativeWithA(
+                instruction,
+                sum,
+                carryFlag = sum <= state.aRegister,
                 overflowFlag = false
         )
     }

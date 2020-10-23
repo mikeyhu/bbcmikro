@@ -84,6 +84,24 @@ class MathOperationsTest {
     }
 
     @Nested
+    inner class SubtractWithCarry {
+        @Test
+        fun `Should subtract value from the accumulator`() {
+            val memory = Memory(setupMemory(InstructionSet.sbc_i.u, 0xfu))
+            val state = CpuState(
+                    aRegister = 0x1fu,
+                    isCarryFlag = true
+            )
+            val cpu = Cpu()
+            cpu.run(state, memory) shouldBe state.copy(
+                    cycleCount = 2,
+                    programCounter = 0x02,
+                    aRegister = 0x10u
+            )
+        }
+    }
+
+    @Nested
     inner class OrWithAccumulator {
         @Test
         fun `Should OR the accumulator with the immediate value`() {

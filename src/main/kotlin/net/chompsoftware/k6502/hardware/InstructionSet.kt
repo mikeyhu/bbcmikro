@@ -8,13 +8,13 @@ import net.chompsoftware.k6502.hardware.operations.Operations.withRead
 enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val cy: Long) {
     // Add With Carry
     adc_i(0x69u, Address.i, withRead(MathOperations.addWithCarry), 2),
-//    adc_ab(0x6du, Address.ab, withRead(MathOperations.addWithCarry), 4),
-//    adc_abx(0x7du, Address.abx, withRead(MathOperations.addWithCarry), 4),
-//    adc_aby(0x79u, Address.aby, withRead(MathOperations.addWithCarry), 4),
+    adc_ab(0x6du, Address.ab, withRead(MathOperations.addWithCarry), 4),
+    adc_abx(0x7du, Address.abx, withRead(MathOperations.addWithCarry), 4),
+    adc_aby(0x79u, Address.aby, withRead(MathOperations.addWithCarry), 4),
     adc_z(0x65u, Address.z, withRead(MathOperations.addWithCarry), 3),
-//    adc_zx(0x75u, Address.zx, withRead(MathOperations.addWithCarry), 4),
-//    adc_iix(0x61u, Address.iix, withRead(MathOperations.addWithCarry), 6),
-//    adc_iiy(0x71u, Address.iiy, withRead(MathOperations.addWithCarry), 5),
+    adc_zx(0x75u, Address.zx, withRead(MathOperations.addWithCarry), 4),
+    adc_iix(0x61u, Address.iix, withRead(MathOperations.addWithCarry), 6),
+    adc_iiy(0x71u, Address.iiy, withRead(MathOperations.addWithCarry), 5),
 
     // And With Accumulator
     and_i(0x29u, Address.i, withRead(MathOperations.logicalAnd), 2),
@@ -181,14 +181,14 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     rti(0x40u, Address.none, Operations.returnFromInterrupt, 6),
 
     // Subtract With Carry
-//    sbc_i(0xe9u, Address.i, Operations.notImplementedOperation, 2),
-//    sbc_z(0xe5u, Address.z, Operations.notImplementedOperation, 3),
-//    sbc_zx(0xf5u, Address.zx, Operations.notImplementedOperation, 4),
-//    sbc_ab(0xedu, Address.ab, Operations.notImplementedOperation, 4),
-//    sbc_abx(0xfdu, Address.abx, Operations.notImplementedOperation, 4),
-//    sbc_aby(0xf9u, Address.aby, Operations.notImplementedOperation, 4),
-//    sbc_iix(0xe1u, Address.iix, Operations.notImplementedOperation, 6),
-//    sbc_iiy(0xf1u, Address.iiy, Operations.notImplementedOperation, 5),
+    sbc_i(0xe9u, Address.i, withRead(MathOperations.subtractWithCarry), 2),
+    sbc_z(0xe5u, Address.z, withRead(MathOperations.subtractWithCarry), 3),
+    sbc_zx(0xf5u, Address.zx, withRead(MathOperations.subtractWithCarry), 4),
+    sbc_ab(0xedu, Address.ab, withRead(MathOperations.subtractWithCarry), 4),
+    sbc_abx(0xfdu, Address.abx, withRead(MathOperations.subtractWithCarry), 4),
+    sbc_aby(0xf9u, Address.aby, withRead(MathOperations.subtractWithCarry), 4),
+    sbc_iix(0xe1u, Address.iix, withRead(MathOperations.subtractWithCarry), 6),
+    sbc_iiy(0xf1u, Address.iiy, withRead(MathOperations.subtractWithCarry), 5),
 
     // Set Flags
     sec(0x38u, Address.none, FlagOperations.setCarry, 2),
