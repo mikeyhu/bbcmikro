@@ -31,7 +31,7 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     asl_ab(0x0eu, Address.ab, MathOperations.arithmeticShiftLeft, 6),
     asl_abx(0x1eu, Address.abx, MathOperations.arithmeticShiftLeft, 7),
     asl_z(0x06u, Address.z, MathOperations.arithmeticShiftLeft, 5),
-//    asl_zx(0x16u, Address.zx, MathOperations.arithmeticShiftLeft, 6),
+    asl_zx(0x16u, Address.zx, MathOperations.arithmeticShiftLeft, 6),
 
     // Bit
     bit_z(0x24u, Address.z, withRead(MathOperations.bitWithAccumulator), 3),
@@ -139,9 +139,9 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     // Logical Shift Right
     lsr_none(0x4au, Address.none, MathOperations.logicalShiftRight, 2),
     lsr_z(0x46u, Address.z, MathOperations.logicalShiftRight, 5),
-//    lsr_zx(0x56u, Address.zx, MathOperations.logicalShiftRight, 6),
-//    lsr_ab(0x4eu, Address.ab, MathOperations.logicalShiftRight, 6),
-//    lsr_abx(0x5eu, Address.abx, MathOperations.logicalShiftRight, 7),
+    lsr_zx(0x56u, Address.zx, MathOperations.logicalShiftRight, 6),
+    lsr_ab(0x4eu, Address.ab, MathOperations.logicalShiftRight, 6),
+    lsr_abx(0x5eu, Address.abx, MathOperations.logicalShiftRight, 7),
 
     // No Operation
     nop(0xeau, Address.none, Operations.noOperation, 2),
@@ -157,16 +157,16 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     // Rotate Left
     rol_none(0x2au, Address.none, MathOperations.rotateLeft, 2),
     rol_z(0x26u, Address.z, MathOperations.rotateLeft, 5),
-//    rol_zx(0x36u, Address.zx, MathOperations.rotateLeft, 6),
-//    rol_ab(0x2eu, Address.ab, MathOperations.rotateLeft, 6),
-//    rol_abx(0x3eu, Address.abx, MathOperations.rotateLeft, 7),
+    rol_zx(0x36u, Address.zx, MathOperations.rotateLeft, 6),
+    rol_ab(0x2eu, Address.ab, MathOperations.rotateLeft, 6),
+    rol_abx(0x3eu, Address.abx, MathOperations.rotateLeft, 7),
 
     // Rotate Right
     ror_none(0x6au, Address.none, MathOperations.rotateRight, 2),
     ror_z(0x66u, Address.z, MathOperations.rotateRight, 5),
-//    ror_zx(0x76u, Address.zx, MathOperations.rotateRight, 6),
-//    ror_ab(0x6eu, Address.ab, MathOperations.rotateRight, 6),
-//    ror_abx(0x7eu, Address.abx, MathOperations.rotateRight, 7),
+    ror_zx(0x76u, Address.zx, MathOperations.rotateRight, 6),
+    ror_ab(0x6eu, Address.ab, MathOperations.rotateRight, 6),
+    ror_abx(0x7eu, Address.abx, MathOperations.rotateRight, 7),
 
     // Push and Pull Stack Operations
     pha(0x48u, Address.none, StackOperations.pushAccumulator, 3),
