@@ -8,28 +8,22 @@ internal object MathOperations {
 
     val addWithCarry = { instruction: InstructionSet, state: CpuState, value: UInt ->
         val sum = state.aRegister + value + if(state.isCarryFlag) 1u else 0u
+        val flagCalc = state.aRegister.toByte() + value.toByte() + if(state.isCarryFlag) 1 else 0
 
-        if (VERBOSE) println("add for ${instruction}: aRegister=${state.aRegister.toHex()} value=${value.toHex()} result=${sum.toHex()}")
+        val overflow = state.aRegister.xor(sum).and(value.xor(sum)).and(0x80u) > 0u
+
+        if (VERBOSE) println("add/subtract for ${instruction}: aRegister=${state.aRegister.toHex()} value=${value.toHex()} result=${sum.toHex()} flagCalc=${flagCalc.toHex()}")
 
         state.copyRelativeWithA(
                 instruction,
                 sum,
                 carryFlag = sum > 0xffu,
-                overflowFlag = false
+                overflowFlag = overflow
         )
     }
 
     val subtractWithCarry = { instruction: InstructionSet, state: CpuState, value: UInt ->
-        val sum = state.aRegister.toUByte() - value.toUByte() - if(state.isCarryFlag) 0u else 1u
-
-        if (VERBOSE) println("subtract for ${instruction}: aRegister=${state.aRegister.toHex()} value=${value.toHex()} result=${sum.toHex()}")
-
-        state.copyRelativeWithA(
-                instruction,
-                sum,
-                carryFlag = sum <= state.aRegister,
-                overflowFlag = false
-        )
+        addWithCarry(instruction, state, value.toUByte().xor(0xffu).toUInt())
     }
 
     val logicalAnd = { instruction: InstructionSet, state: CpuState, value: UInt ->

@@ -34,7 +34,7 @@ class SuiteTest {
             val previousState = state
             try {
                 state = cpu.run(state, memory)
-                println(state)
+//                println(state)
             } catch (error: Error) {
                 println(previousState)
                 fail("failed at ${state.programCounter.toHex()} with $error")

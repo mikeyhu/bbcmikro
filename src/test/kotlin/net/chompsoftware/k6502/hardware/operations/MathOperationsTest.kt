@@ -69,18 +69,56 @@ class MathOperationsTest {
         }
 
         @Test
-        fun `Should add value to accumulator with carry`() {
-            val memory = Memory(setupMemory(InstructionSet.adc_i.u, 0xc4u))
-            val state = CpuState(aRegister = 0xc0u)
-            val cpu = Cpu()
-            cpu.run(state, memory) shouldBe state.copy(
-                    cycleCount = 2,
-                    programCounter = 0x02,
-                    aRegister = 0x84u,
-                    isCarryFlag = true,
-                    isNegativeFlag = true
+        fun `Add should set flags as needed`() {
+            addSetFlags(
+                    CpuState(aRegister = 0x7fu, isCarryFlag = true),
+                    0x0u,
+                    0x80u,
+                    expectedOverflow = true,
+                    expectedNegative = true
+            )
+
+            addSetFlags(
+                    CpuState(aRegister = 0x7fu, isCarryFlag = true),
+                    0x0u,
+                    0x80u,
+                    expectedOverflow = true,
+                    expectedNegative = true
+            )
+
+            addSetFlags(
+                    CpuState(aRegister = 0x80u, isCarryFlag = false),
+                    0x0u,
+                    0x80u,
+                    expectedOverflow = false,
+                    expectedNegative = true
             )
         }
+
+        fun addSetFlags(initialState: CpuState,
+                        toAdd: UByte,
+                        expectedA: UInt,
+                        expectedCarry: Boolean = false,
+                        expectedOverflow: Boolean = false,
+                        expectedNegative: Boolean = false,
+                        expectedZero: Boolean = expectedA == 0u) {
+            val memory = Memory(setupMemory(InstructionSet.adc_i.u, toAdd))
+            val cpu = Cpu()
+            val result = cpu.run(initialState, memory)
+
+            result shouldBe initialState.copy(
+                    cycleCount = 2,
+                    programCounter = 0x02,
+                    aRegister = expectedA,
+                    isCarryFlag = expectedCarry,
+                    isOverflowFlag = expectedOverflow,
+                    isNegativeFlag = expectedNegative,
+                    isZeroFlag = expectedZero
+            )
+
+
+        }
+
     }
 
     @Nested
@@ -96,7 +134,59 @@ class MathOperationsTest {
             cpu.run(state, memory) shouldBe state.copy(
                     cycleCount = 2,
                     programCounter = 0x02,
-                    aRegister = 0x10u
+                    aRegister = 0x10u,
+                    isCarryFlag = true
+            )
+        }
+
+        @Test
+        fun `Subtract should set flags as needed`() {
+            subtractSetFlags(
+                    CpuState(aRegister = 0x0u, isCarryFlag = false),
+                    0xffu,
+                    0x0u,
+                    expectedCarry = false,
+                    expectedOverflow = false
+            )
+
+            subtractSetFlags(
+                    CpuState(aRegister = 0x7fu, isCarryFlag = true),
+                    0xffu,
+                    0x80u,
+                    expectedCarry = false,
+                    expectedOverflow = true,
+                    expectedNegative = true
+            )
+
+            subtractSetFlags(
+                    CpuState(aRegister = 0xffu, isCarryFlag = true),
+                    0xffu,
+                    0x00u,
+                    expectedCarry = true,
+                    expectedOverflow = false,
+                    expectedNegative = false
+            )
+        }
+
+        fun subtractSetFlags(initialState: CpuState,
+                             toSubtract: UByte,
+                             expectedA: UInt,
+                             expectedCarry: Boolean = false,
+                             expectedOverflow: Boolean = false,
+                             expectedNegative: Boolean = false,
+                             expectedZero: Boolean = expectedA == 0u) {
+            val memory = Memory(setupMemory(InstructionSet.sbc_i.u, toSubtract))
+            val cpu = Cpu()
+            val result = cpu.run(initialState, memory)
+
+            result shouldBe initialState.copy(
+                    cycleCount = 2,
+                    programCounter = 0x02,
+                    aRegister = expectedA,
+                    isCarryFlag = expectedCarry,
+                    isOverflowFlag = expectedOverflow,
+                    isNegativeFlag = expectedNegative,
+                    isZeroFlag = expectedZero
             )
         }
     }

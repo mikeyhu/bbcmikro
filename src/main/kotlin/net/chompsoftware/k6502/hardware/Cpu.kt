@@ -33,14 +33,15 @@ data class CpuState(
                           value: UInt,
                           stackPoint: Int? = null,
                           carryFlag: Boolean? = null,
-                          overflowFlag: Boolean? = null
+                          overflowFlag: Boolean? = null,
+                          negativeFlag: Boolean? = null
     ): CpuState {
         val ubyteValue = removeOverflow(value)
         return this.copy(
                 cycleCount = cycleCount + instruction.cy,
                 programCounter = programCounter + instruction.ad.size,
                 aRegister = ubyteValue,
-                isNegativeFlag = tweakNegative(ubyteValue),
+                isNegativeFlag = negativeFlag ?: tweakNegative(ubyteValue),
                 isZeroFlag = tweakZero(ubyteValue),
                 stackPointer = stackPoint ?: stackPointer,
                 isCarryFlag = carryFlag ?: isCarryFlag,
@@ -135,7 +136,7 @@ data class CpuState(
             programCounter = programCounter + instruction.ad.size
     )
 
-    private fun tweakNegative(value: UInt) = value.shr(7) != 0u
+    private fun tweakNegative(value: UInt) = value.and(CpuSettings.NEGATIVE_BYTE_POSITION) > 0u
     private fun tweakZero(value: UInt) = value == 0u
 
     override fun toString(): String {
