@@ -1,10 +1,7 @@
 package functional
 
-import net.chompsoftware.k6502.hardware.Cpu
-import net.chompsoftware.k6502.hardware.CpuState
+import net.chompsoftware.k6502.hardware.*
 import net.chompsoftware.k6502.hardware.InstructionSet.*
-import net.chompsoftware.k6502.hardware.Memory
-import net.chompsoftware.k6502.hardware.toHex
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable
 import org.junit.jupiter.api.fail
@@ -58,6 +55,31 @@ class TimingTest {
         val elapsed = (finish - start) / 1000000
         println("Operations done: ${operationsDone} Time taken: ${elapsed}ms. Ops per ms: ${operationsDone / elapsed}. Ops per s: ${operationsDone / elapsed * 1000}")
         println("Cycles done: ${state.cycleCount} Time taken: ${elapsed}ms. Cycles per ms: ${state.cycleCount / elapsed}. Cycles per s: ${state.cycleCount / elapsed * 1000}")
+    }
+
+
+
+//    @EnabledIfEnvironmentVariable(named = "TIMING", matches = "true")
+    @Test
+    fun `Run timing with Microsystem`() {
+        val program = ubyteArrayOf(
+                lda_z.u, 0x00u,
+                tax.u,
+                inx.u,
+                txa.u,
+                sta_z.u, 0x00u,
+                cmp_i.u, 0xffu,
+                bne.u, 0xf5u,
+                lda_i.u, 0x00u,
+                sta_z.u, 0x00u,
+                beq.u, 0xefu
+        )
+
+        val memory = Memory(setupProgram(program))
+
+        val microsystem = Microsystem(memory)
+
+        microsystem.run()
     }
 
     private fun setupProgram(program: UByteArray): UByteArray {
