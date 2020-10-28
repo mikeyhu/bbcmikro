@@ -59,7 +59,7 @@ class TimingTest {
 
 
 
-//    @EnabledIfEnvironmentVariable(named = "TIMING", matches = "true")
+    @EnabledIfEnvironmentVariable(named = "TIMING", matches = "true")
     @Test
     fun `Run timing with Microsystem`() {
         val program = ubyteArrayOf(
