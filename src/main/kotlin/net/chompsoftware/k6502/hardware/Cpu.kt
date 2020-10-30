@@ -149,7 +149,7 @@ data class CpuState(
 
 @ExperimentalUnsignedTypes
 class Cpu {
-    fun run(state: CpuState, memory: Memory): CpuState {
+    fun run(state: CpuState, memory: RamInterface): CpuState {
 
         val instructionByte = memory[state.programCounter]
         val instruction = InstructionSet.from(instructionByte)

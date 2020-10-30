@@ -222,7 +222,7 @@ enum class InstructionSet(val u: UByte, val ad: Address, val op: Operation, val 
     txs(0x9au, Address.none, TransferOperations.transferXToStack, 2),
     tsx(0xbau, Address.none, TransferOperations.transferStackToX, 2);
 
-    fun run(state: CpuState, memory: Memory) = op(this, state, memory)
+    fun run(state: CpuState, memory: RamInterface) = op(this, state, memory)
 
     companion object {
         private val instructions = values().associateBy { it.u }

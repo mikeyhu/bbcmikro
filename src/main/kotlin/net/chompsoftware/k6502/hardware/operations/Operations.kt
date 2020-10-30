@@ -1,39 +1,36 @@
 package net.chompsoftware.k6502.hardware.operations
 
-import net.chompsoftware.k6502.hardware.CpuState
-import net.chompsoftware.k6502.hardware.InstructionSet
-import net.chompsoftware.k6502.hardware.Memory
-import net.chompsoftware.k6502.hardware.toHex
+import net.chompsoftware.k6502.hardware.*
 
 @ExperimentalUnsignedTypes
-internal typealias Operation = (instruction: InstructionSet, state: CpuState, memory: Memory) -> CpuState
+internal typealias Operation = (instruction: InstructionSet, state: CpuState, memory: RamInterface) -> CpuState
 
 @ExperimentalUnsignedTypes
 internal typealias ReadOperation = (instruction: InstructionSet, state: CpuState, value: UInt) -> CpuState
 
 @ExperimentalUnsignedTypes
-internal typealias PositionOperation = (instruction: InstructionSet, state: CpuState, memory: Memory, position: UInt) -> CpuState
+internal typealias PositionOperation = (instruction: InstructionSet, state: CpuState, memory: RamInterface, position: UInt) -> CpuState
 
 @ExperimentalUnsignedTypes
 internal object Operations {
 
     inline fun withRead(crossinline op:ReadOperation):Operation {
-        return {instruction: InstructionSet, state: CpuState, memory: Memory ->
+        return {instruction: InstructionSet, state: CpuState, memory: RamInterface ->
             op(instruction, state, memory.readUsing(instruction.ad, state))
         }
     }
 
     inline fun withPosition(crossinline op:PositionOperation):Operation {
-        return {instruction: InstructionSet, state: CpuState, memory: Memory ->
+        return {instruction: InstructionSet, state: CpuState, memory: RamInterface ->
             op(instruction, state, memory, memory.positionUsing(instruction.ad, state))
         }
     }
 
-    val notImplementedOperation = { instruction: InstructionSet, state: CpuState, _: Memory ->
+    val notImplementedOperation = { instruction: InstructionSet, state: CpuState, _: RamInterface ->
         throw NotImplementedError("Not Implemented Operation ${instruction.name}:${instruction.u.toHex()} at ${state.programCounter.toHex()}")
     }
 
-    val brk = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val brk = { instruction: InstructionSet, state: CpuState, memory: RamInterface ->
         memory.writeUInt16ToStack(state.stackPointer, state.programCounter.toUInt() + 2u)
         memory.writeUByteToStack(state.stackPointer - 2, state.copy(isBreakCommandFlag = true).readFlagsAsUbyte())
 
@@ -48,14 +45,14 @@ internal object Operations {
     }
 
 
-    val jump = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val jump = { instruction: InstructionSet, state: CpuState, memory: RamInterface ->
         state.copy(
                 cycleCount = state.cycleCount + instruction.cy,
                 programCounter = memory.positionUsing(instruction.ad, state).toInt()
         )
     }
 
-    val jumpToSubroutine = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val jumpToSubroutine = { instruction: InstructionSet, state: CpuState, memory: RamInterface ->
         memory.writeUInt16ToStack(state.stackPointer, state.programCounter.toUInt() + 2u)
         state.copy(
                 cycleCount = state.cycleCount + instruction.cy,
@@ -64,7 +61,7 @@ internal object Operations {
         )
     }
 
-    val returnFromSubroutine = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val returnFromSubroutine = { instruction: InstructionSet, state: CpuState, memory: RamInterface ->
         state.copy(
                 cycleCount = state.cycleCount + instruction.cy,
                 programCounter = memory.readUInt16FromStack(state.stackPointer + 1).toInt() + 1,
@@ -72,7 +69,7 @@ internal object Operations {
         )
     }
 
-    val returnFromInterrupt = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val returnFromInterrupt = { instruction: InstructionSet, state: CpuState, memory: RamInterface ->
         val flagsByte = memory.readUIntFromStack(state.stackPointer + 1)
         val position = memory.readUInt16FromStack(state.stackPointer + 2)
         state.setFlagsUsingUByte(
@@ -83,7 +80,7 @@ internal object Operations {
         )
     }
 
-    val noOperation = { instruction: InstructionSet, state: CpuState, _: Memory ->
+    val noOperation = { instruction: InstructionSet, state: CpuState, _: RamInterface ->
         state.incrementByInstruction(instruction)
     }
 }

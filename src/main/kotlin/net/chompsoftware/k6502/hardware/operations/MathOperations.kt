@@ -35,15 +35,15 @@ internal object MathOperations {
                 result)
     }
 
-    val decrementx = { instruction: InstructionSet, state: CpuState, _: Memory ->
+    val decrementx = { instruction: InstructionSet, state: CpuState, _: RamInterface ->
         state.copyRelativeWithX(instruction, state.xRegister - 1u)
     }
 
-    val decrementy = { instruction: InstructionSet, state: CpuState, _: Memory ->
+    val decrementy = { instruction: InstructionSet, state: CpuState, _: RamInterface ->
         state.copyRelativeWithY(instruction, state.yRegister - 1u)
     }
 
-    val decrement = { instruction: InstructionSet, state: CpuState, memory: Memory, position: UInt ->
+    val decrement = { instruction: InstructionSet, state: CpuState, memory: RamInterface, position: UInt ->
         val decremented = memory[position] - 1u
         memory[position] = decremented.toUByte()
         state.copyRelativeWithFlags(instruction,
@@ -52,15 +52,15 @@ internal object MathOperations {
         )
     }
 
-    val incrementx = { instruction: InstructionSet, state: CpuState, _: Memory ->
+    val incrementx = { instruction: InstructionSet, state: CpuState, _: RamInterface ->
         state.copyRelativeWithX(instruction, state.xRegister + 1u)
     }
 
-    val incrementy = { instruction: InstructionSet, state: CpuState, _: Memory ->
+    val incrementy = { instruction: InstructionSet, state: CpuState, _: RamInterface ->
         state.copyRelativeWithY(instruction, state.yRegister + 1u)
     }
 
-    val increment = { instruction: InstructionSet, state: CpuState, memory: Memory, position: UInt ->
+    val increment = { instruction: InstructionSet, state: CpuState, memory: RamInterface, position: UInt ->
         val incremented = memory[position] + 1u
         memory[position] = incremented.toUByte()
         state.copyRelativeWithFlags(instruction,
@@ -69,13 +69,13 @@ internal object MathOperations {
         )
     }
 
-    val exclusiveOr = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val exclusiveOr = { instruction: InstructionSet, state: CpuState, memory: RamInterface ->
         state.copyRelativeWithA(
                 instruction,
                 state.aRegister.xor(memory.readUsing(instruction.ad, state)))
     }
 
-    val orWithAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val orWithAccumulator = { instruction: InstructionSet, state: CpuState, memory: RamInterface ->
         state.copyRelativeWithA(
                 instruction,
                 state.aRegister.or(memory.readUsing(instruction.ad, state)))
@@ -98,7 +98,7 @@ internal object MathOperations {
         )
     }
 
-    val arithmeticShiftLeft = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val arithmeticShiftLeft = { instruction: InstructionSet, state: CpuState, memory: RamInterface ->
         val position = if (instruction.ad == Address.none) null else memory.positionUsing(instruction.ad, state)
         val shiftedValue = (position?.let { memory.get(position).toUInt() } ?: state.aRegister).shl(1)
         val carry = shiftedValue.shr(8) > 0u
@@ -113,7 +113,7 @@ internal object MathOperations {
         } ?: state.copyRelativeWithA(instruction, shiftedByte, carryFlag = carry)
     }
 
-    val logicalShiftRight = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val logicalShiftRight = { instruction: InstructionSet, state: CpuState, memory: RamInterface ->
         val position = if (instruction.ad == Address.none) null else memory.positionUsing(instruction.ad, state)
         val valueToShift = position?.let { memory.get(position).toUInt() } ?: state.aRegister
         val shiftedByte = valueToShift.shr(1)
@@ -128,7 +128,7 @@ internal object MathOperations {
         } ?: state.copyRelativeWithA(instruction, shiftedByte, carryFlag = carry)
     }
 
-    val rotateLeft = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val rotateLeft = { instruction: InstructionSet, state: CpuState, memory: RamInterface ->
         val position = if (instruction.ad == Address.none) null else memory.positionUsing(instruction.ad, state)
         val shiftedValue = (position?.let { memory.get(position).toUInt() } ?: state.aRegister).shl(1) + if(state.isCarryFlag) 1u else 0u
 
@@ -144,7 +144,7 @@ internal object MathOperations {
         } ?: state.copyRelativeWithA(instruction, shiftedByte, carryFlag = carry)
     }
 
-    val rotateRight = { instruction: InstructionSet, state: CpuState, memory: Memory ->
+    val rotateRight = { instruction: InstructionSet, state: CpuState, memory: RamInterface ->
         val position = if (instruction.ad == Address.none) null else memory.positionUsing(instruction.ad, state)
         val valueToShift = position?.let { memory.get(position).toUInt() } ?: state.aRegister
         val shiftedByte = valueToShift.shr(1) + if(state.isCarryFlag) 0x80u else 0u

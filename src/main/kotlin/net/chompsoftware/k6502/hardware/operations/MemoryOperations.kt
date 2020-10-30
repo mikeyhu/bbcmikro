@@ -2,7 +2,7 @@ package net.chompsoftware.k6502.hardware.operations
 
 import net.chompsoftware.k6502.hardware.CpuState
 import net.chompsoftware.k6502.hardware.InstructionSet
-import net.chompsoftware.k6502.hardware.Memory
+import net.chompsoftware.k6502.hardware.RamInterface
 
 
 @ExperimentalUnsignedTypes
@@ -19,17 +19,17 @@ internal object MemoryOperations {
         state.copyRelativeWithY(instruction, value)
     }
 
-    val storeAccumulator = { instruction: InstructionSet, state: CpuState, memory: Memory, position: UInt ->
+    val storeAccumulator = { instruction: InstructionSet, state: CpuState, memory: RamInterface, position: UInt ->
         memory[position] = state.aRegister.toUByte()
         state.incrementByInstruction(instruction)
     }
 
-    val storeX = { instruction: InstructionSet, state: CpuState, memory: Memory, position: UInt ->
+    val storeX = { instruction: InstructionSet, state: CpuState, memory: RamInterface, position: UInt ->
         memory[position] = state.xRegister.toUByte()
         state.incrementByInstruction(instruction)
     }
 
-    val storeY = { instruction: InstructionSet, state: CpuState, memory: Memory, position: UInt ->
+    val storeY = { instruction: InstructionSet, state: CpuState, memory: RamInterface, position: UInt ->
         memory[position] = state.yRegister.toUByte()
         state.incrementByInstruction(instruction)
     }

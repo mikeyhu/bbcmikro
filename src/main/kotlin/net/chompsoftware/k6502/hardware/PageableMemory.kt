@@ -10,7 +10,7 @@ const val NOT_FOUND_PAGE_RETURN: UByte = 0x0u
 
 @ExperimentalUnsignedTypes
 class PageableMemory(val ram: UByteArray, val os: UByteArray, val pages: Map<Int, UByteArray>) : RamInterface {
-    private var currentPage: Int = 0
+    private var currentPage: Int = 0xf
 
     override operator fun get(position: Int): UByte {
         return when {

@@ -1,49 +1,67 @@
 package net.chompsoftware.k6502.hardware
 
+import net.chompsoftware.k6502.hardware.video.Screen
+import java.io.File
+
 const val BBC_6502_CYCLE_SPEED = 2000000L
 
 const val INTERRUPT = 10 //ms
 const val INTERRUPT_CYCLES= BBC_6502_CYCLE_SPEED / 1000 * INTERRUPT
 
-const val NANO_SECOND = 1000 * 1000000
+const val NANO_INTERRUPT = 10 * 1000000
 
 @ExperimentalUnsignedTypes
-class Microsystem(val memory: Memory) {
+class Microsystem(val memory: RamInterface) {
+
+    val log = File("/tmp/k6502.log").printWriter()
+
+    init {
+        (0 until 0xf).forEach {index ->
+            memory[0xFE40 + index] = 0x00u
+            memory[0xFE60 + index] = 0x00u
+        }
+
+        memory[0xFE40] = 0xFFu
+        memory[0xFE43] = 0xFFu
+        memory[0xFE60] = 0xFFu
+        memory[0xFE63] = 0xFFu
+    }
+
+    val screen = Screen(memory)
 
     val cpu = Cpu()
 
     var cpuState = CpuState(
-            programCounter = 0x400,
+            programCounter = 0xd9cd,
             breakLocation = 0xfffe
     )
 
-    var interrupted = false
+    var nextInterrupt = INTERRUPT_CYCLES
+    var nextPause = System.nanoTime() + NANO_INTERRUPT
 
-
+    var interruptCount = 0
 
     fun run() {
-
-        var nextInterrupt = INTERRUPT_CYCLES
-        var nextSecond = System.nanoTime() + NANO_SECOND
-
-        var interruptCount = 0
-        var secondCount = 0
-
-
+        var interrupted = false
+        log.println("looping")
         while(!interrupted) {
-            cpuState = cpu.run(cpuState, memory)
+            try {
+                cpuState = cpu.run(cpuState, memory)
+//                log.println("n: ${InstructionSet.from(memory[cpuState.programCounter])} p:${memory[0xf4].toHex()} - $cpuState")
+
+            } catch (error:Error) {
+                println("Error occurred : ${error}")
+            }
 
             if(nextInterrupt > cpuState.cycleCount) {
                 interruptCount+=1
                 nextInterrupt+= INTERRUPT_CYCLES
-                if(System.nanoTime() > nextSecond) {
-                    secondCount+=1
-                    nextSecond+=NANO_SECOND
-                    println("Second passed. Interrupts: ${interruptCount / secondCount} ${cpuState.cycleCount}")
-                }
             }
 
-
+            if(System.nanoTime() > nextPause) {
+                nextPause+=NANO_INTERRUPT
+                interrupted = true
+            }
         }
     }
 }
