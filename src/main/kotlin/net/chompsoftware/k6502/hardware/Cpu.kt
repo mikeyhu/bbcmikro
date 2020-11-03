@@ -141,7 +141,7 @@ data class CpuState(
 
     override fun toString(): String {
         return "CpuState(pc=${programCounter.toHex()}, cc=${cycleCount} bl=${breakLocation.toHex()}, a=${aRegister.toHex()}, x=${xRegister.toHex()}, y=${yRegister.toHex()}" +
-                ", sp=${stackPointer.toHex()}, brk=$isBreakCommandFlag, neg=$isNegativeFlag, zro=$isZeroFlag, dec=$isDecimalFlag, car=$isCarryFlag, ovr=$isOverflowFlag, int=$isInterruptDisabledFlag)"
+                ", sp=${stackPointer.toHex()}, flags=${if(isBreakCommandFlag) "B" else ""}${if(isNegativeFlag) "N" else ""}${if(isZeroFlag) "Z" else ""}${if(isDecimalFlag) "D" else ""}${if(isCarryFlag) "C" else ""}${if(isOverflowFlag) "V" else ""}${if(isInterruptDisabledFlag) "I" else ""})"
     }
 
     fun addressParameters() = programCounter + 1

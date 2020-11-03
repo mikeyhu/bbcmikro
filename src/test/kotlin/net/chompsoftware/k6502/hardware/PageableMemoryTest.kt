@@ -64,7 +64,7 @@ class PageableMemoryTest {
                 setupMemory(),
                 setupMemory(InstructionSet.nop.u, 0x05u, size = 0x4000),
                 mapOf(
-                        0x0 to setupMemory(0x11u)
+                        0xf to setupMemory(0x11u)
                 )
         )
         memory[0x8000].toUInt() shouldBe 0x11u
@@ -76,7 +76,7 @@ class PageableMemoryTest {
                 setupMemory(),
                 setupMemory(InstructionSet.nop.u, 0x05u, size = 0x4000),
                 mapOf(
-                        0x0 to setupMemory(0x11u)
+                        0xf to setupMemory(0x11u)
                 )
         )
 
@@ -84,7 +84,7 @@ class PageableMemoryTest {
             memory.set(0x8000, 0xbbu)
         }
 
-        exception.message shouldBe "Cannot write to page 0x0"
+        exception.message shouldBe "Cannot write to page 0xf"
     }
 
     @Test
@@ -93,7 +93,7 @@ class PageableMemoryTest {
                 setupMemory(),
                 setupMemory(InstructionSet.nop.u, 0x05u, size = 0x4000),
                 mapOf(
-                        0x0 to setupMemory(0xf1u),
+                        0xf to setupMemory(0xf1u),
                         0x1 to setupMemory(0xf2u)
                 )
         )
@@ -110,7 +110,7 @@ class PageableMemoryTest {
                 setupMemory(),
                 setupMemory(InstructionSet.nop.u, 0x05u, size = 0x4000),
                 mapOf(
-                        0x0 to setupMemory(0xf1u)
+                        0xf to setupMemory(0xf1u)
                 )
         )
         memory[0x8000].toUInt() shouldBe 0xf1u
