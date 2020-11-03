@@ -6,7 +6,7 @@ import net.chompsoftware.k6502.hardware.*
 @ExperimentalUnsignedTypes
 internal object ComparisonOperations {
     val compareAccumulator = { instruction: InstructionSet, state: CpuState, compareTo: UInt ->
-        if (VERBOSE) println("compareAccumulator for ${instruction}: aRegister=${state.aRegister.toHex()} compareTo=${compareTo.toHex()}")
+        if (VERBOSE) Logging.verbose("compareAccumulator for ${instruction}: aRegister=${state.aRegister.toHex()} compareTo=${compareTo.toHex()}")
 
         state.copyRelativeWithFlags(
                 instruction,
@@ -17,7 +17,7 @@ internal object ComparisonOperations {
     }
 
     val compareX = { instruction: InstructionSet, state: CpuState, compareTo: UInt ->
-        if (VERBOSE) println("compareX for ${instruction}: xRegister=${state.xRegister.toHex()} compareTo=${compareTo.toHex()}")
+        if (VERBOSE) Logging.verbose("compareX for ${instruction}: xRegister=${state.xRegister.toHex()} compareTo=${compareTo.toHex()}")
 
         state.copyRelativeWithFlags(
                 instruction,
@@ -28,7 +28,7 @@ internal object ComparisonOperations {
     }
 
     val compareY = { instruction: InstructionSet, state: CpuState, compareTo: UInt ->
-        if (VERBOSE) println("compareY for ${instruction}: yRegister=${state.yRegister.toHex()} compareTo=${compareTo.toHex()}")
+        if (VERBOSE) Logging.verbose("compareY for ${instruction}: yRegister=${state.yRegister.toHex()} compareTo=${compareTo.toHex()}")
 
         state.copyRelativeWithFlags(
                 instruction,

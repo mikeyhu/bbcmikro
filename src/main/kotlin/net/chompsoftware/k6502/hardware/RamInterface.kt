@@ -49,12 +49,12 @@ interface RamInterface {
 
     fun readUByte(position: Int): UByte {
         val value = get(position)
-        if (VERBOSE) println("read Ubyte ${value.toHex()} from ${position.toHex()}")
+        if (VERBOSE) Logging.verbose("read Ubyte ${value.toHex()} from ${position.toHex()}")
         return value
     }
 
     private fun writeUByte(position: Int, value: UByte) {
-        if (VERBOSE) println("write Ubyte ${value.toHex()} to ${position.toHex()}")
+        if (VERBOSE) Logging.verbose("write Ubyte ${value.toHex()} to ${position.toHex()}")
         set(position, value)
     }
 
@@ -74,7 +74,7 @@ interface RamInterface {
             Address.iiy -> readUInt16(positionUsing(Address.z, state).toInt()) + state.yRegister
             else -> throw NotImplementedError("Address mode ${address.name} not implemented for positionUsing")
         }.also {
-            if (VERBOSE) println("position using ${address} for ${state.programCounter.toHex()} is ${it.toHex()}")
+            if (VERBOSE) Logging.verbose("position using ${address} for ${state.programCounter.toHex()} is ${it.toHex()}")
         }
     }
 

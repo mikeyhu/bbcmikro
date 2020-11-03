@@ -47,7 +47,7 @@ internal object BranchOperations {
             )
 
         } else state.incrementByInstruction(instruction)
-        if (VERBOSE) println("Branch ${check} from ${state.programCounter.toHex()} to ${newState.programCounter.toHex()}")
+        if (VERBOSE) Logging.verbose("Branch ${check} from ${state.programCounter.toHex()} to ${newState.programCounter.toHex()}")
         newState
     }
 }

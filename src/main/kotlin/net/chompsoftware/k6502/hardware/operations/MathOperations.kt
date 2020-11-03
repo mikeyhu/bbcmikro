@@ -12,7 +12,7 @@ internal object MathOperations {
 
         val overflow = state.aRegister.xor(sum).and(value.xor(sum)).and(0x80u) > 0u
 
-        if (VERBOSE) println("add/subtract for ${instruction}: aRegister=${state.aRegister.toHex()} value=${value.toHex()} result=${sum.toHex()} flagCalc=${flagCalc.toHex()}")
+        if (VERBOSE) Logging.verbose("add/subtract for ${instruction}: aRegister=${state.aRegister.toHex()} value=${value.toHex()} result=${sum.toHex()} flagCalc=${flagCalc.toHex()}")
 
         state.copyRelativeWithA(
                 instruction,
@@ -28,7 +28,7 @@ internal object MathOperations {
 
     val logicalAnd = { instruction: InstructionSet, state: CpuState, value: UInt ->
         val result = state.aRegister.and(value)
-        if (VERBOSE) println("and for ${instruction}: aRegister=${state.aRegister.toHex()} value=${value.toHex()} result=${result.toHex()}")
+        if (VERBOSE) Logging.verbose("and for ${instruction}: aRegister=${state.aRegister.toHex()} value=${value.toHex()} result=${result.toHex()}")
 
         state.copyRelativeWithA(
                 instruction,
@@ -88,7 +88,7 @@ internal object MathOperations {
         val negativeFlag = value and CpuSettings.NEGATIVE_BYTE_POSITION > 0u
         val overflowFlag = value and CpuSettings.OVERFLOW_BYTE_POSITION > 0u
 
-        if (VERBOSE) println("bit for ${instruction}: aRegister=${state.aRegister.toHex()} result=${andByte.toHex()} zro=${zeroFlag} neg=${negativeFlag} ovr=${overflowFlag}")
+        if (VERBOSE) Logging.verbose("bit for ${instruction}: aRegister=${state.aRegister.toHex()} result=${andByte.toHex()} zro=${zeroFlag} neg=${negativeFlag} ovr=${overflowFlag}")
 
         state.copyRelativeWithFlags(
                 instruction,
@@ -150,7 +150,7 @@ internal object MathOperations {
         val shiftedByte = valueToShift.shr(1) + if(state.isCarryFlag) 0x80u else 0u
         val carry = valueToShift.and(0x1u) > 0u
 
-        if (VERBOSE) println("ror for ${instruction}: toShift=${valueToShift.toHex()} result=${shiftedByte.toHex()} carry=${carry}")
+        if (VERBOSE) Logging.verbose("ror for ${instruction}: toShift=${valueToShift.toHex()} result=${shiftedByte.toHex()} carry=${carry}")
 
 
         position?.let {

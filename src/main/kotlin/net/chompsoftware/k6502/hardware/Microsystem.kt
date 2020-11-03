@@ -13,8 +13,6 @@ const val NANO_INTERRUPT = 10 * 1000000
 @ExperimentalUnsignedTypes
 class Microsystem(val memory: RamInterface) {
 
-    val log = File("/tmp/k6502.log").printWriter()
-
     init {
         (0 until 0xf).forEach { index ->
             memory[0xFE40 + index] = 0x00u
@@ -25,6 +23,8 @@ class Microsystem(val memory: RamInterface) {
         memory[0xFE43] = 0xFFu
         memory[0xFE60] = 0xFFu
         memory[0xFE63] = 0xFFu
+
+        Logging.enableLogging()
     }
 
     val screen = Screen(memory)
@@ -48,7 +48,7 @@ class Microsystem(val memory: RamInterface) {
         while (!interrupted) {
             try {
                 cpuState = cpu.run(cpuState, memory)
-                if(startLogging) log.println("n: ${InstructionSet.from(memory[cpuState.programCounter])} p:${memory[0xf4].toHex()} - $cpuState")
+                if(startLogging) Logging.verbose("n: ${InstructionSet.from(memory[cpuState.programCounter])} p:${memory[0xf4].toHex()} - $cpuState")
 
                 if (nextInterrupt < cpuState.cycleCount) {
                     interruptCount += 1
@@ -56,7 +56,8 @@ class Microsystem(val memory: RamInterface) {
                     if (!cpuState.isInterruptDisabledFlag) {
                         cpuState = cpu.interrupt(cpuState, memory)
                         startLogging = true
-                        log.println("int to: ${InstructionSet.from(memory[cpuState.programCounter])} p:${memory[0xf4].toHex()} - $cpuState")
+                        Logging.enableLogging()
+                        Logging.verbose("int to: ${InstructionSet.from(memory[cpuState.programCounter])} p:${memory[0xf4].toHex()} - $cpuState")
                     }
                 }
 

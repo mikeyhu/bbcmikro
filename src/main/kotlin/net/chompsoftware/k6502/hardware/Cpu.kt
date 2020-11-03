@@ -114,7 +114,7 @@ data class CpuState(
                 isOverflowFlag = byte.and(CpuSettings.OVERFLOW_BYTE_POSITION) == CpuSettings.OVERFLOW_BYTE_POSITION,
                 isNegativeFlag = byte.and(CpuSettings.NEGATIVE_BYTE_POSITION) == CpuSettings.NEGATIVE_BYTE_POSITION
         )
-        if (VERBOSE) println("loaded flags $withFlags from ${byte.toHex()}")
+        if (VERBOSE) Logging.verbose("loaded flags $withFlags from ${byte.toHex()}")
         return withFlags
     }
 
@@ -127,7 +127,7 @@ data class CpuState(
                 CpuSettings.BREAK_BYTE_POSITION +
                 (if (isOverflowFlag) CpuSettings.OVERFLOW_BYTE_POSITION else 0u) +
                 (if (isNegativeFlag) CpuSettings.NEGATIVE_BYTE_POSITION else 0u)).toUByte()
-        if (VERBOSE) println("saving flags ${ub.toHex()} from $this")
+        if (VERBOSE) Logging.verbose("saving flags ${ub.toHex()} from $this")
         return ub
     }
 
