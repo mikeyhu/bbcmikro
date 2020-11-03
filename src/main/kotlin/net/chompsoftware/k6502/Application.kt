@@ -6,10 +6,10 @@ import net.chompsoftware.k6502.hardware.video.Mode
 import java.awt.Color
 import java.awt.EventQueue
 import java.awt.Graphics
+import java.awt.event.ActionEvent
+import java.awt.event.KeyEvent
 import java.io.File
-import javax.swing.JFrame
-import javax.swing.JPanel
-import javax.swing.SwingWorker
+import javax.swing.*
 
 @ExperimentalUnsignedTypes
 class Application(microsystem: Microsystem) : JFrame() {
@@ -45,14 +45,31 @@ class Application(microsystem: Microsystem) : JFrame() {
     }
 }
 
+
+const val PAUSE = "PAUSE"
+
 @ExperimentalUnsignedTypes
 class InputOutputSurface(val microsystem: Microsystem) : JPanel() {
 
     val scale = 4
+    var paused = false
+
+
 
     init {
         background = Color.BLACK
         runMicrosystem()
+
+        val pause = object : AbstractAction(PAUSE) {
+            override fun actionPerformed(e: ActionEvent) {
+                paused = true
+
+                println("paused")
+            }
+        }
+
+        this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0), PAUSE)
+        this.getActionMap().put(PAUSE, pause)
     }
 
     fun runMicrosystem() {
@@ -62,7 +79,7 @@ class InputOutputSurface(val microsystem: Microsystem) : JPanel() {
 
     inner class MicrosystemWorker : SwingWorker<Unit, Unit>() {
         override fun doInBackground() {
-            while(true) {
+            while(!paused) {
                 microsystem.run()
                 repaint()
             }

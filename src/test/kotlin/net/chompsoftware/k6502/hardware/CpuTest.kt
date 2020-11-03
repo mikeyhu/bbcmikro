@@ -1,5 +1,6 @@
 package net.chompsoftware.k6502.hardware
 
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import net.chompsoftware.k6502.hardware.InstructionSet.*
 import org.junit.jupiter.api.Test
@@ -64,6 +65,26 @@ class CpuTest {
                 programCounter = 0x201,
                 isInterruptDisabledFlag = true
         )
+    }
+
+    @Test
+    fun `interrupt should do the reverse of return from interrupt`() {
+        val state = CpuState(cycleCount = 0x100,
+                programCounter = 0x200,
+                breakLocation = 0xfffe,
+                stackPointer = 0xfe,
+                isOverflowFlag = true)
+
+        val memory = Memory(UByteArray(size = 0x10000))
+
+        memory[0xfffe] = 0x34u
+        memory[0xffff] = 0x12u
+
+        val interrupted = Cpu().interrupt(state, memory)
+        interrupted should {
+            it.programCounter shouldBe 0x1234
+            it.stackPointer shouldBe 0xfb
+        }
     }
 }
 

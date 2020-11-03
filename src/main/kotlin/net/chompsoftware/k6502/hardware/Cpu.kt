@@ -159,5 +159,16 @@ class Cpu {
             else -> instruction.run(state, memory)
         }
     }
+
+    fun interrupt(state: CpuState, memory: RamInterface): CpuState {
+        memory.writeUInt16ToStack(state.stackPointer, state.programCounter.toUInt())
+        memory.writeUByteToStack(state.stackPointer - 2, state.readFlagsAsUbyte())
+        return state.copy(
+                cycleCount = state.cycleCount + 7,
+                programCounter = memory.readUInt16(state.breakLocation).toInt(),
+                stackPointer = state.stackPointer - 3,
+                isBreakCommandFlag = false
+        )
+    }
 }
 

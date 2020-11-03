@@ -6,7 +6,7 @@ import java.io.File
 const val BBC_6502_CYCLE_SPEED = 2000000L
 
 const val INTERRUPT = 10 //ms
-const val INTERRUPT_CYCLES= BBC_6502_CYCLE_SPEED / 1000 * INTERRUPT
+const val INTERRUPT_CYCLES = BBC_6502_CYCLE_SPEED / 1000 * INTERRUPT
 
 const val NANO_INTERRUPT = 10 * 1000000
 
@@ -16,7 +16,7 @@ class Microsystem(val memory: RamInterface) {
     val log = File("/tmp/k6502.log").printWriter()
 
     init {
-        (0 until 0xf).forEach {index ->
+        (0 until 0xf).forEach { index ->
             memory[0xFE40 + index] = 0x00u
             memory[0xFE60 + index] = 0x00u
         }
@@ -41,25 +41,31 @@ class Microsystem(val memory: RamInterface) {
 
     var interruptCount = 0
 
+    var startLogging = false
+
     fun run() {
         var interrupted = false
-        log.println("looping")
-        while(!interrupted) {
+        while (!interrupted) {
             try {
                 cpuState = cpu.run(cpuState, memory)
-//                log.println("n: ${InstructionSet.from(memory[cpuState.programCounter])} p:${memory[0xf4].toHex()} - $cpuState")
+                if(startLogging) log.println("n: ${InstructionSet.from(memory[cpuState.programCounter])} p:${memory[0xf4].toHex()} - $cpuState")
 
-            } catch (error:Error) {
+                if (nextInterrupt < cpuState.cycleCount) {
+                    interruptCount += 1
+                    nextInterrupt += INTERRUPT_CYCLES
+                    if (!cpuState.isInterruptDisabledFlag) {
+                        cpuState = cpu.interrupt(cpuState, memory)
+                        startLogging = true
+                        log.println("int to: ${InstructionSet.from(memory[cpuState.programCounter])} p:${memory[0xf4].toHex()} - $cpuState")
+                    }
+                }
+
+            } catch (error: Error) {
                 println("Error occurred : ${error}")
             }
 
-            if(nextInterrupt > cpuState.cycleCount) {
-                interruptCount+=1
-                nextInterrupt+= INTERRUPT_CYCLES
-            }
-
-            if(System.nanoTime() > nextPause) {
-                nextPause+=NANO_INTERRUPT
+            if (System.nanoTime() > nextPause) {
+                nextPause += NANO_INTERRUPT
                 interrupted = true
             }
         }
