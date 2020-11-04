@@ -1,6 +1,7 @@
 package net.chompsoftware.k6502.hardware
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
@@ -12,7 +13,8 @@ class PageableMemoryTest {
         val memory = PageableMemory(
                 setupMemory(InstructionSet.nop.u, 0x05u),
                 UByteArray(0x4000),
-                emptyMap()
+                emptyMap(),
+                SystemVia(), UserVia()
         )
         val state = CpuState()
 
@@ -24,7 +26,8 @@ class PageableMemoryTest {
         val memory = PageableMemory(
                 setupMemory(InstructionSet.nop.u),
                 UByteArray(0x4000),
-                emptyMap()
+                emptyMap(),
+                SystemVia(), UserVia()
         )
         val state = CpuState()
 
@@ -38,7 +41,8 @@ class PageableMemoryTest {
         val memory = PageableMemory(
                 setupMemory(),
                 setupMemory(InstructionSet.nop.u, 0x05u, size = 0x4000),
-                emptyMap()
+                emptyMap(),
+                SystemVia(), UserVia()
         )
         val state = CpuState(programCounter = 0xc000)
 
@@ -50,7 +54,8 @@ class PageableMemoryTest {
         val memory = PageableMemory(
                 setupMemory(),
                 setupMemory(0xaau, size = 0x4000),
-                emptyMap()
+                emptyMap(),
+                SystemVia(), UserVia()
         )
         memory[0xffff] = 0xbbu
 
@@ -65,7 +70,8 @@ class PageableMemoryTest {
                 setupMemory(InstructionSet.nop.u, 0x05u, size = 0x4000),
                 mapOf(
                         0xf to setupMemory(0x11u)
-                )
+                ),
+                SystemVia(), UserVia()
         )
         memory[0x8000].toUInt() shouldBe 0x11u
     }
@@ -77,7 +83,8 @@ class PageableMemoryTest {
                 setupMemory(InstructionSet.nop.u, 0x05u, size = 0x4000),
                 mapOf(
                         0xf to setupMemory(0x11u)
-                )
+                ),
+                SystemVia(), UserVia()
         )
 
         val exception = shouldThrow<PageableMemoryError> {
@@ -95,7 +102,8 @@ class PageableMemoryTest {
                 mapOf(
                         0xf to setupMemory(0xf1u),
                         0x1 to setupMemory(0xf2u)
-                )
+                ),
+                SystemVia(), UserVia()
         )
         memory[0x8000].toUInt() shouldBe 0xf1u
 
@@ -111,7 +119,8 @@ class PageableMemoryTest {
                 setupMemory(InstructionSet.nop.u, 0x05u, size = 0x4000),
                 mapOf(
                         0xf to setupMemory(0xf1u)
-                )
+                ),
+                SystemVia(), UserVia()
         )
         memory[0x8000].toUInt() shouldBe 0xf1u
         memory[0xfe30] = 0x1u
@@ -123,7 +132,8 @@ class PageableMemoryTest {
         val memory = PageableMemory(
                 setupMemory(),
                 setupMemory(InstructionSet.nop.u, 0x05u, size = 0x4000),
-                mapOf()
+                mapOf(),
+                SystemVia(), UserVia()
         )
         val exception = shouldThrow<PageableMemoryError> {
             memory.get(0x10000)
@@ -137,7 +147,8 @@ class PageableMemoryTest {
         val memory = PageableMemory(
                 setupMemory(),
                 setupMemory(InstructionSet.nop.u, 0x05u, size = 0x4000),
-                mapOf()
+                mapOf(),
+                SystemVia(), UserVia()
         )
         val exception = shouldThrow<PageableMemoryError> {
             memory.set(0x10000, 0x1u)
@@ -151,10 +162,11 @@ class PageableMemoryTest {
         val memory = PageableMemory(
                 setupMemory(),
                 setupMemory(size = 0x4000),
-                mapOf()
+                mapOf(),
+                SystemVia(), UserVia()
         )
         (0 until 0x10000).forEach { index ->
-            memory[index].toUInt() shouldBe 0u
+            memory[index].toUInt() shouldBeGreaterThanOrEqualTo 0u
         }
     }
 

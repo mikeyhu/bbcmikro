@@ -2,6 +2,8 @@ package net.chompsoftware.k6502
 
 import net.chompsoftware.k6502.hardware.Microsystem
 import net.chompsoftware.k6502.hardware.PageableMemory
+import net.chompsoftware.k6502.hardware.SystemVia
+import net.chompsoftware.k6502.hardware.UserVia
 import net.chompsoftware.k6502.hardware.video.Mode
 import java.awt.Color
 import java.awt.EventQueue
@@ -31,7 +33,9 @@ class Application(microsystem: Microsystem) : JFrame() {
                         readFileToByteArray("./roms/Os12.rom"),
                         mapOf(
                                 0xf to readFileToByteArray("./roms/Basic2.rom")
-                        )
+                        ),
+                        systemVia = SystemVia(),
+                        userVia = UserVia()
                 )
                 val microsystem = Microsystem(pageableMemory)
 
@@ -53,8 +57,6 @@ class InputOutputSurface(val microsystem: Microsystem) : JPanel() {
 
     val scale = 4
     var paused = false
-
-
 
     init {
         background = Color.BLACK
@@ -87,7 +89,6 @@ class InputOutputSurface(val microsystem: Microsystem) : JPanel() {
     }
 
     override fun paintComponent(g: Graphics) {
-
         super.paintComponent(g)
         microsystem.screen.render(Mode.SEVEN, g, this)
     }

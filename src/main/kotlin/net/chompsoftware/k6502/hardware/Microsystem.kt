@@ -41,7 +41,7 @@ class Microsystem(val memory: RamInterface) {
 
     var interruptCount = 0
 
-    var startLogging = false
+    var startLogging = true
 
     fun run() {
         var interrupted = false
@@ -56,13 +56,13 @@ class Microsystem(val memory: RamInterface) {
                     if (!cpuState.isInterruptDisabledFlag) {
                         cpuState = cpu.interrupt(cpuState, memory)
                         startLogging = true
-                        Logging.enableLogging()
                         Logging.verbose("int to: ${InstructionSet.from(memory[cpuState.programCounter])} p:${memory[0xf4].toHex()} - $cpuState")
                     }
                 }
 
             } catch (error: Error) {
                 println("Error occurred : ${error}")
+                Logging.error("Error occurred : ${error}")
             }
 
             if (System.nanoTime() > nextPause) {
