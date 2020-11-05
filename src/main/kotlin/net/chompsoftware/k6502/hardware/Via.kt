@@ -1,7 +1,6 @@
 package net.chompsoftware.k6502.hardware
 
-import net.chompsoftware.k6502.hardware.ViaAddress.InputOutputRegisterANH
-import net.chompsoftware.k6502.hardware.ViaAddress.InterruptEnableRegister
+import net.chompsoftware.k6502.hardware.ViaAddress.*
 
 const val SYSTEM_VIA_FROM = 0xfe40
 const val SYSTEM_VIA_TO = 0xfe50
@@ -28,7 +27,7 @@ enum class ViaAddress(val p: Int) {
     PeripheralControlRegister(0xc),
     InterruptFlagRegister(0xd),
     InterruptEnableRegister(0xe),
-    InputOutputRegisterANH(0xf);
+    InputOutputRegisterANoHandshake(0xf);
 
     companion object {
         private val Addresses = values().associateBy { it.p }
@@ -45,13 +44,14 @@ abstract class Via(val name: String, val start: Int) {
     operator fun get(position: Int): UByte {
         val viaAddress = ViaAddress.from(position)
         val value = when (viaAddress) {
+            DataDirectionRegisterB, DataDirectionRegisterA -> store[viaAddress.p]
             InterruptEnableRegister -> store[viaAddress.p] or 0x80u
-            InputOutputRegisterANH -> store[viaAddress.p]
+            InputOutputRegisterANoHandshake -> store[viaAddress.p]
             else -> {
                 0x0u
             }
         }
-        Logging.verbose("${name} read ${(viaAddress)} ${(position + start).toHex()} (${value.toHex()})")
+        Logging.verbose("${name} ${(viaAddress)} read ${(position + start).toHex()} (${value.toHex()})")
         return value.toUByte()
     }
 
@@ -60,14 +60,15 @@ abstract class Via(val name: String, val start: Int) {
     operator fun set(position: Int, value: UByte) {
         val viaAddress = ViaAddress.from(position)
         when (viaAddress) {
+            DataDirectionRegisterB, DataDirectionRegisterA -> store[viaAddress.p] = value
             InterruptEnableRegister -> store[viaAddress.p] =
                     if (value.and(BIT_7) == BIT_7) store[viaAddress.p] or (value.and(0x7fu))
                     else store[viaAddress.p] and (value.and(0x7fu).inv())
-            InputOutputRegisterANH -> store[viaAddress.p] = value
+            InputOutputRegisterANoHandshake -> store[viaAddress.p] = value
             else -> {
             }
         }
-        Logging.verbose("${name} write ${(viaAddress)} ${(position + start).toHex()} (${value.toHex()})")
+        Logging.verbose("${name} ${(viaAddress)} write ${(position + start).toHex()} (${value.toHex()})")
     }
 }
 
