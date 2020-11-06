@@ -39,6 +39,11 @@ enum class ViaAddress(val p: Int) {
 @ExperimentalUnsignedTypes
 abstract class Via(val name: String, val start: Int) {
 
+    var controlA1 = false
+    var controlA2 = false
+    var controlB1 = false
+    var controlB2 = false
+
     val store = UByteArray(0x10)
 
     operator fun get(position: Int): UByte {
@@ -47,6 +52,7 @@ abstract class Via(val name: String, val start: Int) {
             DataDirectionRegisterB, DataDirectionRegisterA -> store[viaAddress.p]
             InterruptEnableRegister -> store[viaAddress.p] or 0x80u
             InputOutputRegisterANoHandshake -> store[viaAddress.p]
+            PeripheralControlRegister -> store[viaAddress.p]
             else -> {
                 0x0u
             }
@@ -64,6 +70,13 @@ abstract class Via(val name: String, val start: Int) {
             InterruptEnableRegister -> store[viaAddress.p] =
                     if (value.and(BIT_7) == BIT_7) store[viaAddress.p] or (value.and(0x7fu))
                     else store[viaAddress.p] and (value.and(0x7fu).inv())
+            PeripheralControlRegister -> {
+                if(value.and(0xeu).toUInt() == 0xcu) controlA2 = false
+                else if (value.and(0x08u) > 0u) controlA2 = true
+                if(value.and(0xe0u).toUInt() == 0xc0u) controlB2 = false
+                else if (value.and(0x80u) > 0u) controlB2 = true
+                store[viaAddress.p] = value
+            }
             InputOutputRegisterANoHandshake -> store[viaAddress.p] = value
             else -> {
             }
