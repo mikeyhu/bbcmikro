@@ -3,7 +3,7 @@ plugins {
     id 'application'
 }
 
-group 'net.chompsoftware.k6502'
+group 'net.chompsoftware.bbcmikro'
 version '1.0-SNAPSHOT'
 
 repositories {
@@ -11,7 +11,7 @@ repositories {
 }
 
 application {
-    mainClassName = 'net.chompsoftware.k6502.application'
+    mainClassName = 'net.chompsoftware.bbcmikro.application'
 }
 
 repositories {

@@ -1,9 +1,9 @@
 package functional
 
-import net.chompsoftware.k6502.hardware.Cpu
-import net.chompsoftware.k6502.hardware.CpuState
-import net.chompsoftware.k6502.hardware.Memory
-import net.chompsoftware.k6502.hardware.toHex
+import net.chompsoftware.bbcmikro.hardware.Cpu
+import net.chompsoftware.bbcmikro.hardware.CpuState
+import net.chompsoftware.bbcmikro.hardware.Memory
+import net.chompsoftware.bbcmikro.hardware.toHex
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable
 import org.junit.jupiter.api.fail

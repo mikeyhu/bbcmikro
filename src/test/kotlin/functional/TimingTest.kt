@@ -1,7 +1,7 @@
 package functional
 
-import net.chompsoftware.k6502.hardware.*
-import net.chompsoftware.k6502.hardware.InstructionSet.*
+import net.chompsoftware.bbcmikro.hardware.*
+import net.chompsoftware.bbcmikro.hardware.InstructionSet.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable
 import org.junit.jupiter.api.fail
