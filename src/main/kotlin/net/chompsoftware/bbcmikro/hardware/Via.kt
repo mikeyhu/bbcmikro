@@ -1,6 +1,7 @@
 package net.chompsoftware.bbcmikro.hardware
 
 import net.chompsoftware.bbcmikro.hardware.ViaAddress.*
+import net.chompsoftware.k6502.toHex
 
 const val SYSTEM_VIA_FROM = 0xfe40
 const val SYSTEM_VIA_TO = 0xfe50
@@ -57,7 +58,7 @@ abstract class Via(val name: String, val start: Int) {
                 0x0u
             }
         }
-        Logging.verbose("${name} ${(viaAddress)} read ${(position + start).toHex()} (${value.toHex()})")
+        Logging.info("${name} ${(viaAddress)} read ${(position + start).toHex()} (${value.toHex()})")
         return value.toUByte()
     }
 
@@ -81,7 +82,7 @@ abstract class Via(val name: String, val start: Int) {
             else -> {
             }
         }
-        Logging.verbose("${name} ${(viaAddress)} write ${(position + start).toHex()} (${value.toHex()})")
+        Logging.info("${name} ${(viaAddress)} write ${(position + start).toHex()} (${value.toHex()})")
     }
 }
 

@@ -14,7 +14,7 @@ object Logging {
     } else {
         PrintWriter(System.out, true)
     }
-    private val logLevel = 4
+    private val logLevel = 3
 
     private val loggingEnabled = true
 
@@ -26,8 +26,8 @@ object Logging {
         if(loggingEnabled && logDebug()) log.println(message)
     }
 
-    fun verbose(message: String) {
-        if(loggingEnabled && logVerbose()) log.println(message)
+    fun info(message: String) {
+        if(loggingEnabled && logInfo()) log.println(message)
     }
 
     fun error(error: Throwable) {
@@ -49,12 +49,12 @@ object Logging {
         if (loggingEnabled && logDebug()) log.println(functionToMessage())
     }
 
-    fun verbose(functionToMessage: () -> String) {
-        if (loggingEnabled && logVerbose()) log.println(functionToMessage())
+    fun info(functionToMessage: () -> String) {
+        if (loggingEnabled && logInfo()) log.println(functionToMessage())
     }
 
     private fun logError() = logLevel > 0
     private fun logWarn() = logLevel > 1
-    private fun logVerbose() = logLevel > 2
+    private fun logInfo() = logLevel > 2
     private fun logDebug() = logLevel > 3
 }

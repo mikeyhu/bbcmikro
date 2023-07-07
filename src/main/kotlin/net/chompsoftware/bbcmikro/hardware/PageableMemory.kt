@@ -1,6 +1,7 @@
 package net.chompsoftware.bbcmikro.hardware
 
 import net.chompsoftware.k6502.hardware.Memory
+import net.chompsoftware.k6502.toHex
 
 const val PAGE_OFFSET = 0x8000
 const val OS_OFFSET = 0xc000

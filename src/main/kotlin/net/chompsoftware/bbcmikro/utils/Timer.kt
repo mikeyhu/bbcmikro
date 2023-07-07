@@ -15,7 +15,7 @@ class Timer(val timedSystem: String, val getCurrentSecond: () -> Long = ::curren
             mostRecentFinished = currentCounter
             currentCounter = 0
             currentSecond = now
-            Logging.verbose { "$timedSystem performed $mostRecentFinished in the previous second" }
+            Logging.info { "$timedSystem performed $mostRecentFinished in the previous second" }
         }
     }
 }
