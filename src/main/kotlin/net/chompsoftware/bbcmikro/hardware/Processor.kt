@@ -64,7 +64,7 @@ class Processor(
                 val sleepFor = max(millisecondsPerFrame - (currentMillis - frameStartMillis), 0)
                 tick = 0
 
-                Logging.debug { "sleeping for ${sleepFor}ms" }
+//                Logging.debug { "sleeping for ${sleepFor}ms" }
                 interrupt = true
                 Thread.sleep(sleepFor)
 //                Logging.debug { "cpu calling for repaint" }
@@ -75,7 +75,6 @@ class Processor(
 
         interrupt
     }
-
 
     companion object {
         private fun initialCpuState(memory: Memory) = CpuState(

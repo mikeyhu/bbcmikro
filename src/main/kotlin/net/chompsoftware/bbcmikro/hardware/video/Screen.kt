@@ -3,6 +3,7 @@ package net.chompsoftware.bbcmikro.hardware.video
 import net.chompsoftware.bbcmikro.utils.Timer
 import net.chompsoftware.k6502.hardware.Memory
 import java.awt.Graphics
+import java.awt.image.BufferedImage
 import javax.swing.JPanel
 
 enum class Mode {
@@ -11,8 +12,8 @@ enum class Mode {
 
 const val SCREEN_WIDTH = 1280
 const val SCREEN_HEIGHT = 800
-const val MODE7_CHAR_HEIGHT = SCREEN_HEIGHT / 25
-const val MODE7_CHAR_WIDTH = SCREEN_WIDTH / 40
+const val MODE7_CHARS_PER_LINE = 40
+const val MODE7_LINES_PER_SCREEN = 25
 
 @ExperimentalUnsignedTypes
 class Screen(memory: Memory) {
@@ -30,18 +31,27 @@ class Screen(memory: Memory) {
 class ScreenMode7(val memory: Memory) {
     private val timer = Timer("ScreenMode7 Repaints")
 
+    private val bufferedImage =
+        BufferedImage(TELETEXT_WIDTH * MODE7_CHARS_PER_LINE, TELETEXT_HEIGHT * MODE7_LINES_PER_SCREEN, BufferedImage.TYPE_INT_RGB)
+
     private val characters = teletextCharacters.map { (k, v) ->
         k.toUByte() to characterAsBufferedImage(v)
     }.toMap()
 
     fun render(graphics: Graphics, panel: JPanel) {
         timer.increment()
+        val bufferedGraphics = bufferedImage.graphics
+        renderToBufferedGraphics(bufferedGraphics)
+        graphics.drawImage(bufferedImage, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, panel)
+    }
+
+    private fun renderToBufferedGraphics(bufferedGraphics: Graphics) {
         (0x7c00 until 0x8000).forEach { index ->
-            graphics.drawImage(
-                    characters[memory[index]],
-                    (index - 0x7bff) % 0x28 * MODE7_CHAR_WIDTH, (index - 0x7bff) / 0x28 * MODE7_CHAR_HEIGHT,
-                    MODE7_CHAR_WIDTH, MODE7_CHAR_HEIGHT,
-                    panel
+            bufferedGraphics.drawImage(
+                characters[memory[index]],
+                (index - 0x7bff) % 0x28 * TELETEXT_WIDTH, (index - 0x7bff) / 0x28 * TELETEXT_HEIGHT,
+                TELETEXT_WIDTH, TELETEXT_HEIGHT,
+                null
             )
         }
     }
