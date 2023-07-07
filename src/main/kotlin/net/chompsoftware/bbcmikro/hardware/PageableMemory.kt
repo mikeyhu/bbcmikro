@@ -1,5 +1,7 @@
 package net.chompsoftware.bbcmikro.hardware
 
+import net.chompsoftware.k6502.hardware.Memory
+
 const val PAGE_OFFSET = 0x8000
 const val OS_OFFSET = 0xc000
 const val PAGE_SWITCH_LOCATION = 0xfe30
@@ -10,7 +12,7 @@ const val SHIELA_BLOCK = 0xfe00
 const val NOT_FOUND_PAGE_RETURN: UByte = 0x0u
 
 @ExperimentalUnsignedTypes
-class PageableMemory(val ram: UByteArray, val os: UByteArray, val pages: Map<Int, UByteArray>, val systemVia: SystemVia, val userVia: UserVia) : RamInterface {
+class PageableMemory(val ram: UByteArray, val os: UByteArray, val pages: Map<Int, UByteArray>, val systemVia: SystemVia, val userVia: UserVia) : Memory {
     private var currentPage: Int = 0xf
 
     override operator fun get(position: Int): UByte {

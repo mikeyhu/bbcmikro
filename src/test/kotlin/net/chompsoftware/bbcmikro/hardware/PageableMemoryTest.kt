@@ -3,6 +3,7 @@ package net.chompsoftware.bbcmikro.hardware
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
 import io.kotest.matchers.shouldBe
+import net.chompsoftware.k6502.hardware.instructions.NOP
 import org.junit.jupiter.api.Test
 
 @ExperimentalUnsignedTypes
@@ -11,42 +12,38 @@ class PageableMemoryTest {
     @Test
     fun `Should be able to read a value in the first 0x8000 of RAM`() {
         val memory = PageableMemory(
-                setupMemory(InstructionSet.nop.u, 0x05u),
+                setupMemory(NOP, 0x05u),
                 UByteArray(0x4000),
                 emptyMap(),
                 SystemVia(), UserVia()
         )
-        val state = CpuState()
-
-        memory.positionUsing(Address.ab, state) shouldBe 0x5u
+        memory.get(0x01) shouldBe 0x5u
     }
 
     @Test
     fun `Should be able to write a value in the first 0x8000 of RAM`() {
         val memory = PageableMemory(
-                setupMemory(InstructionSet.nop.u),
+                setupMemory(NOP),
                 UByteArray(0x4000),
                 emptyMap(),
                 SystemVia(), UserVia()
         )
-        val state = CpuState()
 
         memory.set(0x01, 0xffu)
 
-        memory.positionUsing(Address.ab, state) shouldBe 0xffu
+        memory.get(0x01) shouldBe 0xffu
     }
 
     @Test
     fun `Should be able to read a value in OS segment of RAM`() {
         val memory = PageableMemory(
                 setupMemory(),
-                setupMemory(InstructionSet.nop.u, 0x05u, size = 0x4000),
+                setupMemory(NOP, 0x05u, size = 0x4000),
                 emptyMap(),
                 SystemVia(), UserVia()
         )
-        val state = CpuState(programCounter = 0xc000)
 
-        memory.positionUsing(Address.ab, state) shouldBe 0x5u
+        memory.get(0xc001) shouldBe 0x5u
     }
 
     @Test
@@ -67,7 +64,7 @@ class PageableMemoryTest {
     fun `Should be able to read a value in Page segment of RAM`() {
         val memory = PageableMemory(
                 setupMemory(),
-                setupMemory(InstructionSet.nop.u, 0x05u, size = 0x4000),
+                setupMemory(NOP, 0x05u, size = 0x4000),
                 mapOf(
                         0xf to setupMemory(0x11u)
                 ),
@@ -80,7 +77,7 @@ class PageableMemoryTest {
     fun `Should NOT be able to write a value in Page segment of RAM`() {
         val memory = PageableMemory(
                 setupMemory(),
-                setupMemory(InstructionSet.nop.u, 0x05u, size = 0x4000),
+                setupMemory(NOP, 0x05u, size = 0x4000),
                 mapOf(
                         0xf to setupMemory(0x11u)
                 ),
@@ -98,7 +95,7 @@ class PageableMemoryTest {
     fun `Should be able to switch to a different Page`() {
         val memory = PageableMemory(
                 setupMemory(),
-                setupMemory(InstructionSet.nop.u, 0x05u, size = 0x4000),
+                setupMemory(NOP, 0x05u, size = 0x4000),
                 mapOf(
                         0xf to setupMemory(0xf1u),
                         0x1 to setupMemory(0xf2u)
@@ -116,7 +113,7 @@ class PageableMemoryTest {
     fun `Switching to an unavailable page should not fail`() {
         val memory = PageableMemory(
                 setupMemory(),
-                setupMemory(InstructionSet.nop.u, 0x05u, size = 0x4000),
+                setupMemory(NOP, 0x05u, size = 0x4000),
                 mapOf(
                         0xf to setupMemory(0xf1u)
                 ),
@@ -131,7 +128,7 @@ class PageableMemoryTest {
     fun `Reading out of range should fail`() {
         val memory = PageableMemory(
                 setupMemory(),
-                setupMemory(InstructionSet.nop.u, 0x05u, size = 0x4000),
+                setupMemory(NOP, 0x05u, size = 0x4000),
                 mapOf(),
                 SystemVia(), UserVia()
         )
@@ -146,7 +143,7 @@ class PageableMemoryTest {
     fun `Write out of range should fail`() {
         val memory = PageableMemory(
                 setupMemory(),
-                setupMemory(InstructionSet.nop.u, 0x05u, size = 0x4000),
+                setupMemory(NOP, 0x05u, size = 0x4000),
                 mapOf(),
                 SystemVia(), UserVia()
         )
@@ -170,4 +167,10 @@ class PageableMemoryTest {
         }
     }
 
+    @ExperimentalUnsignedTypes
+    fun setupMemory(vararg bytes: UByte, size: Int = 0x8000): UByteArray {
+        val array = UByteArray(size)
+        bytes.copyInto(array, 0, 0, bytes.size)
+        return array
+    }
 }

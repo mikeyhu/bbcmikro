@@ -1,6 +1,7 @@
 package net.chompsoftware.bbcmikro.hardware.video
 
-import net.chompsoftware.bbcmikro.hardware.RamInterface
+import net.chompsoftware.bbcmikro.utils.Timer
+import net.chompsoftware.k6502.hardware.Memory
 import java.awt.Graphics
 import javax.swing.JPanel
 
@@ -14,7 +15,7 @@ const val MODE7_CHAR_HEIGHT = SCREEN_HEIGHT / 25
 const val MODE7_CHAR_WIDTH = SCREEN_WIDTH / 40
 
 @ExperimentalUnsignedTypes
-class Screen(val memory: RamInterface) {
+class Screen(memory: Memory) {
 
     private val screenMode7 = ScreenMode7(memory)
 
@@ -26,14 +27,15 @@ class Screen(val memory: RamInterface) {
 }
 
 @ExperimentalUnsignedTypes
-class ScreenMode7(val memory: RamInterface) {
+class ScreenMode7(val memory: Memory) {
+    private val timer = Timer("ScreenMode7 Repaints")
 
     private val characters = teletextCharacters.map { (k, v) ->
         k.toUByte() to characterAsBufferedImage(v)
     }.toMap()
 
     fun render(graphics: Graphics, panel: JPanel) {
-
+        timer.increment()
         (0x7c00 until 0x8000).forEach { index ->
             graphics.drawImage(
                     characters[memory[index]],

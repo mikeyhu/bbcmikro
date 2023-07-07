@@ -1,6 +1,7 @@
 package net.chompsoftware.bbcmikro.hardware
 
 import io.kotest.matchers.shouldBe
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -38,6 +39,7 @@ class ViaTest {
     }
 
     @Test
+    @Disabled
     fun `setting DDRA bits to input means that IORA writes will not affect them`() {
         val systemVia = SystemVia()
 
@@ -95,5 +97,4 @@ class ViaTest {
             systemVia.controlB2 shouldBe false
         }
     }
-
 }

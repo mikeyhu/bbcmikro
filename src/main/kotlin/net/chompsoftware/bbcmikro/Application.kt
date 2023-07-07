@@ -6,7 +6,6 @@ import net.chompsoftware.bbcmikro.hardware.SystemVia
 import net.chompsoftware.bbcmikro.hardware.UserVia
 import net.chompsoftware.bbcmikro.hardware.video.Mode
 import java.awt.Color
-import java.awt.EventQueue
 import java.awt.Graphics
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
@@ -26,26 +25,24 @@ class Application(microsystem: Microsystem) : JFrame() {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            EventQueue.invokeLater {
+            val pageableMemory = PageableMemory(
+                UByteArray(0x8000),
+                readFileToByteArray("./roms/Os12.rom"),
+                mapOf(
+                    0xf to readFileToByteArray("./roms/Basic2.rom")
+                ),
+                systemVia = SystemVia(),
+                userVia = UserVia()
+            )
+            val microsystem = Microsystem(pageableMemory)
 
-                val pageableMemory = PageableMemory(
-                        UByteArray(0x8000),
-                        readFileToByteArray("./roms/Os12.rom"),
-                        mapOf(
-                                0xf to readFileToByteArray("./roms/Basic2.rom")
-                        ),
-                        systemVia = SystemVia(),
-                        userVia = UserVia()
-                )
-                val microsystem = Microsystem(pageableMemory)
-
-                val app = Application(microsystem)
-                app.isVisible = true
-            }
+            val app = Application(microsystem)
+            app.isVisible = true
+            microsystem.run(app::repaint)
         }
 
-        fun readFileToByteArray(fileName: String) = File(fileName).inputStream().readBytes().asUByteArray()
 
+        fun readFileToByteArray(fileName: String) = File(fileName).inputStream().readBytes().asUByteArray()
     }
 }
 
@@ -54,13 +51,10 @@ const val PAUSE = "PAUSE"
 
 @ExperimentalUnsignedTypes
 class InputOutputSurface(val microsystem: Microsystem) : JPanel() {
-
-    val scale = 4
     var paused = false
 
     init {
         background = Color.BLACK
-        runMicrosystem()
 
         val pause = object : AbstractAction(PAUSE) {
             override fun actionPerformed(e: ActionEvent) {
@@ -72,20 +66,6 @@ class InputOutputSurface(val microsystem: Microsystem) : JPanel() {
 
         this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0), PAUSE)
         this.getActionMap().put(PAUSE, pause)
-    }
-
-    fun runMicrosystem() {
-        val worker = MicrosystemWorker()
-        worker.execute()
-    }
-
-    inner class MicrosystemWorker : SwingWorker<Unit, Unit>() {
-        override fun doInBackground() {
-            while(!paused) {
-                microsystem.run()
-                repaint()
-            }
-        }
     }
 
     override fun paintComponent(g: Graphics) {
