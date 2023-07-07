@@ -15,7 +15,6 @@ const val SCREEN_HEIGHT = 800
 const val MODE7_CHARS_PER_LINE = 40
 const val MODE7_LINES_PER_SCREEN = 25
 
-@ExperimentalUnsignedTypes
 class Screen(memory: Memory) {
 
     private val screenMode7 = ScreenMode7(memory)
@@ -27,7 +26,6 @@ class Screen(memory: Memory) {
     }
 }
 
-@ExperimentalUnsignedTypes
 class ScreenMode7(val memory: Memory) {
     private val timer = Timer("ScreenMode7 Repaints")
 

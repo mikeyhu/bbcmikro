@@ -18,18 +18,6 @@ object Logging {
 
     private val loggingEnabled = true
 
-    fun error(message: String) {
-        if(loggingEnabled && logError()) log.println(message)
-    }
-
-    fun debug(message: String) {
-        if(loggingEnabled && logDebug()) log.println(message)
-    }
-
-    fun info(message: String) {
-        if(loggingEnabled && logInfo()) log.println(message)
-    }
-
     fun error(error: Throwable) {
         if (loggingEnabled && logError()) {
             log.println("Logging an exception: $error")

@@ -7,7 +7,7 @@ const val SYSTEM_VIA_FROM = 0xfe40
 const val SYSTEM_VIA_TO = 0xfe50
 const val USER_VIA_FROM = 0xfe60
 const val USER_VIA_TO = 0xfe70
-@ExperimentalUnsignedTypes
+
 const val BIT_7: UByte = 0x80u
 
 // from http://www.8bs.com/mag/32/bbcmemmap2.txt
@@ -16,8 +16,7 @@ enum class ViaAddress(val p: Int) {
     InputOutputRegisterB(0x0),
     InputOutputRegisterA(0x1),
     DataDirectionRegisterB(0x2),
-    DataDirectionRegisterA(0x3),
-    Timer1LatchCounterL(0x4),
+    DataDirectionRegisterA(0x3),    Timer1LatchCounterL(0x4),
     Timer1LatchCounterH(0x5),
     Timer1LatchL(0x6),
     Timer1LatchH(0x7),
@@ -58,7 +57,7 @@ abstract class Via(val name: String, val start: Int) {
                 0x0u
             }
         }
-        Logging.info("${name} ${(viaAddress)} read ${(position + start).toHex()} (${value.toHex()})")
+        Logging.info { "${name} ${(viaAddress)} read ${(position + start).toHex()} (${value.toHex()})" }
         return value.toUByte()
     }
 
@@ -69,25 +68,25 @@ abstract class Via(val name: String, val start: Int) {
         when (viaAddress) {
             DataDirectionRegisterB, DataDirectionRegisterA -> store[viaAddress.p] = value
             InterruptEnableRegister -> store[viaAddress.p] =
-                    if (value.and(BIT_7) == BIT_7) store[viaAddress.p] or (value.and(0x7fu))
-                    else store[viaAddress.p] and (value.and(0x7fu).inv())
+                if (value.and(BIT_7) == BIT_7) store[viaAddress.p] or (value.and(0x7fu))
+                else store[viaAddress.p] and (value.and(0x7fu).inv())
+
             PeripheralControlRegister -> {
-                if(value.and(0xeu).toUInt() == 0xcu) controlA2 = false
+                if (value.and(0xeu).toUInt() == 0xcu) controlA2 = false
                 else if (value.and(0x08u) > 0u) controlA2 = true
-                if(value.and(0xe0u).toUInt() == 0xc0u) controlB2 = false
+                if (value.and(0xe0u).toUInt() == 0xc0u) controlB2 = false
                 else if (value.and(0x80u) > 0u) controlB2 = true
                 store[viaAddress.p] = value
             }
+
             InputOutputRegisterANoHandshake -> store[viaAddress.p] = value
             else -> {
             }
         }
-        Logging.info("${name} ${(viaAddress)} write ${(position + start).toHex()} (${value.toHex()})")
+        Logging.info { "${name} ${(viaAddress)} write ${(position + start).toHex()} (${value.toHex()})" }
     }
 }
 
-@ExperimentalUnsignedTypes
 class SystemVia() : Via("SystemVia", SYSTEM_VIA_FROM) {}
 
-@ExperimentalUnsignedTypes
 class UserVia() : Via("UserVia", USER_VIA_FROM) {}

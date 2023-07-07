@@ -12,7 +12,6 @@ const val SHIELA_BLOCK = 0xfe00
 @ExperimentalUnsignedTypes
 const val NOT_FOUND_PAGE_RETURN: UByte = 0x0u
 
-@ExperimentalUnsignedTypes
 class PageableMemory(val ram: UByteArray, val os: UByteArray, val pages: Map<Int, UByteArray>, val systemVia: SystemVia, val userVia: UserVia) : Memory {
     private var currentPage: Int = 0xf
 
