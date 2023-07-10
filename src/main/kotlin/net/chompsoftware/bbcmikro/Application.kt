@@ -1,5 +1,6 @@
 package net.chompsoftware.bbcmikro
 
+import net.chompsoftware.bbcmikro.investigation.LoggingOperation
 import net.chompsoftware.bbcmikro.hardware.Microsystem
 import net.chompsoftware.bbcmikro.hardware.PageableMemory
 import net.chompsoftware.bbcmikro.hardware.SystemVia
@@ -9,8 +10,12 @@ import java.awt.Color
 import java.awt.Graphics
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
+import java.awt.event.KeyListener
+import java.awt.event.WindowEvent
+import java.awt.event.WindowListener
 import java.io.File
 import javax.swing.*
+import kotlin.system.exitProcess
 
 @ExperimentalUnsignedTypes
 class Application(microsystem: Microsystem) : JFrame() {
@@ -20,7 +25,26 @@ class Application(microsystem: Microsystem) : JFrame() {
         defaultCloseOperation = EXIT_ON_CLOSE
 
         add(InputOutputSurface(microsystem))
+
+        addWindowListener(object : WindowListener {
+            override fun windowOpened(e: WindowEvent?) {}
+
+            override fun windowClosing(e: WindowEvent?) {
+                exitProcess(0)
+            }
+
+            override fun windowClosed(e: WindowEvent?) {}
+
+            override fun windowIconified(e: WindowEvent?) {}
+
+            override fun windowDeiconified(e: WindowEvent?) {}
+
+            override fun windowActivated(e: WindowEvent?) {}
+
+            override fun windowDeactivated(e: WindowEvent?) {}
+        })
     }
+
 
     companion object {
         @JvmStatic
@@ -66,6 +90,23 @@ class InputOutputSurface(val microsystem: Microsystem) : JPanel() {
 
         this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0), PAUSE)
         this.getActionMap().put(PAUSE, pause)
+
+        this.addKeyListener(object : KeyListener {
+            override fun keyTyped(e: KeyEvent?) {}
+
+            override fun keyPressed(e: KeyEvent?) {
+                e?.also {
+                    microsystem.setKey(it, true)
+                    LoggingOperation.logOperations = true
+                }
+            }
+
+            override fun keyReleased(e: KeyEvent?) {
+                e?.also {
+                    microsystem.setKey(it, false)
+                }
+            }
+        })
     }
 
     override fun paintComponent(g: Graphics) {

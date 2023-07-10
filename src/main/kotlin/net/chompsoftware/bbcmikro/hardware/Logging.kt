@@ -3,18 +3,19 @@ package net.chompsoftware.bbcmikro.hardware
 import java.io.File
 import java.io.PrintWriter
 
-const val logfileName = "/tmp/k6502.log"
+const val logfileName = "/tmp/bbcmikro.log"
 
 object Logging {
+    private val logTimer = false
     private val writeToFile = false
 
-    private val log: PrintWriter = if(writeToFile) {
+    private val log: PrintWriter = if (writeToFile) {
         File(logfileName).delete()
         File(logfileName).printWriter()
     } else {
         PrintWriter(System.out, true)
     }
-    private val logLevel = 3
+    private val logLevel = 2
 
     private val loggingEnabled = true
 
@@ -26,19 +27,23 @@ object Logging {
     }
 
     fun error(functionToMessage: () -> String) {
-        if (loggingEnabled && logError()) log.println(functionToMessage())
+        if (loggingEnabled && logError()) log.println("ERROR " + functionToMessage())
     }
 
     fun warn(functionToMessage: () -> String) {
-        if (loggingEnabled && logWarn()) log.println(functionToMessage())
+        if (loggingEnabled && logWarn()) log.println("WARN  " + functionToMessage())
     }
 
     fun debug(functionToMessage: () -> String) {
-        if (loggingEnabled && logDebug()) log.println(functionToMessage())
+        if (loggingEnabled && logDebug()) log.println("DEBUG " + functionToMessage())
     }
 
     fun info(functionToMessage: () -> String) {
-        if (loggingEnabled && logInfo()) log.println(functionToMessage())
+        if (loggingEnabled && logInfo()) log.println("INFO  " + functionToMessage())
+    }
+
+    fun timer(functionToMessage: () -> String) {
+        if (loggingEnabled && logTimer) log.println("TIMER " + functionToMessage())
     }
 
     private fun logError() = logLevel > 0

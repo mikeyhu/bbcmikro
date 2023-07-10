@@ -33,12 +33,13 @@ class Processor(
     }
 
     fun cycle(onNMICallback: () -> Boolean) {
-        val isNMIInterrupt = onNMICallback()
+        val isIRQInterrupt = onNMICallback()
         // Don't want to unset this if we've already set it as true
-        if (isNMIInterrupt) {
-            cpuState.isNMIInterrupt = true
+        if (isIRQInterrupt) {
+            cpuState.isIRQInterrupt = true
         }
         timer.increment()
+
         nextPipeline = (nextPipeline ?: operation).run(cpuState, memory, operationState)
     }
 

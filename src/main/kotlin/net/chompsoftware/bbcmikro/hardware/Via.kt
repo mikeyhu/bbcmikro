@@ -57,7 +57,7 @@ abstract class Via(val name: String, val start: Int) {
                 0x0u
             }
         }
-        Logging.info { "${name} ${(viaAddress)} read ${(position + start).toHex()} (${value.toHex()})" }
+        Logging.warn { "${name} ${(viaAddress)} read ${(position + start).toHex()} (${value.toHex()})" }
         return value.toUByte()
     }
 
@@ -83,7 +83,7 @@ abstract class Via(val name: String, val start: Int) {
             else -> {
             }
         }
-        Logging.info { "${name} ${(viaAddress)} write ${(position + start).toHex()} (${value.toHex()})" }
+        Logging.warn { "${name} ${(viaAddress)} write ${(position + start).toHex()} (${value.toHex()})" }
     }
 }
 
