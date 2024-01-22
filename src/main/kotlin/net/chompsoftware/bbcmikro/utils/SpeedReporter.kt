@@ -2,7 +2,7 @@ package net.chompsoftware.bbcmikro.utils
 
 import net.chompsoftware.bbcmikro.hardware.Logging
 
-class Timer(val timedSystem: String, val getCurrentSecond: () -> Long = ::currentSecond) {
+class SpeedReporter(val timedSystem: String, val getCurrentSecond: () -> Long = ::currentSecond) {
     private var currentSecond = getCurrentSecond()
     private var currentCounter = 0
     private var mostRecentFinished = 0
@@ -15,7 +15,7 @@ class Timer(val timedSystem: String, val getCurrentSecond: () -> Long = ::curren
             mostRecentFinished = currentCounter
             currentCounter = 0
             currentSecond = now
-            Logging.timer { "$timedSystem performed $mostRecentFinished in the previous second" }
+            Logging.speedReporter { "$timedSystem performed $mostRecentFinished in the previous second" }
         }
     }
 }

@@ -1,6 +1,6 @@
 package net.chompsoftware.bbcmikro.hardware.video
 
-import net.chompsoftware.bbcmikro.utils.Timer
+import net.chompsoftware.bbcmikro.utils.SpeedReporter
 import net.chompsoftware.k6502.hardware.Memory
 import java.awt.Graphics
 import java.awt.image.BufferedImage
@@ -27,7 +27,7 @@ class Screen(memory: Memory) {
 }
 
 class ScreenMode7(val memory: Memory) {
-    private val timer = Timer("ScreenMode7 Repaints")
+    private val speedReporter = SpeedReporter("ScreenMode7 Repaints")
 
     private val bufferedImage =
         BufferedImage(TELETEXT_WIDTH * MODE7_CHARS_PER_LINE, TELETEXT_HEIGHT * MODE7_LINES_PER_SCREEN, BufferedImage.TYPE_INT_RGB)
@@ -37,7 +37,7 @@ class ScreenMode7(val memory: Memory) {
     }.toMap()
 
     fun render(graphics: Graphics, panel: JPanel) {
-        timer.increment()
+        speedReporter.increment()
         val bufferedGraphics = bufferedImage.graphics
         renderToBufferedGraphics(bufferedGraphics)
         graphics.drawImage(bufferedImage, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, panel)

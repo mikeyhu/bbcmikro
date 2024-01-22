@@ -6,7 +6,7 @@ import java.io.PrintWriter
 const val logfileName = "/tmp/bbcmikro.log"
 
 object Logging {
-    private val logTimer = false
+    private val logSpeedReporter = true
     private val writeToFile = false
 
     private val log: PrintWriter = if (writeToFile) {
@@ -42,8 +42,8 @@ object Logging {
         if (loggingEnabled && logInfo()) log.println("INFO  " + functionToMessage())
     }
 
-    fun timer(functionToMessage: () -> String) {
-        if (loggingEnabled && logTimer) log.println("TIMER " + functionToMessage())
+    fun speedReporter(functionToMessage: () -> String) {
+        if (loggingEnabled && logSpeedReporter) log.println("TIMER " + functionToMessage())
     }
 
     private fun logError() = logLevel > 0

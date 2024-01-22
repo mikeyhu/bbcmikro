@@ -14,10 +14,11 @@ class Microsystem(val memory: Memory) {
     private var limitSpeed = true
     private var limitToFPS = 60
     private val millisecondsPerFrame = 1000 / limitToFPS
+    private val nanosecondsPerFrame = millisecondsPerFrame * 1000000
     private val instructionsPerFrame = Configuration.cycleSpeed / limitToFPS
     private var tick: Long = 0
     private var vsync: Long = 0
-    private var frameStartMillis = System.currentTimeMillis()
+    private var frameStartNano = System.currentTimeMillis()
 
     private var keyPressedInterrupt: Boolean = false
 
@@ -64,20 +65,21 @@ class Microsystem(val memory: Memory) {
                 vsync++
 
                 onNMICallback()
-                val currentMillis = System.currentTimeMillis()
-                val sleepFor = max(millisecondsPerFrame - (currentMillis - frameStartMillis), 0)
-//                Logging.debug { "sleepFor ${sleepFor}ms. millisecondsPerFrame: $millisecondsPerFrame, currentMillis: $currentMillis, frameStartMillis: $frameStartMillis" }
-                Thread.sleep(sleepFor)
+                val currentNano = System.nanoTime()
+                val sleepFor = max(nanosecondsPerFrame - (currentNano - frameStartNano), 0)
+//                Logging.warn { "sleepFor ${sleepFor}ns. millisecondsPerFrame: $millisecondsPerFrame" }
+                
+                Thread.sleep(sleepFor / 1000000, (sleepFor % 1000000).toInt())
                 if(vsync > limitToFPS) {
                     vsync = 0
-//                    interrupt = true
+                    interrupt = true
                 }
                 if(keyPressedInterrupt) {
                     Logging.debug { "setting interrupt for keyevent" }
                     interrupt = true
                     keyPressedInterrupt = false
                 }
-                frameStartMillis = System.currentTimeMillis()
+                frameStartNano = System.nanoTime()
             }
         }
 
