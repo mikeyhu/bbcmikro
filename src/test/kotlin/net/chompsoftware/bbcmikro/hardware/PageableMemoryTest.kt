@@ -8,6 +8,10 @@ import org.junit.jupiter.api.Test
 
 @ExperimentalUnsignedTypes
 class PageableMemoryTest {
+    
+    val timerManager = TimerManager()
+    val systemVia = SystemVia(timerManager)
+    val userVia = UserVia(timerManager)
 
     @Test
     fun `Should be able to read a value in the first 0x8000 of RAM`() {
@@ -15,7 +19,7 @@ class PageableMemoryTest {
                 setupMemory(NOP, 0x05u),
                 UByteArray(0x4000),
                 emptyMap(),
-                SystemVia(), UserVia()
+                systemVia, userVia
         )
         memory.get(0x01) shouldBe 0x5u
     }
@@ -26,7 +30,7 @@ class PageableMemoryTest {
                 setupMemory(NOP),
                 UByteArray(0x4000),
                 emptyMap(),
-                SystemVia(), UserVia()
+                systemVia, userVia
         )
 
         memory.set(0x01, 0xffu)
@@ -40,7 +44,7 @@ class PageableMemoryTest {
                 setupMemory(),
                 setupMemory(NOP, 0x05u, size = 0x4000),
                 emptyMap(),
-                SystemVia(), UserVia()
+                systemVia, userVia
         )
 
         memory.get(0xc001) shouldBe 0x5u
@@ -52,7 +56,7 @@ class PageableMemoryTest {
                 setupMemory(),
                 setupMemory(0xaau, size = 0x4000),
                 emptyMap(),
-                SystemVia(), UserVia()
+                systemVia, userVia
         )
         memory[0xffff] = 0xbbu
 
@@ -68,7 +72,7 @@ class PageableMemoryTest {
                 mapOf(
                         0xf to setupMemory(0x11u)
                 ),
-                SystemVia(), UserVia()
+                systemVia, userVia
         )
         memory[0x8000].toUInt() shouldBe 0x11u
     }
@@ -81,7 +85,7 @@ class PageableMemoryTest {
                 mapOf(
                         0xf to setupMemory(0x11u)
                 ),
-                SystemVia(), UserVia()
+                systemVia, userVia
         )
 
         val exception = shouldThrow<PageableMemoryError> {
@@ -100,7 +104,7 @@ class PageableMemoryTest {
                         0xf to setupMemory(0xf1u),
                         0x1 to setupMemory(0xf2u)
                 ),
-                SystemVia(), UserVia()
+                systemVia, userVia
         )
         memory[0x8000].toUInt() shouldBe 0xf1u
 
@@ -117,7 +121,7 @@ class PageableMemoryTest {
                 mapOf(
                         0xf to setupMemory(0xf1u)
                 ),
-                SystemVia(), UserVia()
+                systemVia, userVia
         )
         memory[0x8000].toUInt() shouldBe 0xf1u
         memory[0xfe30] = 0x1u
@@ -130,7 +134,7 @@ class PageableMemoryTest {
                 setupMemory(),
                 setupMemory(NOP, 0x05u, size = 0x4000),
                 mapOf(),
-                SystemVia(), UserVia()
+                systemVia, userVia
         )
         val exception = shouldThrow<PageableMemoryError> {
             memory.get(0x10000)
@@ -145,7 +149,7 @@ class PageableMemoryTest {
                 setupMemory(),
                 setupMemory(NOP, 0x05u, size = 0x4000),
                 mapOf(),
-                SystemVia(), UserVia()
+                systemVia, userVia
         )
         val exception = shouldThrow<PageableMemoryError> {
             memory.set(0x10000, 0x1u)
@@ -160,7 +164,7 @@ class PageableMemoryTest {
                 setupMemory(),
                 setupMemory(size = 0x4000),
                 mapOf(),
-                SystemVia(), UserVia()
+                systemVia, userVia
         )
         (0 until 0x10000).forEach { index ->
             memory[index].toUInt() shouldBeGreaterThanOrEqualTo 0u

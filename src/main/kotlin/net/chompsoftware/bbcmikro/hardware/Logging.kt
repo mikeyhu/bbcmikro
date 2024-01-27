@@ -43,7 +43,7 @@ object Logging {
     }
 
     fun speedReporter(functionToMessage: () -> String) {
-        if (loggingEnabled && logSpeedReporter) log.println("TIMER " + functionToMessage())
+        if (loggingEnabled && logSpeedReporter) log.println("SPEED " + functionToMessage())
     }
 
     private fun logError() = logLevel > 0

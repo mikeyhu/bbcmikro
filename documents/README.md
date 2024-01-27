@@ -13,7 +13,7 @@ http://www.6502.org/tutorials/interrupts.html
 
 Interrupts are _external_ to the 6502
 
-Other parts of the aystem raise these to the 6502 using one of the pins on the 6502
+Other parts of the system raise these to the 6502 using one of the pins on the 6502
 
 Two Types (each on 1 pin):
 * Non-Maskable Interrupt (NMI)

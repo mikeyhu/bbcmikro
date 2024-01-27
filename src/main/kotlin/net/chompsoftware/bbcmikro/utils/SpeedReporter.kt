@@ -8,12 +8,16 @@ class SpeedReporter(val timedSystem: String, val getCurrentSecond: () -> Long = 
     private var mostRecentFinished = 0
 
     fun increment() {
+        increment(1)
+    }
+
+    fun increment(amount: Int) {
         val now = getCurrentSecond()
         if (now == currentSecond) {
-            currentCounter++
+            currentCounter += amount
         } else {
             mostRecentFinished = currentCounter
-            currentCounter = 0
+            currentCounter = amount
             currentSecond = now
             Logging.speedReporter { "$timedSystem performed $mostRecentFinished in the previous second" }
         }

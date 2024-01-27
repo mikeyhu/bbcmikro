@@ -2,6 +2,7 @@ package net.chompsoftware.bbcmikro.hardware
 
 import net.chompsoftware.bbcmikro.hardware.ViaAddress.*
 import net.chompsoftware.k6502.toHex
+import net.chompsoftware.k6502.toInt16
 
 const val SYSTEM_VIA_FROM = 0xfe40
 const val SYSTEM_VIA_TO = 0xfe50
@@ -38,7 +39,7 @@ enum class ViaAddress(val p: Int) {
 }
 
 @ExperimentalUnsignedTypes
-abstract class Via(val name: String, val start: Int) {
+abstract class Via(val name: String, val start: Int, timerManager: TimerManager) {
 
     var controlA1 = false
     var controlA2 = false
@@ -46,6 +47,11 @@ abstract class Via(val name: String, val start: Int) {
     var controlB2 = false
 
     val store = UByteArray(0x10)
+    private val timer1: Via1Timer = Via1Timer(name + "Via1Timer")
+
+    init {
+        timerManager.writeTimer(timer1)
+    }
 
     operator fun get(position: Int): UByte {
         val viaAddress = ViaAddress.from(position)
@@ -54,15 +60,20 @@ abstract class Via(val name: String, val start: Int) {
             InterruptEnableRegister -> store[viaAddress.p] or 0x80u
             InputOutputRegisterANoHandshake -> store[viaAddress.p]
             PeripheralControlRegister -> store[viaAddress.p]
+            InterruptFlagRegister -> store[viaAddress.p]
             else -> {
                 0x0u
             }
         }
         Logging.warn { "${name} ${(viaAddress)} read ${(position + start).toHex()} (${value.toHex()})" }
-        return value.toUByte()
+        return value
     }
 
     fun readUInt(position: Int) = get(position).toUInt()
+
+    fun enableInterruptExternally() {
+        store[InterruptFlagRegister.p] = 0xffu
+    }
 
     operator fun set(position: Int, value: UByte) {
         val viaAddress = ViaAddress.from(position)
@@ -80,6 +91,11 @@ abstract class Via(val name: String, val start: Int) {
                 store[viaAddress.p] = value
             }
 
+            Timer1LatchCounterL -> timer1.setLatchCounterLow(value)
+            Timer1LatchCounterH -> timer1.setLatchCounterHigh(value)
+            Timer1LatchL -> timer1.setLatchLow(value)
+            Timer1LatchH -> timer1.setLatchHigh(value)
+
             InputOutputRegisterANoHandshake -> store[viaAddress.p] = value
             else -> {
             }
@@ -88,6 +104,60 @@ abstract class Via(val name: String, val start: Int) {
     }
 }
 
-class SystemVia() : Via("SystemVia", SYSTEM_VIA_FROM) {}
+class Via1Timer(name: String) : Timer(name) {
+    /*
+    When MOS starts up it zeros all the timers.
+    After some startup has occurred it writes the following:
+    WARN  SystemVia Timer1LatchL write 0xfe46 (0xe)
+    WARN  SystemVia Timer1LatchH write 0xfe47 (0x27)
+    WARN  SystemVia Timer1LatchCounterH write 0xfe45 (0x27)
+    WARN  SystemVia Timer2LatchCounterL write 0xfe48 (0x0)
+    WARN  SystemVia Timer2LatchCounterH write 0xfe49 (0x0)
 
-class UserVia() : Via("UserVia", USER_VIA_FROM) {}
+    Writing the Time1latchCounterH starts the timer.
+    */
+    private var latchL: UByte = 0u
+    private var latchH: UByte = 0u
+    private var latchCounterLow: UByte = 0u
+    private var latchCounterHigh: UByte = 0u
+    private var latch: Int = 0
+    private var latchCounter: Int = 0
+
+
+    fun setLatchLow(value: UByte) {
+        latchL = value
+        latch = toInt16(latchL, latchH)
+        Logging.warn { "Received $value to $name LatchL - setting latch to $latch" }
+    }
+
+    fun setLatchHigh(value: UByte) {
+        Logging.warn { "Received $value to $name LatchH - setting latch to $latch" }
+        latchH = value
+        latch = toInt16(latchL, latchH)
+    }
+
+    fun setLatchCounterLow(value: UByte) {
+        latchCounterLow = value
+        latchCounter = toInt16(latchCounterLow, latchCounterHigh)
+        Logging.warn { "Received $value to $name LatchCounterL  - setting latchCounter to $latchCounter" }
+    }
+
+    fun setLatchCounterHigh(value: UByte) {
+        latchCounterHigh = value
+        latchCounter = toInt16(latchCounterLow, latchCounterHigh)
+        Logging.warn { "Received $value to $name LatchCounterH  - setting latchCounter to $latchCounter" }
+    }
+
+    override fun systemTick(amountOfTicks: Int): InterruptState {
+        Logging.debug { "$name timer tick" }
+        return InterruptState(false, false)
+    }
+
+    override fun availableSystemTicks(): Int? {
+        return null
+    }
+}
+
+class SystemVia(timerManager: TimerManager) : Via("SystemVia", SYSTEM_VIA_FROM, timerManager) {}
+
+class UserVia(timerManager: TimerManager) : Via("UserVia", USER_VIA_FROM, timerManager) {}

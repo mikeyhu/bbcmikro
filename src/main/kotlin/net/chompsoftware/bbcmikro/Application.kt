@@ -4,6 +4,7 @@ import net.chompsoftware.bbcmikro.investigation.LoggingOperation
 import net.chompsoftware.bbcmikro.hardware.Microsystem
 import net.chompsoftware.bbcmikro.hardware.PageableMemory
 import net.chompsoftware.bbcmikro.hardware.SystemVia
+import net.chompsoftware.bbcmikro.hardware.TimerManager
 import net.chompsoftware.bbcmikro.hardware.UserVia
 import net.chompsoftware.bbcmikro.hardware.video.Mode
 import java.awt.Color
@@ -49,16 +50,18 @@ class Application(microsystem: Microsystem) : JFrame() {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
+            val timerManager = TimerManager()
             val pageableMemory = PageableMemory(
                 UByteArray(0x8000),
                 readFileToByteArray("./roms/Os12.rom"),
                 mapOf(
                     0xf to readFileToByteArray("./roms/Basic2.rom")
                 ),
-                systemVia = SystemVia(),
-                userVia = UserVia()
+                systemVia = SystemVia(timerManager),
+                userVia = UserVia(timerManager)
             )
-            val microsystem = Microsystem(pageableMemory)
+            val microsystem =
+                Microsystem(pageableMemory, pageableMemory.systemVia, pageableMemory.userVia, timerManager)
 
             val app = Application(microsystem)
             app.isVisible = true
@@ -66,10 +69,9 @@ class Application(microsystem: Microsystem) : JFrame() {
         }
 
 
-        fun readFileToByteArray(fileName: String) = File(fileName).inputStream().readBytes().asUByteArray()
+        private fun readFileToByteArray(fileName: String) = File(fileName).inputStream().readBytes().asUByteArray()
     }
 }
-
 
 const val PAUSE = "PAUSE"
 
